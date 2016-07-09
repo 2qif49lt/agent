@@ -4,6 +4,30 @@
 		"selected_items":
 		[
 			[
+				"wit",
+				"WithFields	*logrus.Entry ƒ"
+			],
+			[
+				"func",
+				"func main	func main {...} ʂ"
+			],
+			[
+				"defa",
+				"DefaultKeyFile	 Ɩ"
+			],
+			[
+				"conf",
+				"configDir	string ν"
+			],
+			[
+				"confi",
+				"ConfigFileName	 Ɩ"
+			],
+			[
+				"fa",
+				"Failed	bool ƒ"
+			],
+			[
 				"ret",
 				"ret_null"
 			],
@@ -58,10 +82,6 @@
 			[
 				"chec",
 				"checksign	 ν"
-			],
-			[
-				"func",
-				"func (*ReviceMessageTransfer)	func (...) {...} ʂ"
 			],
 			[
 				"ro",
@@ -494,26 +514,6 @@
 			[
 				"body",
 				"bodystr	 ν"
-			],
-			[
-				"da",
-				"dataend	 ν"
-			],
-			[
-				"con",
-				"Connect	int, error ƒ"
-			],
-			[
-				"ru",
-				"RunOn	error ƒ"
-			],
-			[
-				"r",
-				"ResolveTCPAddr	*net.TCPAddr, error ƒ"
-			],
-			[
-				"onconn",
-				"OnConnectRemote	bool ƒ"
 			]
 		]
 	},
@@ -523,7 +523,63 @@
 			"file": "cfg/config.go",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 2464,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cmd/agent.go",
+			"settings":
+			{
+				"buffer_size": 195,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cfg/version.go",
+			"settings":
+			{
+				"buffer_size": 233,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cfg/cfgfile/file.go",
+			"settings":
+			{
+				"buffer_size": 1430,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "pkg/homedir/homedir.go",
+			"settings":
+			{
+				"buffer_size": 952,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "pkg/user/user.go",
+			"settings":
+			{
+				"buffer_size": 10987,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/xuhaibin/.agent/config.toml",
+			"settings":
+			{
+				"buffer_size": 235,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "cfg/config_test.go",
+			"settings":
+			{
+				"buffer_size": 418,
 				"line_ending": "Unix"
 			}
 		}
@@ -535,10 +591,18 @@
 	"build_varint": "",
 	"command_palette":
 	{
-		"height": 311.0,
-		"last_filter": "",
+		"height": 392.0,
+		"last_filter": "packa",
 		"selected_items":
 		[
+			[
+				"packa",
+				"Package Control: Install Package"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
 			[
 				"Package Control: ",
 				"Package Control: Remove Package"
@@ -560,7 +624,7 @@
 				"Package Control: Install Package"
 			]
 		],
-		"width": 528.0
+		"width": 392.0
 	},
 	"console":
 	{
@@ -581,13 +645,21 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/xuhaibin/Desktop/code/go/src/agent",
-		"/Users/xuhaibin/Desktop/code/go/src/agent/api",
-		"/Users/xuhaibin/Desktop/code/go/src/agent/cfg",
-		"/Users/xuhaibin/Desktop/code/go/src/agent/cmd"
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent"
 	],
 	"file_history":
 	[
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/untitled",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/cfg/cfgfile/file_test.go",
+		"/Users/xuhaibin/Library/Application Support/Sublime Text 3/Packages/User/Default (OSX).sublime-keymap",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/lookup.go",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/user.go",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/user_test.go",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/lookup_unix.go",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/MAINTAINERS",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/lookup_unix",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/lookup_unsupported.go",
+		"/Users/xuhaibin/Desktop/code/go/src/github.com/2qif49lt/agent/pkg/user/lookup_unix.go ",
 		"/Users/xuhaibin/Desktop/code/go/src/agent/agent.sublime-project",
 		"/Users/xuhaibin/Desktop/code/go/src/github.com/spf13/cobra/cobra.go",
 		"/Users/xuhaibin/Desktop/code/go/src/github.com/spf13/cobra/command.go",
@@ -704,18 +776,7 @@
 		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/msg.go",
 		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/handler.go",
 		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/db.go",
-		"/F/Go/src/github.com/hooklift/gowsdl/generator/soap.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/common/var.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/main.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/VersionAPI.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/cfg/cfg.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxif - 222.73.56.182.ini",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/common/func.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/UserInfoAPI.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/uploadImage.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/common/ThumbnailImage.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/QxAutoLogin.go",
-		"/F/CompanyCode/code/7FGame_QFPlat/trunk/Project_QFPlatApp/trunk/QxAppSrvs/trunk/qxassist/stat.go"
+		"/F/Go/src/github.com/hooklift/gowsdl/generator/soap.go"
 	],
 	"find":
 	{
@@ -740,9 +801,15 @@
 	},
 	"find_state":
 	{
-		"case_sensitive": false,
+		"case_sensitive": true,
 		"find_history":
 		[
+			"configFileDir",
+			"cfgfileName",
+			"ConfigFileName",
+			"LoadFromReader",
+			"type",
+			"configfile",
 			"key",
 			"UsageString",
 			"MarkShorthandDeprecated",
@@ -864,13 +931,7 @@
 			"BIND_MOBILE_FAIL",
 			"getUpdatePwdJSONString",
 			"UPLOAD_IMAGE_URL",
-			"api.pay.7fgame.com:1080",
-			"GetProcAbsDir",
-			"GBinPath",
-			"GetProcAbsDir",
-			"VerificateST",
-			"handleRemotePwd",
-			"DecodeUTF16"
+			"api.pay.7fgame.com:1080"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -878,6 +939,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"ConfigFileName",
+			"cfgfile",
 			" ",
 			"myatoll",
 			"atoi",
@@ -900,7 +963,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -909,20 +972,51 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 2464,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								2383,
+								2383
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage"
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "cmd/agent.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 195,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								105,
+								111
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -930,12 +1024,190 @@
 					},
 					"stack_index": 0,
 					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "cfg/version.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 233,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								233,
+								233
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "cfg/cfgfile/file.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1430,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1429,
+								1429
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "pkg/homedir/homedir.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 952,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								184,
+								187
+							]
+						],
+						"settings":
+						{
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "pkg/user/user.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10987,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								407,
+								407
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4191.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
 				}
 			]
 		},
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 6,
+					"file": "/Users/xuhaibin/.agent/config.toml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 235,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								234,
+								234
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/YAML/YAML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "cfg/config_test.go",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 418,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								418,
+								418
+							]
+						],
+						"settings":
+						{
+							"origin_encoding": "ASCII",
+							"syntax": "Packages/GoSublime/syntax/GoSublime-Go.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -967,7 +1239,7 @@
 		"cols":
 		[
 			0.0,
-			0.537933078435,
+			0.527600072625,
 			1.0
 		],
 		"rows":

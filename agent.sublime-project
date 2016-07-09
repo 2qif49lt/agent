@@ -2,7 +2,7 @@
 	"folders":
 	[
 		{
-            "folder_exclude_patterns": [".svn", ".git", ".sass-cache","log"],
+            "folder_exclude_patterns": [".svn", ".git", ".sass-cache","log","agent"],
 			"file_include_patterns": ["*.go","*.md","makefile"],
 			"follow_symlinks": true,
 			"path": "."

@@ -1,12 +1,16 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
+	log "github.com/2qif49lt/logrus"
+	"time"
 )
 
 func main() {
-	log.WithFields(log.Fields{
-		"version":   Version,
-		"buildtime": Buildtime,
-	}).Info("Agent start!")
+	for i := 0; i < 1000; i++ {
+		log.WithFields(log.Fields{
+			"version":   Version,
+			"buildtime": Buildtime,
+		}).Info("Agent start!")
+		time.Sleep(time.Second / 3)
+	}
 }

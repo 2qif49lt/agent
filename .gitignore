@@ -1,4 +1,7 @@
 
-binary/agent
+binary/
 
 agent.sublime-workspace
+
+
+*.out

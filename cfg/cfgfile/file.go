@@ -9,12 +9,12 @@ import (
 	"path/filepath"
 )
 
-// ConfigFile ~/.agent/config.toml file info
+// ConfigFile ~/.agent/config.toml file info,for agentd.
+
 type ConfigFile struct {
 	SrvName string `toml:"srvname,omitempty"` // default Agentd
-	Ip      string `toml:"ip,omitempty"`      // if ip is empty, listen on 127.0.0.1 only
-	Port    int    `toml:"port,omitempty"`    // default 1688
-	Loglvl  int    `toml:"loglvl,omitempty"`  // default 1
+	Srv     string `toml:"srv,omitempty"`     // if ip is empty, listen on 127.0.0.1 only
+	Loglvl  string `toml:"loglvl,omitempty"`  // default InfoLevel
 	Etcd    struct {
 		Srvs []string `toml:"services,omitempty"`
 	}

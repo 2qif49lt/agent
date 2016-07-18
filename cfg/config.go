@@ -15,16 +15,21 @@ const (
 	ConfigFileName = "config.toml"
 	configFileDir  = ".agent"
 
+	DefaultAgentdListenPort = 1688 // 默认监听端口
+
 	// DefaultUniqueIdFile 和证书同时生成的用于表示服务器唯一性,合法性.
 	DefaultUniqueAgentIdFile = "agentid"
 
-	// DefaultKeyFile is the default filename for the key pem file
-	DefaultKeyFile = "agent_key.pem"
-	// DefaultCertFile is the default filename for the cert pem file
-	DefaultCertFile = "agent_cert.pem"
-	// TLSVerifyKey is the default flag name for the tls verification option
+	// DeafultTlsCaFile 用于判断连接的agentd的证书是否合法
+	DeafultTlsCaFile = "ca.pem"
+	// DefaultTlsKeyFile agentd的tls链接key
+	DefaultTlsKeyFile = "agent_key.pem"
+	// DeafultTlsCertFile agentd的证书.
+	DefultTlsCertFile = "agent_cert.pem"
 
-	DefaultPublicKeyFile = "server_pub.pem" // 用于检查调用者参数签名
+	// DefaultSignPubFile 参数签名
+	DefaultRsaSignPubFile = "server_pub.pem" // 用于agentd检查调用者参数签名
+	DefaultRsaSignPriFile = "server_key.pem" // 用于客户端签名
 )
 
 var (
@@ -41,12 +46,12 @@ func init() {
 	}
 }
 
-// ConfigDir returns the directory the configuration file is stored in
-func ConfigDir() string {
+// GetConfigDir returns the directory the configuration file is stored in
+func GetConfigDir() string {
 	return configDir
 }
 
-func CertPath() string {
+func GetCertPath() string {
 	return certPath
 }
 
@@ -62,8 +67,6 @@ func SetCertPath(dir string) {
 func Newcfgfile(fp string) *cfgfile.ConfigFile {
 	return &cfgfile.ConfigFile{
 		SrvName:  "Agentd",
-		Port:     1688,
-		Loglvl:   1,
 		Filename: fp,
 	}
 }
@@ -71,7 +74,7 @@ func Newcfgfile(fp string) *cfgfile.ConfigFile {
 // Load reads the configuration files
 func Load() (*cfgfile.ConfigFile, error) {
 
-	cfgfile := Newcfgfile(filepath.Join(configDir, ConfigFileName))
+	cfgfile := Newcfgfile(filepath.Join(GetConfigDir(), ConfigFileName))
 
 	if _, err := os.Stat(cfgfile.Filename); err == nil {
 		file, err := os.Open(cfgfile.Filename)
@@ -92,15 +95,19 @@ func Load() (*cfgfile.ConfigFile, error) {
 
 }
 
-// IsLegal return whether agent install properly
-func IsLegal(cfg *cfgfile.ConfigFile) error {
+// IsTlsLegal return whether agentd install properly
+func IsSrvTlsLegal(cfg *cfgfile.ConfigFile) error {
 	isexist := func(fn string) bool {
-		_, err := os.Stat(filepath.Join(certPath(), fn))
+		_, err := os.Stat(filepath.Join(GetCertPath(), fn))
 		return err == nil || os.IsExist(err)
 	}
-	if isexist(DefaultCertFile) && isexist(DefaultKeyFile) &&
-		isexist(DefaultPublicKeyFile) {
+	if 
+	if isexist(DefaultTlsKeyFile) && isexist(DefultTlsCertFile) {
 
 	}
 	return fmt.Errorf("cert files not exist")
+}
+
+func IsCliTlsLegal() error {
+
 }

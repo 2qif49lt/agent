@@ -1,31 +1,41 @@
 package main
 
 import (
+	_ "github.com/2qif49lt/dump"
 	log "github.com/2qif49lt/logrus"
 
 	"github.com/2qif49lt/agent/pkg/signal"
-	"github.com/kardianos/service"
+	"github.com/2qif49lt/cfg"
+	flag "github.com/2qif49lt/pflag"
 	"time"
 )
 
-type program struct{}
-
-func (p *program) Start(s service.Service) error {
-	// Start should not block. Do the actual work async.
-	go p.run()
-	return nil
-}
-func (p *program) run() {
-	// Do work here
-	Agentd()
-}
-func (p *program) Stop(s service.Service) error {
-	// Stop should not block. Return with a few seconds.
-	return nil
-}
+var (
+	comflag   = cfg.InitCommonFlags()
+	flHelp    = flag.BoolP("help", "h", false, "Print usage")
+	flVersion = flag.BoolP("version", "v", false, "Print version information and quit")
+)
 
 func main() {
 
+	flag.Merge(flag.CommandLine, cfg.commonFlags.FlagSet)
+	flag.Parse()
+
+	if *flVersion {
+		showVersion()
+		return
+	}
+
+	if *flHelp {
+		// if global flag --help is present, regardless of what other options and commands there are,
+		// just print the usage.
+		flag.Usage()
+		return
+	}
+
+	if flag.IsSet("daemon") {
+
+	}
 	svcConfig := &service.Config{
 		Name:        "GoServiceExampleSimple",
 		DisplayName: "Go Service Example",
@@ -45,28 +55,17 @@ func main() {
 
 }
 
-func Agentd() {
-	l := log.NewSSLog("log", "base.txt", log.InfoLevel)
+func Agentc() {
 	signal.Trap(func() {
-		l.Warnln("exit by signal")
+		println("trap")
 	})
 
-	log.WithFields(log.Fields{
-		"version":   Version,
-		"buildtime": Buildtime,
-	}).Info("Agent start!")
+}
 
-	for i := 0; i < 100; i++ {
-		if log.IsTerminal() {
-			log.Println("Is Terminal")
-
-		} else {
-			log.Println("Not Terminal")
-		}
-		time.Sleep(time.Second / 10)
-
+func showVersion() {
+	if utils.ExperimentalBuild() {
+		fmt.Printf("Docker version %s, build %s, experimental\n", dockerversion.Version, dockerversion.GitCommit)
+	} else {
+		fmt.Printf("Docker version %s, build %s\n", dockerversion.Version, dockerversion.GitCommit)
 	}
-	i := 0
-	j := 10 / i
-	_ = j
 }

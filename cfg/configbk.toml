@@ -1,7 +1,7 @@
+# 配置文件会替换cmdline里的设置
 srvname = "Agentd" # windows service name,linux daemon name.
-ip = "10.1.9.34"  
-port = 1688 # meanwhile 127.0.0.1:1688 will listen
-loglvl = 1 # 0:debug,1:info/default,2:warn,3:error,4:panic,5:fatal
+srv = ":1688"  
+loglvl = "InfoLevel" # 0:PanicLevel,1:FatalLevel,2:ErrorLevel,3:WarnLevel,4:InfoLevel(default),5:DebugLevel
 
 [etcd]
 services = ["10.1.9.34:2379"]

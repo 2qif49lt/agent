@@ -1,7 +1,5 @@
-# 配置文件会替换cmdline里的设置
+# 配置文件会替换cmdline里的未设置的值
 srvname = "Agentd" # windows service name,linux daemon name.
-srv = ":1688"  
-loglvl = "InfoLevel" # 0:PanicLevel,1:FatalLevel,2:ErrorLevel,3:WarnLevel,4:InfoLevel(default),5:DebugLevel
 
 [etcd]
 services = ["10.1.9.34:2379"]

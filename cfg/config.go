@@ -63,8 +63,8 @@ func SetCertPath(dir string) {
 	certPath = dir
 }
 
-// Newcfgfile initializes an empty configuration file for the given file path 'fp'
-func Newcfgfile(fp string) *cfgfile.ConfigFile {
+// newcfgfile initializes an empty configuration file for the given file path 'fp'
+func newcfgfile(fp string) *cfgfile.ConfigFile {
 	return &cfgfile.ConfigFile{
 		SrvName:  "Agentd",
 		Filename: fp,
@@ -74,7 +74,7 @@ func Newcfgfile(fp string) *cfgfile.ConfigFile {
 // Load reads the configuration files
 func Load() (*cfgfile.ConfigFile, error) {
 
-	cfgfile := Newcfgfile(filepath.Join(GetConfigDir(), ConfigFileName))
+	cfgfile := newcfgfile(filepath.Join(GetConfigDir(), ConfigFileName))
 
 	if _, err := os.Stat(cfgfile.Filename); err == nil {
 		file, err := os.Open(cfgfile.Filename)
@@ -101,7 +101,6 @@ func IsSrvTlsLegal(cfg *cfgfile.ConfigFile) error {
 		_, err := os.Stat(filepath.Join(GetCertPath(), fn))
 		return err == nil || os.IsExist(err)
 	}
-	if 
 	if isexist(DefaultTlsKeyFile) && isexist(DefultTlsCertFile) {
 
 	}
@@ -109,5 +108,5 @@ func IsSrvTlsLegal(cfg *cfgfile.ConfigFile) error {
 }
 
 func IsCliTlsLegal() error {
-
+	return nil
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/2qif49lt/agent/pkg/signal"
 	"github.com/2qif49lt/cfg"
 	flag "github.com/2qif49lt/pflag"
+	"os"
 	"time"
 )
 
@@ -18,7 +19,26 @@ var (
 
 func main() {
 
-	flag.Merge(flag.CommandLine, cfg.commonFlags.FlagSet)
+	flag.Merge(flag.CommandLine, comflag.FlagSet)
+
+	flag.Usage = func() {
+		fmt.Fprint(os.Stdout, "Usage: agent [OPTIONS] COMMAND [arg...]\n       agent [ --help |-h | -v | --version ]\n\n")
+		fmt.Fprint(os.Stdout, "A self-sufficient runtime tool.\n\nOptions:\n")
+
+		flag.CommandLine.SetOutput(stdout)
+		flag.PrintDefaults()
+
+		help := "\nCommands:\n"
+
+		dockerCommands := append(cli.DockerCommandUsage, cobraAdaptor.Usage()...)
+		for _, cmd := range sortCommands(dockerCommands) {
+			help += fmt.Sprintf("    %-10.10s%s\n", cmd.Name, cmd.Description)
+		}
+
+		help += "\nRun 'docker COMMAND --help' for more information on a command."
+		fmt.Fprintf(stdout, "%s\n", help)
+	}
+
 	flag.Parse()
 
 	if *flVersion {

@@ -42,7 +42,7 @@ type CommonFlags struct {
 }
 
 // InitCommonFlags initializes flags common to both client and daemon
-func InitCommonFlags(daemon bool) *CommonFlags {
+func InitCommonFlags() *CommonFlags {
 	var com = &CommonFlags{FlagSet: new(flag.FlagSet)}
 
 	fs := com.FlagSet
@@ -61,11 +61,7 @@ func InitCommonFlags(daemon bool) *CommonFlags {
 	fs.StringVar(&tlsOptions.RsaSignKeyFile, "rsapri", filepath.Join(certPath, DefaultRsaSignPriFile), "Path to Rsa Sign private key file")
 	fs.StringVar(&tlsOptions.RsaSignPubFile, "rsapub", filepath.Join(certPath, DefaultRsaSignPubFile), "Path to Rsa Sign public key file")
 
-	if daemon {
-		fs.StringVarP(&tlsOptions.Host, "host", "H", fmt.Sprintf(`:%d`, DefaultAgentdListenPort), "Agentd listen address,[ip]:port")
-	} else {
-		fs.StringVarP(&tlsOptions.Host, "host", "H", fmt.Sprintf(`127.0.0.1:%d`, DefaultAgentdListenPort), "Agent connect to,[ip]:port")
-	}
+	fs.StringVarP(&tlsOptions.Host, "host", "H", fmt.Sprintf(`:%d`, DefaultAgentdListenPort), "Agentd listen address or Agent connect to,[ip]:port")
 
 	return com
 }

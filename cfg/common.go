@@ -41,6 +41,8 @@ type CommonFlags struct {
 	RsaSignPubFile string // agent签名密钥
 }
 
+var ComCfg *CommonFlags = nil
+
 // InitCommonFlags initializes flags common to both client and daemon
 func InitCommonFlags() *CommonFlags {
 	var com = &CommonFlags{FlagSet: new(flag.FlagSet)}
@@ -63,43 +65,6 @@ func InitCommonFlags() *CommonFlags {
 
 	fs.StringVarP(&tlsOptions.Host, "host", "H", fmt.Sprintf(`:%d`, DefaultAgentdListenPort), "Agentd listen address or Agent connect to,[ip]:port")
 
+	ComCfg = com
 	return com
-}
-
-// Merge is a helper function that merges n FlagSets into a single dest FlagSet
-// In case of name collision between the flagsets it will apply
-// the destination FlagSet's errorHandling behavior.
-func Merge(dest *flag.FlagSet, flagsets ...*flag.FlagSet) error {
-	for _, fset := range flagsets {
-		if fset.formal == nil {
-			continue
-		}
-		for k, f := range fset.formal {
-			if _, ok := dest.formal[k]; ok {
-				var err error
-				if fset.name == "" {
-					err = fmt.Errorf("flag redefined: %s", k)
-				} else {
-					err = fmt.Errorf("%s flag redefined: %s", fset.name, k)
-				}
-				fmt.Fprintln(fset.Out(), err.Error())
-				// Happens only if flags are declared with identical names
-				switch dest.errorHandling {
-				case ContinueOnError:
-					return err
-				case ExitOnError:
-					os.Exit(2)
-				case PanicOnError:
-					panic(err)
-				}
-			}
-			newF := *f
-			newF.Value = mergeVal{f.Value, k, fset}
-			if dest.formal == nil {
-				dest.formal = make(map[string]*Flag)
-			}
-			dest.formal[k] = &newF
-		}
-	}
-	return nil
 }

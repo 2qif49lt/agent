@@ -1,4 +1,4 @@
 package client
 
 // DefaultAgentdHost
-const DefaultAgentdHost = "npipe:////./pipe/docker_engine"
+const DefaultAgentdHost = "npipe:////./pipe/agentd_engine"

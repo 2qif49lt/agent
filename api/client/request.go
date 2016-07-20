@@ -10,9 +10,9 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/docker/engine-api/client/transport/cancellable"
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/versions"
+	"github.com/2qif49lt/agent/api/client/transport/cancellable"
+	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/api/types/versions"
 	"golang.org/x/net/context"
 )
 
@@ -57,7 +57,11 @@ func (cli *Client) delete(ctx context.Context, path string, query url.Values, he
 	return cli.sendRequest(ctx, "DELETE", path, query, nil, headers)
 }
 
-func (cli *Client) sendRequest(ctx context.Context, method, path string, query url.Values, obj interface{}, headers map[string][]string) (*serverResponse, error) {
+func (cli *Client) sendRequest(ctx context.Context,
+	method, path string,
+	query url.Values,
+	obj interface{},
+	headers map[string][]string) (*serverResponse, error) {
 	var body io.Reader
 
 	if obj != nil {
@@ -75,7 +79,11 @@ func (cli *Client) sendRequest(ctx context.Context, method, path string, query u
 	return cli.sendClientRequest(ctx, method, path, query, body, headers)
 }
 
-func (cli *Client) sendClientRequest(ctx context.Context, method, path string, query url.Values, body io.Reader, headers map[string][]string) (*serverResponse, error) {
+func (cli *Client) sendClientRequest(ctx context.Context, method, path string,
+	query url.Values,
+	body io.Reader,
+	headers map[string][]string) (*serverResponse, error) {
+
 	serverResp := &serverResponse{
 		body:       nil,
 		statusCode: -1,
@@ -94,9 +102,13 @@ func (cli *Client) sendClientRequest(ctx context.Context, method, path string, q
 	if cli.proto == "unix" || cli.proto == "npipe" {
 		// For local communications, it doesn't matter what the host is. We just
 		// need a valid and meaningful host name. (See #189)
-		req.Host = "docker"
+		req.Host = "agentd"
+	} else {
+		if cli.proto == "master" {
+			req.Host = cli.addr // agentid:port
+		}
 	}
-	req.URL.Host = cli.addr
+	req.URL.Host = cli.addr //////////
 	req.URL.Scheme = cli.transport.Scheme()
 
 	if expectedPayload && req.Header.Get("Content-Type") == "" {

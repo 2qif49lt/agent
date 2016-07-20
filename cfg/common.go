@@ -65,6 +65,20 @@ func InitCommonFlags() *CommonFlags {
 
 	fs.StringVarP(&tlsOptions.Host, "host", "H", fmt.Sprintf(`:%d`, DefaultAgentdListenPort), "Agentd listen address or Agent connect to,[ip]:port")
 
+	/*
+		-H参数可以为一下格式:
+			1.master://target agent id:{port}. 表示要通过master 中转请求到目标服务器上的port服务,默认为agent.
+			2.tcp://target agent ip:{port}.
+			3.unix:///var/run/agent.sock
+			4.npipe:////./pipe/agentd_engine
+			5.tcp://127.0.0.1:{port}
+			6.:%d
+
+		当-H参数未填充为默认值:%d.
+			作为agentd:会默认监听所有地址.
+			作为client:则会时则会自动选择3,4,5
+		当-H参数不为默认值时,程序则根据实际参数进行监听或连接.
+	*/
 	ComCfg = com
 	return com
 }

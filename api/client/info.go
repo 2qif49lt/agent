@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/docker/engine-api/types"
+	"github.com/2qif49lt/agent/api/types"
 	"golang.org/x/net/context"
 )
 
-// Info returns information about the docker server.
+// Info returns information about the agentd server.
 func (cli *Client) Info(ctx context.Context) (types.Info, error) {
 	var info types.Info
 	serverResp, err := cli.get(ctx, "/info", url.Values{}, nil)

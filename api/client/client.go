@@ -13,13 +13,13 @@ import (
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 )
 
-// DefaultVersion is the version of the current stable API
-const DefaultVersion string = "1.1.0"
+// DefaultVersion is the version of the current stable API.client 属于该api版本下
+const DefaultVersion string = "1.23"
 
 // Client is the API client that performs all operations
 // against a agent server.
 type Client struct {
-	// proto holds the client protocol i.e. unix.
+	// proto holds the client protocol i.e. unix,master...
 	proto string
 	// addr holds the client address.
 	addr string
@@ -78,6 +78,7 @@ func NewEnvClient() (*Client, error) {
 // It won't send any version information if the version number is empty. It is
 // highly recommended that you set a version or your client may break if the
 // server is upgraded.
+
 func NewClient(host string, version string, client *http.Client, httpHeaders map[string]string) (*Client, error) {
 	proto, addr, basePath, err := ParseHost(host)
 	if err != nil {
@@ -92,7 +93,7 @@ func NewClient(host string, version string, client *http.Client, httpHeaders map
 	return &Client{
 		proto:             proto,
 		addr:              addr,
-		basePath:          basePath,
+		basePath:          basePath, // 当proto 仅为 tcp时才有效
 		transport:         transport,
 		version:           version,
 		customHTTPHeaders: httpHeaders,
@@ -136,7 +137,7 @@ func (cli *Client) UpdateClientVersion(v string) {
 func ParseHost(host string) (string, string, string, error) {
 	protoAddrParts := strings.SplitN(host, "://", 2)
 	if len(protoAddrParts) == 1 {
-		return "", "", "", fmt.Errorf("unable to parse docker host `%s`", host)
+		return "", "", "", fmt.Errorf("unable to parse agent host `%s`", host)
 	}
 
 	var basePath string

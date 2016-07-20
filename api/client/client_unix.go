@@ -3,4 +3,4 @@
 package client
 
 // DefaultAgentdHost
-const DefaultAgentdHost = "unix:///var/run/docker.sock"
+const DefaultAgentdHost = "unix:///var/run/agentd.sock"

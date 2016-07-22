@@ -9,7 +9,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/docker/engine-api/client/transport"
+	"github.com/2qif49lt/agent/api/client/transport"
 
 	"golang.org/x/net/context"
 )

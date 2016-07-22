@@ -9,7 +9,7 @@ package cancellable
 import (
 	"net/http"
 
-	"github.com/docker/engine-api/client/transport"
+	"github.com/2qif49lt/agent/api/client/transport"
 )
 
 func canceler(client transport.Sender, req *http.Request) func() {

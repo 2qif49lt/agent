@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/engine-api/types"
-	"github.com/docker/go-connections/sockets"
+	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/pkg/connections/sockets"
 	"golang.org/x/net/context"
 )
 

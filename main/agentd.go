@@ -1,7 +1,9 @@
 package main
 
 import (
+	log "github.com/2qif49lt/logrus"
 	"github.com/kardianos/service"
+	"time"
 )
 
 type program struct{}

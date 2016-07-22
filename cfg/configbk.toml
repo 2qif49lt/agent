@@ -1,5 +1,5 @@
 # 配置文件会替换cmdline里的未设置的值
 srvname = "Agentd" # windows service name,linux daemon name.
 
-[etcd]
-services = ["10.1.9.34:2379"]
+[master]
+services = ["10.1.9.34:2379","http://master.example.com:2379"]

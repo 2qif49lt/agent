@@ -6,7 +6,7 @@ import (
 )
 
 // ErrConnectionFailed is an error raised when the connection between the client and the server failed.
-var ErrConnectionFailed = errors.New("Cannot connect to the Docker daemon. Is the docker daemon running on this host?")
+var ErrConnectionFailed = errors.New("Cannot connect to the Agentd. Is the Agentd running on this host?")
 
 type notFound interface {
 	error

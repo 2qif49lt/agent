@@ -7,9 +7,9 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/filters"
-	timetypes "github.com/docker/engine-api/types/time"
+	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/api/types/filters"
+	timetypes "github.com/2qif49lt/agent/api/types/time"
 )
 
 // Events returns a stream of events in the daemon in a ReadCloser.

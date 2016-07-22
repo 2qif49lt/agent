@@ -28,6 +28,7 @@ func ConfigureTransport(tr *http.Transport, proto, addr string) error {
 		tr.Dial = func(_, _ string) (net.Conn, error) {
 			return DialPipe(addr, defaultTimeout)
 		}
+
 	default:
 		tr.Proxy = http.ProxyFromEnvironment
 		dialer, err := DialerFromEnvironment(&net.Dialer{

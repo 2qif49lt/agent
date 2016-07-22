@@ -1,9 +1,9 @@
 package server
 
 import (
-	"github.com/Sirupsen/logrus"
-	"github.com/docker/docker/api/server/httputils"
-	"github.com/docker/docker/api/server/middleware"
+	"github.com/2qif49lt/agent/api/server/httputils"
+	"github.com/2qif49lt/agent/api/server/middleware"
+	"github.com/2qif49lt/logrus"
 )
 
 // handleWithGlobalMiddlwares wraps the handler function for a request with

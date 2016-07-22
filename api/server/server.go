@@ -7,11 +7,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/docker/docker/api/server/httputils"
-	"github.com/docker/docker/api/server/middleware"
-	"github.com/docker/docker/api/server/router"
-	"github.com/docker/docker/errors"
+	"github.com/2qif49lt/agent/api/server/httputils"
+	"github.com/2qif49lt/agent/api/server/middleware"
+	"github.com/2qif49lt/agent/api/server/router"
+	"github.com/2qif49lt/agent/errors"
+	"github.com/2qif49lt/logrus"
 	"github.com/gorilla/mux"
 	"golang.org/x/net/context"
 )
@@ -28,6 +28,24 @@ type Config struct {
 	Version     string
 	SocketGroup string
 	TLSConfig   *tls.Config
+}
+
+// HTTPServer contains an instance of http server and the listener.
+// srv *http.Server, contains configuration to create a http server and a mux router with all api end points.
+// l   net.Listener, is a TCP or Socket listener that dispatches incoming request to the router.
+type HTTPServer struct {
+	srv *http.Server
+	l   net.Listener
+}
+
+// Serve starts listening for inbound requests.
+func (s *HTTPServer) Serve() error {
+	return s.srv.Serve(s.l)
+}
+
+// Close closes the HTTPServer from listening for the inbound requests.
+func (s *HTTPServer) Close() error {
+	return s.l.Close()
 }
 
 // Server contains instance details for the server
@@ -99,24 +117,6 @@ func (s *Server) serveAPI() error {
 	}
 
 	return nil
-}
-
-// HTTPServer contains an instance of http server and the listener.
-// srv *http.Server, contains configuration to create a http server and a mux router with all api end points.
-// l   net.Listener, is a TCP or Socket listener that dispatches incoming request to the router.
-type HTTPServer struct {
-	srv *http.Server
-	l   net.Listener
-}
-
-// Serve starts listening for inbound requests.
-func (s *HTTPServer) Serve() error {
-	return s.srv.Serve(s.l)
-}
-
-// Close closes the HTTPServer from listening for the inbound requests.
-func (s *HTTPServer) Close() error {
-	return s.l.Close()
 }
 
 func (s *Server) makeHTTPHandler(handler httputils.APIFunc) http.HandlerFunc {

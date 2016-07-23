@@ -15,7 +15,7 @@ const (
 	ConfigFileName = "config.toml"
 	configFileDir  = ".agent"
 
-	DefaultAgentdListenPort = 1688 // 默认监听端口
+	DefaultAgentdListenPort = 1698 // 默认监听端口
 
 	// DefaultUniqueIdFile 和证书同时生成的用于表示服务器唯一性,合法性.
 	DefaultUniqueAgentIdFile = "agentid"

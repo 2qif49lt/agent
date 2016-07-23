@@ -2,4 +2,4 @@
 srvname = "Agentd" # windows service name,linux daemon name.
 
 [master]
-services = ["10.1.9.34:2379","http://master.example.com:2379"]
+services = ["10.1.9.34:3567","http://master.example.com:3567"]

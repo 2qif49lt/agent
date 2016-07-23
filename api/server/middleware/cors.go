@@ -3,7 +3,7 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/2qif49lt/logrus"
 	"golang.org/x/net/context"
 )
 

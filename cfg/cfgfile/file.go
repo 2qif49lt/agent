@@ -15,7 +15,7 @@ type ConfigFile struct {
 	SrvName string `toml:"srvname,omitempty"` // default Agentd
 	Srv     string `toml:"srv,omitempty"`     // if ip is empty, listen on 127.0.0.1 only
 	Loglvl  string `toml:"loglvl,omitempty"`  // default InfoLevel
-	Etcd    struct {
+	Master  struct {
 		Srvs []string `toml:"services,omitempty"`
 	}
 	Filename string `toml:"-"` // Note: for internal use only

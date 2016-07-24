@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/versions"
+	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/api/types/versions"
+	"github.com/2qif49lt/logrus"
 	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 )

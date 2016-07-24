@@ -22,6 +22,9 @@ func (r *multiReadSeeker) Seek(offset int64, whence int) (int64, error) {
 	var tmpOffset int64
 	switch whence {
 	case os.SEEK_SET:
+		if offset < 0 {
+			return -2, fmt.Errorf(`offset can not be negative`)
+		}
 		for i, rdr := range r.readers {
 			// get size of the current reader
 			s, err := rdr.Seek(0, os.SEEK_END)
@@ -31,7 +34,10 @@ func (r *multiReadSeeker) Seek(offset int64, whence int) (int64, error) {
 
 			if offset > tmpOffset+s {
 				if i == len(r.readers)-1 {
-					rdrOffset := s + (offset - tmpOffset)
+
+					// BUG? 注释为原代码,没定位到准确位置
+					rdrOffset := offset - tmpOffset
+					//	rdrOffset := s + (offset - tmpOffset)
 					if _, err := rdr.Seek(rdrOffset, os.SEEK_SET); err != nil {
 						return -1, err
 					}
@@ -67,8 +73,8 @@ func (r *multiReadSeeker) Seek(offset int64, whence int) (int64, error) {
 			}
 			tmpOffset += s
 		}
-		r.Seek(tmpOffset+offset, os.SEEK_SET)
-		return tmpOffset + offset, nil
+		return r.Seek(tmpOffset+offset, os.SEEK_SET)
+	//	return tmpOffset + offset, nil
 	case os.SEEK_CUR:
 		if r.pos == nil {
 			return r.Seek(offset, os.SEEK_SET)

@@ -4,7 +4,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/2qif49lt/logrus"
 )
 
 var (

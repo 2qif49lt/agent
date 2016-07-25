@@ -29,11 +29,10 @@ func (u UserAgentMiddleware) WrapHandler(handler func(ctx context.Context, w htt
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
 		ctx = context.WithValue(ctx, httputils.UAStringKey, r.Header.Get("User-Agent"))
 
-		if strings.Contains(r.Header.Get("User-Agent"), "Docker-Client/") {
+		if strings.Contains(r.Header.Get("User-Agent"), "Agent-Client/") {
 			userAgent := strings.Split(r.Header.Get("User-Agent"), "/")
 
-			// v1.20 onwards includes the GOOS of the client after the version
-			// such as Docker/1.7.0 (linux)
+			// such as Agent-Client/1.7.0 (linux)
 			if len(userAgent) == 2 && strings.Contains(userAgent[1], " ") {
 				userAgent[1] = strings.Split(userAgent[1], " ")[0]
 			}

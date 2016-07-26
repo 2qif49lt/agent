@@ -7,7 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/docker/docker/pkg/jsonmessage"
+	"fmt"
+	"github.com/2qif49lt/agent/pkg/jsonmessage"
 )
 
 func TestFormatStream(t *testing.T) {
@@ -21,6 +22,7 @@ func TestFormatStream(t *testing.T) {
 func TestFormatJSONStatus(t *testing.T) {
 	sf := NewStreamFormatter()
 	res := sf.FormatStatus("ID", "%s%d", "a", 1)
+	fmt.Println(string(res))
 	if string(res) != "a1\r\n" {
 		t.Fatalf("%q", res)
 	}

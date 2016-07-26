@@ -2,6 +2,7 @@ package progress
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"testing"
@@ -55,7 +56,6 @@ func TestCompleteSilently(t *testing.T) {
 		pr.Close()
 		t.Fatalf("Unexpected output %q from reader", string(out))
 	}
-
 drainLoop:
 	for {
 		select {

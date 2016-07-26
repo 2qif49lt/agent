@@ -1,6 +1,7 @@
 package progress
 
 import (
+	"fmt"
 	"io"
 )
 
@@ -55,5 +56,6 @@ func (p *Reader) Close() error {
 }
 
 func (p *Reader) updateProgress(last bool) {
+	fmt.Println("updateProgress", last, *p)
 	p.out.WriteProgress(Progress{ID: p.id, Action: p.action, Current: p.current, Total: p.size, LastUpdate: last})
 }

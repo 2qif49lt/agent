@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/docker/docker/pkg/jsonlog"
-	"github.com/docker/docker/pkg/term"
+	"github.com/2qif49lt/agent/pkg/jsonlog"
+	"github.com/2qif49lt/agent/pkg/term"
 )
 
 func TestError(t *testing.T) {

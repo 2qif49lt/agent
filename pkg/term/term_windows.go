@@ -8,9 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/2qif49lt/agent/pkg/system"
+	"github.com/2qif49lt/agent/pkg/term/windows"
 	"github.com/Azure/go-ansiterm/winterm"
-	"github.com/docker/docker/pkg/system"
-	"github.com/docker/docker/pkg/term/windows"
 )
 
 // State holds the console mode for the terminal.

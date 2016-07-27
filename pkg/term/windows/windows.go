@@ -9,8 +9,8 @@ import (
 	"os"
 	"sync"
 
+	"github.com/2qif49lt/logrus"
 	ansiterm "github.com/Azure/go-ansiterm"
-	"github.com/Sirupsen/logrus"
 )
 
 var logger *logrus.Logger

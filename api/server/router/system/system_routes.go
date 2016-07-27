@@ -6,15 +6,15 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/docker/docker/api"
-	"github.com/docker/docker/api/server/httputils"
-	"github.com/docker/docker/errors"
-	"github.com/docker/docker/pkg/ioutils"
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/events"
-	"github.com/docker/engine-api/types/filters"
-	timetypes "github.com/docker/engine-api/types/time"
+	"github.com/2qif49lt/agent/api"
+	"github.com/2qif49lt/agent/api/server/httputils"
+	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/api/types/events"
+	"github.com/2qif49lt/agent/api/types/filters"
+	timetypes "github.com/2qif49lt/agent/api/types/time"
+	"github.com/2qif49lt/agent/errors"
+	"github.com/2qif49lt/agent/pkg/ioutils"
+	"github.com/2qif49lt/logrus"
 	"golang.org/x/net/context"
 )
 
@@ -32,9 +32,6 @@ func (s *systemRouter) getInfo(ctx context.Context, w http.ResponseWriter, r *ht
 	info, err := s.backend.SystemInfo()
 	if err != nil {
 		return err
-	}
-	if s.clusterProvider != nil {
-		info.Swarm = s.clusterProvider.Info()
 	}
 
 	return httputils.WriteJSON(w, http.StatusOK, info)

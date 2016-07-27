@@ -71,3 +71,14 @@ type Info struct {
 	Runtimes           map[string]Runtime
 	DefaultRuntime     string
 }
+
+// AuthResponse contains response of Remote API:
+// POST "/auth"
+type AuthResponse struct {
+	// Status is the authentication status
+	Status string `json:"Status"`
+
+	// IdentityToken is an opaque token used for authenticating
+	// a user after a successful login.
+	IdentityToken string `json:"IdentityToken,omitempty"`
+}

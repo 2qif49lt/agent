@@ -6,10 +6,10 @@ import (
 
 	"golang.org/x/net/context"
 
-	"github.com/docker/docker/api/server/httputils"
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/filters"
-	"github.com/docker/engine-api/types/network"
+	"github.com/2qif49lt/agent/api/server/httputils"
+	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/api/types/filters"
+	"github.com/2qif49lt/agent/api/types/network"
 	"github.com/docker/libnetwork"
 )
 

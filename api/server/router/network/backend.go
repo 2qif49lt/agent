@@ -1,8 +1,8 @@
 package network
 
 import (
-	"github.com/docker/engine-api/types"
-	"github.com/docker/engine-api/types/network"
+	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/api/types/network"
 	"github.com/docker/libnetwork"
 )
 

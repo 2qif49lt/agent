@@ -3,7 +3,7 @@
 package plugin
 
 import (
-	"github.com/docker/docker/api/server/router"
+	"github.com/2qif49lt/agent/api/server/router"
 )
 
 func (r *pluginRouter) initRoutes() {

@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/docker/docker/api/server/httputils"
-	"github.com/docker/engine-api/types"
+	"github.com/2qif49lt/agent/api/server/httputils"
+	"github.com/2qif49lt/agent/api/types"
 	"golang.org/x/net/context"
 )
 

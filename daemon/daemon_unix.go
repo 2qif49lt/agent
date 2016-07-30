@@ -554,32 +554,6 @@ func (daemon *Daemon) platformReload(config *Config, attributes *map[string]stri
 
 // verifyDaemonSettings performs validation of daemon config struct
 func verifyDaemonSettings(config *Config) error {
-	// Check for mutually incompatible config options
-	if config.bridgeConfig.Iface != "" && config.bridgeConfig.IP != "" {
-		return fmt.Errorf("You specified -b & --bip, mutually exclusive options. Please specify only one")
-	}
-	if !config.bridgeConfig.EnableIPTables && !config.bridgeConfig.InterContainerCommunication {
-		return fmt.Errorf("You specified --iptables=false with --icc=false. ICC=false uses iptables to function. Please set --icc or --iptables to true")
-	}
-	if !config.bridgeConfig.EnableIPTables && config.bridgeConfig.EnableIPMasq {
-		config.bridgeConfig.EnableIPMasq = false
-	}
-	if err := VerifyCgroupDriver(config); err != nil {
-		return err
-	}
-	if config.CgroupParent != "" && UsingSystemd(config) {
-		if len(config.CgroupParent) <= 6 || !strings.HasSuffix(config.CgroupParent, ".slice") {
-			return fmt.Errorf("cgroup-parent for systemd cgroup should be a valid slice named as \"xxx.slice\"")
-		}
-	}
-
-	if config.DefaultRuntime == "" {
-		config.DefaultRuntime = types.DefaultRuntimeName
-	}
-	if config.Runtimes == nil {
-		config.Runtimes = make(map[string]types.Runtime)
-	}
-	config.Runtimes[types.DefaultRuntimeName] = types.Runtime{Path: DefaultRuntimeBinary}
 
 	return nil
 }

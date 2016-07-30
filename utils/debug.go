@@ -3,7 +3,7 @@ package utils
 import (
 	"os"
 
-	"github.com/Sirupsen/logrus"
+	"github.com/2qif49lt/logrus"
 )
 
 // EnableDebug sets the DEBUG env var to true

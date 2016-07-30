@@ -17,13 +17,13 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/Sirupsen/logrus"
-	"github.com/docker/docker/pkg/fileutils"
-	"github.com/docker/docker/pkg/idtools"
-	"github.com/docker/docker/pkg/ioutils"
-	"github.com/docker/docker/pkg/pools"
-	"github.com/docker/docker/pkg/promise"
-	"github.com/docker/docker/pkg/system"
+	"github.com/2qif49lt/agent/pkg/fileutils"
+	"github.com/2qif49lt/agent/pkg/idtools"
+	"github.com/2qif49lt/agent/pkg/ioutils"
+	"github.com/2qif49lt/agent/pkg/pools"
+	"github.com/2qif49lt/agent/pkg/promise"
+	"github.com/2qif49lt/agent/pkg/system"
+	"github.com/2qif49lt/logrus"
 )
 
 type (

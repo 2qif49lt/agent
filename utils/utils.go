@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/docker/docker/pkg/archive"
-	"github.com/docker/docker/pkg/stringid"
+	"github.com/2qif49lt/agent/pkg/archive"
+	"github.com/2qif49lt/agent/pkg/stringid"
 )
 
 var globalTestID string

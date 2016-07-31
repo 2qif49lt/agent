@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/2qif49lt/agent/version"
 	log "github.com/2qif49lt/logrus"
 	"github.com/kardianos/service"
 	"time"
@@ -26,8 +27,8 @@ func (p *program) Stop(s service.Service) error {
 func Agentd() {
 	l := log.NewSSLog("log", "base.txt", log.InfoLevel)
 	l.WithFields(log.Fields{
-		"version":   Version,
-		"buildtime": Buildtime,
+		"version":   version.SRV_VERSION,
+		"buildtime": version.BUILDTIME,
 	}).Info("Agent start!")
 
 	for {

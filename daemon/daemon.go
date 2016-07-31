@@ -33,7 +33,7 @@ var (
 
 // Daemon holds information about the Docker daemon.
 type Daemon struct {
-	ID       string
+	AgentID  string
 	trustKey libtrust.PrivateKey
 
 	configStore   *Config
@@ -139,7 +139,7 @@ func NewDaemon(config *Config) (daemon *Daemon, err error) {
 
 	eventsService := events.New()
 
-	d.ID = trustKey.PublicKey().KeyID()
+	//	d.AgentID = trustKey.PublicKey().KeyID()
 
 	d.trustKey = trustKey
 	d.idIndex = truncindex.NewTruncIndex([]string{})

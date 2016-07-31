@@ -1,14 +1,6 @@
 package events
 
 const (
-	// ContainerEventType is the event type that containers generate
-	ContainerEventType = "container"
-	// ImageEventType is the event type that images generate
-	ImageEventType = "image"
-	// VolumeEventType is the event type that volumes generate
-	VolumeEventType = "volume"
-	// NetworkEventType is the event type that networks generate
-	NetworkEventType = "network"
 	// DaemonEventType is the event type that daemon generate
 	DaemonEventType = "daemon"
 )

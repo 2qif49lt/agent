@@ -4,76 +4,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/docker/docker/container"
 	"github.com/docker/docker/daemon/events"
-	containertypes "github.com/docker/engine-api/types/container"
 	eventtypes "github.com/docker/engine-api/types/events"
 )
-
-func TestLogContainerEventCopyLabels(t *testing.T) {
-	e := events.New()
-	_, l, _ := e.Subscribe()
-	defer e.Evict(l)
-
-	container := &container.Container{
-		CommonContainer: container.CommonContainer{
-			ID:   "container_id",
-			Name: "container_name",
-			Config: &containertypes.Config{
-				Image: "image_name",
-				Labels: map[string]string{
-					"node": "1",
-					"os":   "alpine",
-				},
-			},
-		},
-	}
-	daemon := &Daemon{
-		EventsService: e,
-	}
-	daemon.LogContainerEvent(container, "create")
-
-	if _, mutated := container.Config.Labels["image"]; mutated {
-		t.Fatalf("Expected to not mutate the container labels, got %q", container.Config.Labels)
-	}
-
-	validateTestAttributes(t, l, map[string]string{
-		"node": "1",
-		"os":   "alpine",
-	})
-}
-
-func TestLogContainerEventWithAttributes(t *testing.T) {
-	e := events.New()
-	_, l, _ := e.Subscribe()
-	defer e.Evict(l)
-
-	container := &container.Container{
-		CommonContainer: container.CommonContainer{
-			ID:   "container_id",
-			Name: "container_name",
-			Config: &containertypes.Config{
-				Labels: map[string]string{
-					"node": "1",
-					"os":   "alpine",
-				},
-			},
-		},
-	}
-	daemon := &Daemon{
-		EventsService: e,
-	}
-	attributes := map[string]string{
-		"node": "2",
-		"foo":  "bar",
-	}
-	daemon.LogContainerEventWithAttributes(container, "create", attributes)
-
-	validateTestAttributes(t, l, map[string]string{
-		"node": "1",
-		"foo":  "bar",
-	})
-}
 
 func validateTestAttributes(t *testing.T, l chan interface{}, expectedAttributesToTest map[string]string) {
 	select {

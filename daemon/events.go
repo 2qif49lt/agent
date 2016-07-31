@@ -4,17 +4,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/docker/docker/container"
-	daemonevents "github.com/docker/docker/daemon/events"
-	"github.com/docker/engine-api/types/events"
-	"github.com/docker/engine-api/types/filters"
-	"github.com/docker/libnetwork"
+	"github.com/2qif49lt/agent/api/types/events"
+	"github.com/2qif49lt/agent/api/types/filters"
+	daemonevents "github.com/2qif49lt/agent/daemon/events"
 )
-
-// LogContainerEvent generates an event related to a container with only the default attributes.
-func (daemon *Daemon) LogContainerEvent(container *container.Container, action string) {
-	daemon.LogContainerEventWithAttributes(container, action, map[string]string{})
-}
 
 // LogContainerEventWithAttributes generates an event related to a container with specific given attributes.
 func (daemon *Daemon) LogContainerEventWithAttributes(container *container.Container, action string, attributes map[string]string) {

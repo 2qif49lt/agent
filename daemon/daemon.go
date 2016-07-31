@@ -6,25 +6,19 @@
 package daemon
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"os"
-	"path"
 	"path/filepath"
-	"runtime"
-	"strings"
 	"sync"
 	"syscall"
 	"time"
 
 	"github.com/2qif49lt/agent/api"
-	"github.com/2qif49lt/agent/api/types"
-	"github.com/2qif49lt/agent/pkg/fileutils"
+	//	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/daemon/events"
 	"github.com/2qif49lt/agent/pkg/progress"
-	"github.com/2qif49lt/agent/pkg/signal"
 	"github.com/2qif49lt/agent/pkg/streamformatter"
 	"github.com/2qif49lt/agent/pkg/system"
 	"github.com/2qif49lt/agent/utils"
@@ -34,11 +28,7 @@ import (
 )
 
 var (
-	// DefaultRuntimeBinary is the default runtime to be used by
-	// containerd if none is specified
-	DefaultRuntimeBinary = "docker-runc"
-
-	errSystemNotSupported = fmt.Errorf("The Docker daemon is not supported on this platform.")
+	errSystemNotSupported = fmt.Errorf("The Agent daemon is not supported on this platform.")
 )
 
 // Daemon holds information about the Docker daemon.
@@ -99,7 +89,7 @@ func (daemon *Daemon) restore() error {
 
 // NewDaemon sets up everything for the daemon to be able to service
 // requests from the webserver.
-func NewDaemon(config *Config, registryService registry.Service, containerdRemote libcontainerd.Remote) (daemon *Daemon, err error) {
+func NewDaemon(config *Config) (daemon *Daemon, err error) {
 	setDefaultMtu(config)
 
 	// Ensure we have compatible and valid configuration options

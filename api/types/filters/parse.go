@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-
-	"github.com/2qif49lt/api/types/versions"
 )
 
 // Args stores filter arguments as map key:{map key: bool}.
@@ -70,28 +68,6 @@ func ToParam(a Args) (string, error) {
 	return string(buf), nil
 }
 
-// ToParamWithVersion packs the Args into a string for easy transport from client to server.
-// The generated string will depend on the specified version (corresponding to the API version).
-func ToParamWithVersion(version string, a Args) (string, error) {
-	// this way we don't URL encode {}, just empty space
-	if a.Len() == 0 {
-		return "", nil
-	}
-
-	// for daemons older than v1.10, filter must be of the form map[string][]string
-	buf := []byte{}
-	err := errors.New("")
-	if version != "" && versions.LessThan(version, "1.22") {
-		buf, err = json.Marshal(convertArgsToSlice(a.fields))
-	} else {
-		buf, err = json.Marshal(a.fields)
-	}
-	if err != nil {
-		return "", err
-	}
-	return string(buf), nil
-}
-
 // FromParam unpacks the filter Args.
 func FromParam(p string) (Args, error) {
 	if len(p) == 0 {
@@ -102,19 +78,8 @@ func FromParam(p string) (Args, error) {
 	d := json.NewDecoder(r)
 
 	m := map[string]map[string]bool{}
-	if err := d.Decode(&m); err != nil {
-		r.Seek(0, 0)
-
-		// Allow parsing old arguments in slice format.
-		// Because other libraries might be sending them in this format.
-		deprecated := map[string][]string{}
-		if deprecatedErr := d.Decode(&deprecated); deprecatedErr == nil {
-			m = deprecatedArgs(deprecated)
-		} else {
-			return NewArgs(), err
-		}
-	}
-	return Args{m}, nil
+	err := d.Decode(&m)
+	return Args{m}, err
 }
 
 // Get returns the list of values associates with a field.
@@ -145,6 +110,9 @@ func (filters Args) Del(name, value string) {
 	if _, ok := filters.fields[name]; ok {
 		delete(filters.fields[name], value)
 	}
+	if len(filters.fields[name]) == 0 {
+		delete(filters.fields, name)
+	}
 }
 
 // Len returns the number of fields in the arguments.
@@ -154,7 +122,7 @@ func (filters Args) Len() int {
 
 // MatchKVList returns true if the values for the specified field matches the ones
 // from the sources.
-// e.g. given Args are {'label': {'label1=1','label2=1'}, 'image.name', {'ubuntu'}},
+// e.g. given Args are {'label': {'label1=1','label2=1'}, 'image.name': {'ubuntu'}},
 //      field is 'label' and sources are {'label1': '1', 'label2': '2'}
 //      it returns true.
 func (filters Args) MatchKVList(field string, sources map[string]string) bool {
@@ -185,7 +153,7 @@ func (filters Args) MatchKVList(field string, sources map[string]string) bool {
 }
 
 // Match returns true if the values for the specified field matches the source string
-// e.g. given Args are {'label': {'label1=1','label2=1'}, 'image.name', {'ubuntu'}},
+// e.g. given Args are {'label': {'label1=1','label2=1'}, 'image.name': {'ubuntu'}},
 //      field is 'image.name' and source is 'ubuntu'
 //      it returns true.
 func (filters Args) Match(field, source string) bool {

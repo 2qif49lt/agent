@@ -10,7 +10,6 @@ import (
 type Version struct {
 	Version       string
 	APIVersion    string `json:"ApiVersion"`
-	GitCommit     string
 	GoVersion     string
 	Os            string
 	Arch          string

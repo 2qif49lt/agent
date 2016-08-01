@@ -50,7 +50,7 @@ func InitCommonFlags() *CommonFlags {
 	fs := com.FlagSet
 
 	fs.BoolVarP(&com.Debug, "debug", "D", false, "Enable debug mode")
-	fs.StringVarP(&com.LogLevel, "log-level", "l", "InfoLevel", "Set the logging level")
+	fs.StringVarP(&com.LogLevel, "log-level", "L", "InfoLevel", "Set the logging level")
 
 	fs.BoolVar(&com.NoTLS, "notls", false, "DO NOT Use TLS")
 	fs.BoolVar(&com.NoSign, "nosign", false, "DO NOT verify the remote parameter sign")
@@ -67,9 +67,9 @@ func InitCommonFlags() *CommonFlags {
 
 	/*
 		-H参数可以为一下格式:
-			1.master://target agent id:{port}. 表示要通过master 中转请求到目标服务器上的port服务,默认为agent.
+			1.master://target agent id:{port/name}. 表示要通过master 中转请求到目标服务器上的port服务,默认为agent.
 			2.tcp://target agent ip:{port}.
-			3.unix:///var/run/agent.sock
+			3.unix:///var/run/agentd.sock
 			4.npipe:////./pipe/agentd_engine
 			5.tcp://127.0.0.1:{port}
 			6.:%d

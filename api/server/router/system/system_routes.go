@@ -122,23 +122,6 @@ func (s *systemRouter) getEvents(ctx context.Context, w http.ResponseWriter, r *
 	}
 }
 
-func (s *systemRouter) postAuth(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
-	var config *types.AuthConfig
-	err := json.NewDecoder(r.Body).Decode(&config)
-	r.Body.Close()
-	if err != nil {
-		return err
-	}
-	status, token, err := s.backend.AuthenticateToRegistry(ctx, config)
-	if err != nil {
-		return err
-	}
-	return httputils.WriteJSON(w, http.StatusOK, &types.AuthResponse{
-		Status:        status,
-		IdentityToken: token,
-	})
-}
-
 func eventTime(formTime string) (time.Time, error) {
 	t, tNano, err := timetypes.ParseTimestamps(formTime, -1)
 	if err != nil {

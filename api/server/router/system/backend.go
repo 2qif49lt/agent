@@ -16,5 +16,4 @@ type Backend interface {
 	SystemVersion() types.Version
 	SubscribeToEvents(since, until time.Time, ef filters.Args) ([]events.Message, chan interface{})
 	UnsubscribeFromEvents(chan interface{})
-	AuthenticateToRegistry(ctx context.Context, authConfig *types.AuthConfig) (string, string, error)
 }

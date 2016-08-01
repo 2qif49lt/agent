@@ -24,7 +24,6 @@ func NewRouter(b Backend) router.Router {
 		router.Cancellable(router.NewGetRoute("/events", r.getEvents)),
 		router.NewGetRoute("/info", r.getInfo),
 		router.NewGetRoute("/version", r.getVersion),
-		router.NewPostRoute("/auth", r.postAuth),
 	}
 
 	return r

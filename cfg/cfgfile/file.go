@@ -19,7 +19,7 @@ type ConfigFile struct {
 		Srvs []string `toml:"services,omitempty"`
 	}
 	Filename string `toml:"-"` // Note: for internal use only
-
+	Agentid  string `toml:"-"`
 }
 
 // LoadFromReader reads the configuration data given

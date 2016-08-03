@@ -4,32 +4,30 @@ package cfg
 
 import (
 	"github.com/2qif49lt/agent/cfg/cfgfile"
-	"github.com/2qif49lt/agent/pkg/homedir"
+	"github.com/2qif49lt/utils"
 	"path/filepath"
 
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
 const (
 	ConfigFileName = "config.toml"
-	configFileDir  = ".agent"
 
-	DefaultAgentdListenPort = 1698 // 默认监听端口
+	configFileDir = "config"
+	certFileDir   = "cert"
 
-	// DefaultUniqueIdFile 和证书同时生成的用于表示服务器唯一性,合法性.
+	DefaultAgentdListenPort = 3567 // 默认监听端口
+
 	DefaultUniqueAgentIdFile = "agentid"
 
-	// DeafultTlsCaFile 用于判断连接的agentd的证书是否合法
-	DeafultTlsCaFile = "ca.pem"
-	// DefaultTlsKeyFile agentd的tls链接key
-	DefaultTlsKeyFile = "agent_key.pem"
-	// DeafultTlsCertFile agentd的证书.
+	DeafultTlsCaFile  = "ca_cert.pem"
+	DefaultTlsKeyFile = "agent_key.pem" // 作为服务器和客户端时所需的证书不一样.
 	DefultTlsCertFile = "agent_cert.pem"
 
 	// DefaultSignPubFile 参数签名
-	DefaultRsaSignPubFile = "server_pub.pem" // 用于agentd检查调用者参数签名
-	DefaultRsaSignPriFile = "server_key.pem" // 用于客户端签名
+	DefaultRsaSignFile = "rsa.pem" // 用于检查调用者参数签名,agentd使用公钥,agent使用密钥.
 )
 
 var (
@@ -39,10 +37,10 @@ var (
 
 func init() {
 	if configDir == "" {
-		configDir = filepath.Join(homedir.Get(), configFileDir)
+		configDir = filepath.Join(utils.GetProcAbsDir(), configFileDir)
 	}
 	if certPath == "" {
-		certPath = configDir
+		certPath = filepath.Join(utils.GetProcAbsDir(), certFileDir)
 	}
 }
 
@@ -93,20 +91,21 @@ func Load() (*cfgfile.ConfigFile, error) {
 		return nil, fmt.Errorf("%s - %v", cfgfile.Filename, err)
 	}
 
+	tmp, err := ioutil.ReadFile(filepath.Join(utils.GetProcAbsDir(), DefaultUniqueAgentIdFile))
+
+	cfgfile.Agentid = string(tmp)
+
+	return cfgfile, err
 }
 
 // IsTlsLegal return whether agentd install properly
-func IsSrvTlsLegal(cfg *cfgfile.ConfigFile) error {
+func IsTlsLegal(cfg *cfgfile.ConfigFile) error {
 	isexist := func(fn string) bool {
 		_, err := os.Stat(filepath.Join(GetCertPath(), fn))
 		return err == nil || os.IsExist(err)
 	}
-	if isexist(DefaultTlsKeyFile) && isexist(DefultTlsCertFile) {
-
+	if isexist(DefaultTlsKeyFile) && isexist(DefultTlsCertFile) && isexist(DefaultRsaSignFile) {
+		return nil
 	}
-	return fmt.Errorf("cert files not exist")
-}
-
-func IsCliTlsLegal() error {
-	return nil
+	return fmt.Errorf("cert or rsa files not exist")
 }

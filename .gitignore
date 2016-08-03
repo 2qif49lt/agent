@@ -1,6 +1,9 @@
 
-binary/
-
+binary/log
+binary/agent
+!binary/config/
+!binary/cert/
+!binary/agentid
 agent.sublime-workspace
 
 

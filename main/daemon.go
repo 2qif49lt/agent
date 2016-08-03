@@ -123,9 +123,6 @@ func (cli *DaemonCli) start() (err error) {
 
 	for i := 0; i < len(cli.Config.Hosts); i++ {
 		var err error
-		if cli.Config.Hosts[i], err = opts.ParseHost(cli.Config.TLS, cli.Config.Hosts[i]); err != nil {
-			return fmt.Errorf("error parsing -H %s : %v", cli.Config.Hosts[i], err)
-		}
 
 		protoAddr := cli.Config.Hosts[i]
 		protoAddrParts := strings.SplitN(protoAddr, "://", 2)

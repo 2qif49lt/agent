@@ -34,11 +34,11 @@ type CommonFlags struct {
 	NoSign bool // 如为true,则agentd不会检查签名,agent不会携带签名.
 
 	TlsCaFile   string // tls ca
-	TlsKeyFile  string // agentd tls连接所需
-	TlsCertFile string // agentd tls连接所需
+	TlsKeyFile  string // tls连接所需
+	TlsCertFile string // tls连接所需
 
-	RsaSignKeyFile string // agentd 签名公钥
-	RsaSignPubFile string // agent签名密钥
+	RsaSignKeyFile string // agentd 签名密钥 agent端有效
+	RsaSignPubFile string // agent签名密钥  agentd端有效
 }
 
 var ComCfg *CommonFlags = nil
@@ -60,7 +60,7 @@ func InitCommonFlags() *CommonFlags {
 	fs.StringVar(&tlsOptions.TlsKeyFile, "tlskey", filepath.Join(certPath, DefaultTlsKeyFile), "Path to TLS key file")
 	fs.StringVar(&tlsOptions.TlsCertFile, "tlscert", filepath.Join(certPath, DefaultCertFile), "Path to TLS certificate file")
 
-	fs.StringVar(&tlsOptions.RsaSignKeyFile, "rsapri", filepath.Join(certPath, DefaultRsaSignPriFile), "Path to Rsa Sign private key file")
+	fs.StringVar(&tlsOptions.RsaSignKeyFile, "rsakey", filepath.Join(certPath, DefaultRsaSignPriFile), "Path to Rsa Sign private key file")
 	fs.StringVar(&tlsOptions.RsaSignPubFile, "rsapub", filepath.Join(certPath, DefaultRsaSignPubFile), "Path to Rsa Sign public key file")
 
 	fs.StringVarP(&tlsOptions.Host, "host", "H", fmt.Sprintf(`:%d`, DefaultAgentdListenPort), "Agentd listen address or Agent connect to,[ip]:port")

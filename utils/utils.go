@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 
@@ -84,4 +85,12 @@ func ReplaceOrAppendEnvValues(defaults, overrides []string) []string {
 	}
 
 	return defaults
+}
+
+func GetProcAbsDir() (string, error) {
+	abs, err := filepath.Abs(os.Args[0])
+	if err != nil {
+		return "", nil
+	}
+	return filepath.Dir(abs), nil
 }

@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 const (
@@ -29,6 +30,8 @@ const (
 	// DefaultSignPubFile 参数签名
 	DefaultRsaSignFile = "rsa.pem" // 用于检查调用者参数签名,agentd使用公钥,agent使用密钥.
 )
+
+var C *cfgfile.ConfigFile
 
 var (
 	configDir = os.Getenv("AGENT_CONFIG_PATH") // agent配置文件目录
@@ -71,7 +74,6 @@ func newcfgfile(fp string) *cfgfile.ConfigFile {
 
 // Load reads the configuration files
 func Load() (*cfgfile.ConfigFile, error) {
-
 	cfgfile := newcfgfile(filepath.Join(GetConfigDir(), ConfigFileName))
 
 	if _, err := os.Stat(cfgfile.Filename); err == nil {
@@ -95,6 +97,10 @@ func Load() (*cfgfile.ConfigFile, error) {
 
 	cfgfile.Agentid = string(tmp)
 
+	if err == nil {
+		C = cfgfile
+	}
+
 	return cfgfile, err
 }
 
@@ -104,8 +110,29 @@ func IsTlsLegal(cfg *cfgfile.ConfigFile) error {
 		_, err := os.Stat(filepath.Join(GetCertPath(), fn))
 		return err == nil || os.IsExist(err)
 	}
-	if isexist(DefaultTlsKeyFile) && isexist(DefultTlsCertFile) && isexist(DefaultRsaSignFile) {
+	if isexist(DeafultTlsCaFile) && isexist(DefaultTlsKeyFile) &&
+		isexist(DefultTlsCertFile) && isexist(DefaultRsaSignFile) {
 		return nil
 	}
 	return fmt.Errorf("cert or rsa files not exist")
+}
+
+func MergeCommonConfig(com *CommonFlags, f *cfgfile.ConfigFile) {
+
+	fn := func(to *string, from, def string) {
+		*to = strings.TrimSpace(*to)
+		from = strings.TrimSpace(from)
+
+		if *to == "" {
+			*to = from
+			if *to == "" {
+				*to = def
+			}
+		}
+	}
+	fn(&com.LogLevel, f.Loglvl, "InfoLevel")
+	fn(&com.Host, f.Host, fmt.Sprintf(`127.0.0.1:%d`, DefaultAgentdListenPort))
+	fn(&com.Master, f.Master.Srvs, "127.0.0.1:3568")
+
+	postParse(com)
 }

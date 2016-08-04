@@ -13,10 +13,10 @@ import (
 
 type ConfigFile struct {
 	SrvName string `toml:"srvname,omitempty"` // default Agentd
-	Srv     string `toml:"srv,omitempty"`     // if ip is empty, listen on 127.0.0.1 only
+	Host    string `toml:"host,omitempty"`    // if ip is empty, listen on 127.0.0.1 only
 	Loglvl  string `toml:"loglvl,omitempty"`  // default InfoLevel
 	Master  struct {
-		Srvs []string `toml:"services,omitempty"`
+		Srvs string `toml:"services,omitempty"`
 	}
 	Filename string `toml:"-"` // Note: for internal use only
 	Agentid  string `toml:"-"`

@@ -25,9 +25,9 @@ type Options struct {
 	CertFile string
 	KeyFile  string
 
-	// client-only option
+	// client-only option . ,强制检查
 	InsecureSkipVerify bool
-	// server-only option
+	// server-only option.  ,强制检查
 	ClientAuth tls.ClientAuthType
 }
 

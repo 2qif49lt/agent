@@ -1,5 +1,6 @@
 # 配置文件会替换cmdline里的未设置的值
-srvname = "Agentd" # windows service name,linux daemon name.
+# windows service name,linux daemon name.
+srvname = "Agentd" 
 
 [master]
-services = ["https://master.example.com:3567"]
+services = "https://master.example.com:3567"

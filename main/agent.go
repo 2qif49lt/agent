@@ -25,7 +25,7 @@ func main() {
 		fmt.Fprint(os.Stdout, "Usage: agent [OPTIONS] COMMAND [arg...]\n       agent [ --help |-h | -v | --version ]\n\n")
 		fmt.Fprint(os.Stdout, "A self-sufficient runtime tool.\n\nOptions:\n")
 
-		flag.CommandLine.SetOutput(stdout)
+		flag.CommandLine.SetOutput(os.Stdout)
 		flag.PrintDefaults()
 
 		help := "\nCommands:\n"
@@ -35,8 +35,8 @@ func main() {
 			help += fmt.Sprintf("    %-10.10s%s\n", cmd.Name, cmd.Description)
 		}
 
-		help += "\nRun 'docker COMMAND --help' for more information on a command."
-		fmt.Fprintf(stdout, "%s\n", help)
+		help += "\nRun 'agent COMMAND --help' for more information on a command."
+		fmt.Fprintf(os.Stdout, "%s\n", help)
 	}
 
 	flag.Parse()

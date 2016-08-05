@@ -15,7 +15,7 @@ import (
 
 // Cli represents the agent command line client.
 // Instances of the client can be returned from NewDockerCli.
-type Cli struct {
+type AgentCli struct {
 	// initializing closure
 	init   func() error
 	common *cfg.CommonFlags
@@ -26,7 +26,7 @@ type Cli struct {
 
 // Initialize calls the init function that will setup the configuration for the client
 // such as the TLS, tcp and other parameters used to run the client.
-func (cli *Cli) Initialize() error {
+func (cli *AgentCli) Initialize() error {
 	if cli.init == nil {
 		return nil
 	}
@@ -34,14 +34,14 @@ func (cli *Cli) Initialize() error {
 }
 
 // Client returns the APIClient
-func (cli *Cli) Client() apiclient.Client {
+func (cli *AgentCli) Client() apiclient.Client {
 	return cli.client
 }
 
-// NewCli returns a agent Cli instance with config.
+// NewAgentCli returns a agent client instance with config.
 // The key file, protocol (i.e. unix) and address are passed in as strings, along with the tls.Config.
 // If the tls.Config is set the client scheme will be set to https.
-func NewCli(com *cfg.CommonFlags) *Cli {
+func NewAgentCli(com *cfg.CommonFlags) *AgentCli {
 	cli := &Cli{
 		common: com,
 	}

@@ -41,45 +41,6 @@ func checkKernel() error {
 	return nil
 }
 
-// adaptContainerSettings is called during container creation to modify any
-// settings necessary in the HostConfig structure.
-func (daemon *Daemon) adaptContainerSettings(hostConfig *containertypes.HostConfig, adjustCPUShares bool) error {
-	if adjustCPUShares && hostConfig.CPUShares > 0 {
-		// Handle unsupported CPUShares
-		if hostConfig.CPUShares < linuxMinCPUShares {
-			logrus.Warnf("Changing requested CPUShares of %d to minimum allowed of %d", hostConfig.CPUShares, linuxMinCPUShares)
-			hostConfig.CPUShares = linuxMinCPUShares
-		} else if hostConfig.CPUShares > linuxMaxCPUShares {
-			logrus.Warnf("Changing requested CPUShares of %d to maximum allowed of %d", hostConfig.CPUShares, linuxMaxCPUShares)
-			hostConfig.CPUShares = linuxMaxCPUShares
-		}
-	}
-	if hostConfig.Memory > 0 && hostConfig.MemorySwap == 0 {
-		// By default, MemorySwap is set to twice the size of Memory.
-		hostConfig.MemorySwap = hostConfig.Memory * 2
-	}
-	if hostConfig.ShmSize == 0 {
-		hostConfig.ShmSize = container.DefaultSHMSize
-	}
-	var err error
-	if hostConfig.SecurityOpt == nil {
-		hostConfig.SecurityOpt, err = daemon.generateSecurityOpt(hostConfig.IpcMode, hostConfig.PidMode, hostConfig.Privileged)
-		if err != nil {
-			return err
-		}
-	}
-	if hostConfig.MemorySwappiness == nil {
-		defaultSwappiness := int64(-1)
-		hostConfig.MemorySwappiness = &defaultSwappiness
-	}
-	if hostConfig.OomKillDisable == nil {
-		defaultOomKillDisable := false
-		hostConfig.OomKillDisable = &defaultOomKillDisable
-	}
-
-	return nil
-}
-
 // verifyDaemonSettings performs validation of daemon config struct
 func verifyDaemonSettings(config *Config) error {
 

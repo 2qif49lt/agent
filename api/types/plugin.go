@@ -13,7 +13,7 @@ type PluginConfig struct {
 	Devices []PluginDevice
 }
 
-// Plugin represents a Docker plugin for the remote API
+// Plugin represents a agent plugin for the remote API
 type Plugin struct {
 	ID       string `json:"Id,omitempty"`
 	Name     string

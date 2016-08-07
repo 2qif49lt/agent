@@ -8,7 +8,7 @@ import (
 
 	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/server/httputils"
-	"github.com/2qif49lt/agent/api/types"
+	//"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/api/types/events"
 	"github.com/2qif49lt/agent/api/types/filters"
 	timetypes "github.com/2qif49lt/agent/api/types/time"

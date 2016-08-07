@@ -7,6 +7,8 @@ import (
 	"golang.org/x/net/context"
 )
 
+// agent plugin disable PLUGIN
+
 func newDisableCommand(agentCli *client.AgentCli) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "disable",

@@ -7,4 +7,5 @@ type Backend interface {
 	List() ([]enginetypes.Plugin, error)
 	Inspect(name string) (enginetypes.Plugin, error)
 	Remove(name string) error
+	//	Pull(name string, metaHeaders http.Header, authConfig *enginetypes.AuthConfig) (enginetypes.PluginPrivileges, error)
 }

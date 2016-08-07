@@ -23,7 +23,7 @@ func newInspectCommand(agentCli *client.AgentCli) *cobra.Command {
 	return cmd
 }
 
-func runInspect(agentCli *client.DockerCli, name string) error {
+func runInspect(agentCli *client.AgentCli, name string) error {
 	p, err := agentCli.Client().PluginInspect(context.Background(), name)
 	if err != nil {
 		return err

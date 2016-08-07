@@ -13,7 +13,7 @@ import (
 
 // CmdPing test agentd,receive a pong
 //
-// Usage: agent info
+// Usage: agent ping msg1 msg2 ...
 func (cli *AgentCli) CmdPing(args ...string) error {
 	cmd := Cli.Subcmd("ping")
 	cmd.Require(flag.Min, 1)

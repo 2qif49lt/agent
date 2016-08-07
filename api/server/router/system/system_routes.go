@@ -24,7 +24,15 @@ func optionsHandler(ctx context.Context, w http.ResponseWriter, r *http.Request,
 }
 
 func pingHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
-	_, err := w.Write([]byte{'O', 'K'})
+	if err := httputils.ParseForm(r); err != nil {
+		return err
+	}
+	msg, err := r.Form.Get("msg")
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write([]byte(fmt.Sprintf(`OK: %s`, msg)))
 	return err
 }
 

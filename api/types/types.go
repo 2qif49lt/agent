@@ -51,3 +51,8 @@ type AuthResponse struct {
 	// a user after a successful login.
 	IdentityToken string `json:"IdentityToken,omitempty"`
 }
+
+// Ping contains response of Remote API: /ping
+type Pong struct {
+	msg string
+}

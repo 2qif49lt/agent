@@ -4,5 +4,6 @@ package client
 func (cli *AgentCli) Command(name string) func(...string) error {
 	return map[string]func(...string) error{
 		"info": cli.CmdInfo,
+		"ping": cli.CmdPing,
 	}[name]
 }

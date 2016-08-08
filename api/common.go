@@ -21,10 +21,6 @@ const (
 
 	// MinVersion represents Minimum REST API version supported
 	MinVersion string = "1.12"
-
-	// NoBaseImageSpecifier is the symbol used by the FROM
-	// command to specify that no base image is to be used.
-	NoBaseImageSpecifier string = "scratch"
 )
 
 // byPortInfo is a temporary type used to sort types.Port by its fields
@@ -142,4 +138,10 @@ func LoadOrCreateTrustKey(trustKeyPath string) (libtrust.PrivateKey, error) {
 		return nil, fmt.Errorf("Error loading key file %s: %s", trustKeyPath, err)
 	}
 	return trustKey, nil
+}
+
+// LoadOrCreateTrustKey attempts to load the libtrust key at the given path,
+// otherwise generates a new one
+func LoadSignPubKey(pubkey string) (libtrust.PublicKey, error) {
+	return libtrust.LoadPublicKeyFile(pubkey)
 }

@@ -45,15 +45,16 @@ type DaemonCli struct {
 
 // NewDaemonCli returns a pre-configured daemon CLI
 func NewDaemonCli() *DaemonCli {
-	// TODO(tiborvass): remove InstallFlags?
 	daemonConfig := new(daemon.Config)
 
 	daemonConfig.InstallFlags(flag.CommandLine)
-	configFile := flag.CommandLine.String(daemonConfigFileFlag, "", "Daemon configuration file")
+	defaultConfigPath := filepath.Join(cfg.GetConfigDir(), cfg.ConfigFileName)
+	configFile := flag.CommandLine.String(daemonConfigFileFlag, defaultConfigPath,
+		fmt.Sprintf("Daemon configuration file,default: %s"), defaultConfigPath)
 
 	return &DaemonCli{
 		Config:      daemonConfig,
-		commonFlags: cliflags.InitCommonFlags(),
+		commonFlags: cfg.ComCfg,
 		configFile:  configFile,
 	}
 }

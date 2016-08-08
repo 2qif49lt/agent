@@ -17,6 +17,7 @@ import (
 
 	"github.com/2qif49lt/agent/api"
 	//	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/daemon/events"
 	"github.com/2qif49lt/agent/pkg/progress"
 	"github.com/2qif49lt/agent/pkg/streamformatter"
@@ -33,12 +34,9 @@ var (
 
 // Daemon holds information about the Docker daemon.
 type Daemon struct {
-	AgentID  string
-	trustKey libtrust.PrivateKey
-
+	pubKey        libtrust.PublicKey
 	configStore   *Config
 	EventsService *events.Events
-	root          string
 	shutdown      bool
 }
 
@@ -90,8 +88,6 @@ func (daemon *Daemon) restore() error {
 // NewDaemon sets up everything for the daemon to be able to service
 // requests from the webserver.
 func NewDaemon(config *Config) (daemon *Daemon, err error) {
-	setDefaultMtu(config)
-
 	// Ensure we have compatible and valid configuration options
 	if err := verifyDaemonSettings(config); err != nil {
 		return nil, err
@@ -126,28 +122,16 @@ func NewDaemon(config *Config) (daemon *Daemon, err error) {
 		logrus.Warnf("Failed to configure golang's threads limit: %v", err)
 	}
 
-	trustKey, err := api.LoadOrCreateTrustKey(config.TrustKeyPath)
+	pubkey, err := api.LoadSignPubKey(filepath.Join(cfg.GetCertPath(),
+		cfg.DefaultRsaSignFile))
 	if err != nil {
 		return nil, err
 	}
 
-	trustDir := filepath.Join(config.Root, "trust")
-
-	if err := system.MkdirAll(trustDir, 0700); err != nil {
-		return nil, err
-	}
+	d.pubKey = pubkey
 
 	eventsService := events.New()
-
-	//	d.AgentID = trustKey.PublicKey().KeyID()
-
-	d.trustKey = trustKey
-	d.idIndex = truncindex.NewTruncIndex([]string{})
-	d.statsCollector = d.newStatsCollector(1 * time.Second)
-
 	d.EventsService = eventsService
-
-	d.root = config.Root
 
 	if err := d.restore(); err != nil {
 		return nil, err
@@ -163,7 +147,9 @@ func (daemon *Daemon) Shutdown() error {
 	return nil
 }
 
-func writeDistributionProgress(cancelFunc func(), outStream io.Writer, progressChan <-chan progress.Progress) {
+func writeDistributionProgress(cancelFunc func(), outStream io.Writer,
+	progressChan <-chan progress.Progress) {
+
 	progressOutput := streamformatter.NewJSONStreamFormatter().NewProgressOutput(outStream, false)
 	operationCancelled := false
 
@@ -193,35 +179,17 @@ func isBrokenPipe(e error) bool {
 	return e == syscall.EPIPE
 }
 
-func setDefaultMtu(config *Config) {
-	// do nothing if the config does not have the default 0 value.
-	if config.Mtu != 0 {
-		return
-	}
-	config.Mtu = defaultNetworkMtu
-}
-
 // IsShuttingDown tells whether the daemon is shutting down or not
 func (daemon *Daemon) IsShuttingDown() bool {
 	return daemon.shutdown
 }
 
-// Reload reads configuration changes and modifies the
-// daemon according to those changes.
-// These are the settings that Reload changes:
-// - Daemon labels.
-// - Daemon debug log level.
-// - Daemon max concurrent downloads
-// - Daemon max concurrent uploads
-// - Cluster discovery (reconfigure and restart).
-// - Daemon live restore
+// Reload 读取并且应用配置
 func (daemon *Daemon) Reload(config *Config) error {
 	var err error
 	// used to hold reloaded changes
 	attributes := map[string]string{}
 
-	// We need defer here to ensure the lock is released as
-	// daemon.SystemInfo() will try to get it too
 	defer func() {
 		if err == nil {
 			daemon.LogDaemonEventWithAttributes("reload", attributes)

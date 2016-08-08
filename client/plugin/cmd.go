@@ -8,7 +8,7 @@ import (
 	"github.com/2qif49lt/cobra"
 )
 
-// NewPluginCommand returns a cobra command for `plugin` subcommands
+// NewPluginCommand returns a cobra command for `agent plugin` subcommands
 func NewPluginCommand(rootCmd *cobra.Command, agentCli *client.AgentCli) {
 	cmd := &cobra.Command{
 		Use:   "plugin",

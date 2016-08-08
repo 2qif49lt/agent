@@ -14,82 +14,23 @@ import (
 	flag "github.com/2qif49lt/pflag"
 )
 
-const (
-	defaultNetworkMtu = 1500
-)
+// Config defines the configuration of a agent daemon.
+type Config struct {
+	AgentID string
 
-// CommonTLSOptions defines TLS configuration for the daemon server.
-// It includes json tags to deserialize configuration from a file
-// using the same names that the flags in the command line use.
-type CommonTLSOptions struct {
-	CAFile   string `json:"tlscacert,omitempty"`
-	CertFile string `json:"tlscert,omitempty"`
-	KeyFile  string `json:"tlskey,omitempty"`
-}
+	Pidfile string
 
-// CommonConfig defines the configuration of a agent daemon which is
-// common across platforms.
-// It includes json tags to deserialize configuration from a file
-// using the same names that the flags in the command line use.
-type CommonConfig struct {
-	Pidfile string `json:"pidfile,omitempty"`
-
-	TrustKeyPath string `json:"-"`
-	CorsHeaders  string `json:"api-cors-header,omitempty"`
-	EnableCors   bool   `json:"api-enable-cors,omitempty"`
-
-	Debug     bool     `json:"debug,omitempty"`
-	Hosts     []string `json:"hosts,omitempty"`
-	LogLevel  string   `json:"log-level,omitempty"`
-	TLS       bool     `json:"tls,omitempty"`
-	TLSVerify bool     `json:"tlsverify,omitempty"`
-
-	// Embedded structs that allow config
-	// deserialization without the full struct.
-	CommonTLSOptions
+	EnableCors  bool
+	CorsHeaders string
 
 	reloadLock sync.Mutex
-
-	valuesSet map[string]interface{}
-}
-
-// InstallCommonFlags adds command-line options to the top-level flag parser for
-// the current process.
-// Subsequent calls to `flag.Parse` will populate config with values parsed
-// from the command-line.
-func (config *Config) InstallCommonFlags(cmd *flag.FlagSet) {
-
-	cmd.StringVar(&config.Pidfile, "pidfile", defaultPidFile, "Path to use for daemon PID file")
-	cmd.StringVar(&config.CorsHeaders, "api-cors-header", "", "Set CORS headers in the remote API")
-
-}
-
-// IsValueSet returns true if a configuration value
-// was explicitly set in the configuration file.
-func (config *Config) IsValueSet(name string) bool {
-	if config.valuesSet == nil {
-		return false
-	}
-	_, ok := config.valuesSet[name]
-	return ok
 }
 
 // ReloadConfiguration reads the configuration in the host and reloads the daemon and server.
 func ReloadConfiguration(configFile string, flags *flag.FlagSet, reload func(*Config)) error {
 	logrus.Infof("Got signal to reload configuration, reloading from: %s", configFile)
 
-	reload(newConfig)
 	return nil
-}
-
-// Config defines the configuration of a docker daemon.
-// These are the configuration settings that you pass
-// to the docker daemon when you launch it with say: `docker daemon -e windows`
-type Config struct {
-	CommonConfig
-
-	// Fields below here are platform specific. (There are none presently
-	// for the Windows daemon.)
 }
 
 // InstallFlags adds command-line options to the top-level flag parser for
@@ -97,7 +38,7 @@ type Config struct {
 // Subsequent calls to `flag.Parse` will populate config with values parsed
 // from the command-line.
 func (config *Config) InstallFlags(cmd *flag.FlagSet) {
-	// First handle install flags which are consistent cross-platform
-	config.InstallCommonFlags(cmd)
-
+	cmd.StringVar(&config.AgentID, "agentid", "", "Set CORS headers in the remote API")
+	cmd.StringVar(&config.Pidfile, "pidfile", defaultPidFile, "Path to use for daemon PID file")
+	cmd.StringVar(&config.CorsHeaders, "api-cors-header", "", "Set CORS headers in the remote API")
 }

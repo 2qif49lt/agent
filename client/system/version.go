@@ -37,7 +37,7 @@ type versionOptions struct {
 	format string
 }
 
-// NewVersionCommand creats a new cobra.Command for `docker version`
+// NewVersionCommand creats a new cobra.Command for `agent version`
 func NewVersionCommand(agentCli *client.AgentCli) *cobra.Command {
 	var opts versionOptions
 

@@ -46,6 +46,9 @@ var ComCfg *CommonFlags = nil
 
 // InitCommonFlags initializes flags common to both client and daemon
 func InitCommonFlags() *CommonFlags {
+	if ComCfg != nil {
+		return ComCfg
+	}
 	var com = &CommonFlags{FlagSet: new(flag.FlagSet)}
 
 	fs := com.FlagSet

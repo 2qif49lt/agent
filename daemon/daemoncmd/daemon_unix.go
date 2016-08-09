@@ -52,3 +52,7 @@ func wrapListeners(proto string, ls net.Listener) net.Listener {
 	}
 	return ls
 }
+
+// notifyShutdown is called after the daemon shuts down but before the process exits.
+func notifyShutdown(err error) {
+}

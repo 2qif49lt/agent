@@ -15,6 +15,7 @@ import (
 	apiserver "github.com/2qif49lt/agent/api/server"
 	"github.com/2qif49lt/agent/api/server/middleware"
 	"github.com/2qif49lt/agent/api/server/router"
+	pluginrouter "github.com/2qif49lt/agent/api/server/router/plugin"
 	systemrouter "github.com/2qif49lt/agent/api/server/router/system"
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/daemon"
@@ -24,6 +25,7 @@ import (
 	"github.com/2qif49lt/agent/pkg/pidfile"
 	"github.com/2qif49lt/agent/pkg/signal"
 	"github.com/2qif49lt/agent/pkg/system"
+	"github.com/2qif49lt/agent/plugin"
 	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/agent/version"
 	"github.com/2qif49lt/logrus"
@@ -147,11 +149,11 @@ func (cli *DaemonCli) start() (err error) {
 		<-stopc // wait for daemonCli.start() to return
 	})
 
-	if err := pluginInit(cli.Config, containerdRemote, registryService); err != nil {
+	if err := pluginInit(); err != nil {
 		return err
 	}
 
-	d, err := daemon.NewDaemon(cli.Config, registryService, containerdRemote)
+	d, err := daemon.NewDaemon(cli.Config)
 	if err != nil {
 		return fmt.Errorf("Error starting daemon: %v", err)
 	}
@@ -164,7 +166,7 @@ func (cli *DaemonCli) start() (err error) {
 	}).Info("Agent daemon")
 
 	cli.initMiddlewares(api, serverConfig)
-	initRouter(api, d, c)
+	initRouter(api, d)
 
 	cli.d = d
 	cli.setupConfigReloadTrap()
@@ -181,9 +183,9 @@ func (cli *DaemonCli) start() (err error) {
 	// Daemon is fully initialized and handling API traffic
 	// Wait for serve API to complete
 	errAPI := <-serveAPIWait
-	c.Cleanup()
+
 	shutdownDaemon(d, 15)
-	containerdRemote.Cleanup()
+
 	if errAPI != nil {
 		return fmt.Errorf("Shutting down due to ServeAPI error: %v", errAPI)
 	}
@@ -196,18 +198,6 @@ func (cli *DaemonCli) reloadConfig() {
 		if err := cli.d.Reload(config); err != nil {
 			logrus.Errorf("Error reconfiguring the daemon: %v", err)
 			return
-		}
-		if config.IsValueSet("debug") {
-			debugEnabled := utils.IsDebugEnabled()
-			switch {
-			case debugEnabled && !config.Debug: // disable debug
-				utils.DisableDebug()
-				cli.api.DisableProfiler()
-			case config.Debug && !debugEnabled: // enable debug
-				utils.EnableDebug()
-				cli.api.EnableProfiler()
-			}
-
 		}
 	}
 
@@ -281,21 +271,12 @@ func loadDaemonCliConfig(config *daemon.Config, flags *flag.FlagSet, commonConfi
 	return config, nil
 }
 
-func initRouter(s *apiserver.Server, d *daemon.Daemon, c *cluster.Cluster) {
-	decoder := runconfig.ContainerDecoder{}
-
+func initRouter(s *apiserver.Server, d *daemon.Daemon) {
 	routers := []router.Router{
-		container.NewRouter(d, decoder),
-		image.NewRouter(d, decoder),
-		systemrouter.NewRouter(d, c),
-		volume.NewRouter(d),
-		build.NewRouter(dockerfile.NewBuildManager(d)),
-		swarmrouter.NewRouter(c),
+		systemrouter.NewRouter(d),
+		pluginrouter.NewRouter(d),
+		// 路由
 	}
-	if d.NetworkControllerEnabled() {
-		routers = append(routers, network.NewRouter(d, c))
-	}
-	routers = addExperimentalRouters(routers)
 
 	s.InitRouter(utils.IsDebugEnabled(), routers...)
 }
@@ -306,17 +287,19 @@ func (cli *DaemonCli) initMiddlewares(s *apiserver.Server, cfg *apiserver.Config
 	vm := middleware.NewVersionMiddleware(v, api.DefaultVersion, api.MinVersion)
 	s.UseMiddleware(vm)
 
-	if cfg.EnableCors {
+	if cfg.CorsHeaders != "" {
 		c := middleware.NewCORSMiddleware(cfg.CorsHeaders)
 		s.UseMiddleware(c)
 	}
 
 	u := middleware.NewUserAgentMiddleware(v)
 	s.UseMiddleware(u)
+}
 
-	if len(cli.Config.AuthorizationPlugins) > 0 {
-		authZPlugins := authorization.NewPlugins(cli.Config.AuthorizationPlugins)
-		handleAuthorization := authorization.NewMiddleware(authZPlugins)
-		s.UseMiddleware(handleAuthorization)
+func pluginInit() error {
+	procpath, err := utils.GetProcAbsDir()
+	if err != nil {
+		return err
 	}
+	return plugin.Init(filepath.Join(procpath, "plugin"), filepath.Join(procpath, "plugin"))
 }

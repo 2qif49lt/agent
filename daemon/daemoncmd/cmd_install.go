@@ -5,6 +5,7 @@ import (
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/daemon"
+	"github.com/2qif49lt/cobra"
 )
 
 func newInstallCommand() *cobra.Command {

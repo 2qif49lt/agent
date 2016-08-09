@@ -6,22 +6,16 @@ import (
 	"net"
 	"strings"
 
+	"github.com/2qif49lt/agent/pkg/connections/sockets"
 	"github.com/Microsoft/go-winio"
-	"github.com/docker/go-connections/sockets"
 )
 
 // Init creates new listeners for the server.
-func Init(proto, addr, socketGroup string, tlsConfig *tls.Config) ([]net.Listener, error) {
-	ls := []net.Listener{}
+func Init(proto, addr, socketGroup string, tlsConfig *tls.Config) (net.Listener, error) {
 
 	switch proto {
 	case "tcp":
-		l, err := sockets.NewTCPSocket(addr, tlsConfig)
-		if err != nil {
-			return nil, err
-		}
-		ls = append(ls, l)
-
+		return sockets.NewTCPSocket(addr, tlsConfig)
 	case "npipe":
 		// allow Administrators and SYSTEM, plus whatever additional users or groups were specified
 		sddl := "D:P(A;;GA;;;BA)(A;;GA;;;SY)"
@@ -44,11 +38,11 @@ func Init(proto, addr, socketGroup string, tlsConfig *tls.Config) ([]net.Listene
 		if err != nil {
 			return nil, err
 		}
-		ls = append(ls, l)
+		return l, err
 
 	default:
 		return nil, fmt.Errorf("invalid protocol format: windows only supports tcp and npipe")
 	}
 
-	return ls, nil
+	return nil, nil
 }

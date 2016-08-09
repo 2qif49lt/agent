@@ -10,8 +10,6 @@ import (
 	"github.com/2qif49lt/agent/pkg/system"
 )
 
-const defaultDaemonConfigFile = ""
-
 // currentUserIsOwner checks whether the current user is the owner of the given
 // file.
 func currentUserIsOwner(f string) bool {
@@ -37,4 +35,8 @@ func setDefaultUmask() error {
 
 // setupConfigReloadTrap configures the USR2 signal to reload the configuration.
 func (cli *DaemonCli) setupConfigReloadTrap() {
+}
+
+func wrapListeners(proto string, ls net.Listener) net.Listener {
+	return ls
 }

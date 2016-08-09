@@ -4,6 +4,7 @@ import (
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
+	"github.com/2qif49lt/agent/daemon/daemoncmd"
 
 	"github.com/2qif49lt/cobra"
 
@@ -30,6 +31,7 @@ func NewCobraAdaptor(com *cfg.CommonFlags) CobraAdaptor {
 	rootCmd.AddCommand(
 		system.NewEventsCommand(agentCli),
 		system.NewVersionCommand(agentCli),
+		daemoncmd.NewDaemonCommand(),
 	)
 	plugin.NewPluginCommand(rootCmd, agentCli)
 

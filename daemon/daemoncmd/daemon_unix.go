@@ -8,10 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/2qif49lt/agent/daemon/hack"
 	"github.com/2qif49lt/agent/pkg/system"
 )
-
-const defaultDaemonConfigFile = "/etc/agentd/daemon.json"
 
 // currentUserIsOwner checks whether the current user is the owner of the given
 // file.
@@ -45,4 +44,11 @@ func (cli *DaemonCli) setupConfigReloadTrap() {
 			cli.reloadConfig()
 		}
 	}()
+}
+
+func wrapListeners(proto string, ls net.Listener) net.Listener {
+	if proto == "unix" || proto == "fd" {
+		ls = &hack.MalformedHostHeaderOverride{ls}
+	}
+	return ls
 }

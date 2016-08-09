@@ -16,14 +16,12 @@ import (
 
 // Config defines the configuration of a agent daemon.
 type Config struct {
-	AgentID string
-
-	Pidfile string
-
-	EnableCors  bool
-	CorsHeaders string
-
-	reloadLock sync.Mutex
+	AgentID           string
+	Pidfile           string
+	CorsHeaders       string
+	NoTLSClientVerify bool // 是否要求客户端验证
+	SocketGroup       string
+	reloadLock        sync.Mutex
 }
 
 // ReloadConfiguration reads the configuration in the host and reloads the daemon and server.
@@ -38,7 +36,9 @@ func ReloadConfiguration(configFile string, flags *flag.FlagSet, reload func(*Co
 // Subsequent calls to `flag.Parse` will populate config with values parsed
 // from the command-line.
 func (config *Config) InstallFlags(cmd *flag.FlagSet) {
-	cmd.StringVar(&config.AgentID, "agentid", "", "Set CORS headers in the remote API")
-	cmd.StringVar(&config.Pidfile, "pidfile", defaultPidFile, "Path to use for daemon PID file")
+	cmd.StringVar(&config.AgentID, "agent-id", "", "Set CORS headers in the remote API")
+	cmd.StringVar(&config.Pidfile, "pid-file", defaultPidFile, "Path to use for daemon PID file")
 	cmd.StringVar(&config.CorsHeaders, "api-cors-header", "", "Set CORS headers in the remote API")
+	cmd.BoolVar(&config.NoTLSClientVerify, "noverify", false, "DO NOT verify client certificate")
+	cmd.StringVar(&config.SocketGroup, "group", "agentd", "Group name for the unix socket")
 }

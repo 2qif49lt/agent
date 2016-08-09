@@ -9,8 +9,6 @@ import (
 	"github.com/2qif49lt/logrus"
 )
 
-var defaultDaemonConfigFile = os.Getenv("programdata") + string(os.PathSeparator) + "agentd" + string(os.PathSeparator) + "config" + string(os.PathSeparator) + "daemon.json"
-
 // currentUserIsOwner checks whether the current user is the owner of the given
 // file.
 func currentUserIsOwner(f string) bool {
@@ -37,4 +35,8 @@ func (cli *DaemonCli) setupConfigReloadTrap() {
 			}
 		}
 	}()
+}
+
+func wrapListeners(proto string, ls net.Listener) net.Listener {
+	return ls
 }

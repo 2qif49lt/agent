@@ -1,9 +1,10 @@
-package main
+package daemoncmd
 
 import (
 	"crypto/tls"
 	"fmt"
 	"io"
+	"net"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -29,33 +30,23 @@ import (
 	flag "github.com/2qif49lt/pflag"
 )
 
-const (
-	daemonConfigFileFlag = "config-file"
-)
-
 // DaemonCli represents the daemon CLI.
 type DaemonCli struct {
 	*daemon.Config
-	commonFlags *cfg.CommonFlags
-	configFile  *string
+	*cfg.CommonFlags
 
-	api *apiserver.Server
-	d   *daemon.Daemon
+	configFile *string
+	api        *apiserver.Server
+	d          *daemon.Daemon
 }
 
 // NewDaemonCli returns a pre-configured daemon CLI
 func NewDaemonCli() *DaemonCli {
 	daemonConfig := new(daemon.Config)
 
-	daemonConfig.InstallFlags(flag.CommandLine)
-	defaultConfigPath := filepath.Join(cfg.GetConfigDir(), cfg.ConfigFileName)
-	configFile := flag.CommandLine.String(daemonConfigFileFlag, defaultConfigPath,
-		fmt.Sprintf("Daemon configuration file,default: %s"), defaultConfigPath)
-
 	return &DaemonCli{
 		Config:      daemonConfig,
-		commonFlags: cfg.ComCfg,
-		configFile:  configFile,
+		CommonFlags: cfg.ComCfg,
 	}
 }
 
@@ -65,7 +56,7 @@ func (cli *DaemonCli) start() (err error) {
 
 	// read config
 
-	if cli.Config.Debug {
+	if cli.CommonFlags.Debug {
 		utils.EnableDebug()
 	}
 
@@ -77,8 +68,8 @@ func (cli *DaemonCli) start() (err error) {
 		return fmt.Errorf("Failed to set umask: %v", err)
 	}
 
-	if cli.Pidfile != "" {
-		pf, err := pidfile.New(cli.Pidfile)
+	if cli.Config.Pidfile != "" {
+		pf, err := pidfile.New(cli.Config.Pidfile)
 		if err != nil {
 			return fmt.Errorf("Error starting daemon: %v", err)
 		}
@@ -93,20 +84,13 @@ func (cli *DaemonCli) start() (err error) {
 		Logging:     true,
 		SocketGroup: cli.Config.SocketGroup,
 		Version:     verison.SRV_VERSION,
-		EnableCors:  cli.Config.EnableCors,
 		CorsHeaders: cli.Config.CorsHeaders,
 	}
 
-	if cli.Config.TLS {
-		tlsOptions := tlsconfig.Options{
-			CAFile:   cli.Config.CommonTLSOptions.CAFile,
-			CertFile: cli.Config.CommonTLSOptions.CertFile,
-			KeyFile:  cli.Config.CommonTLSOptions.KeyFile,
-		}
-
-		if cli.Config.TLSVerify {
-			// server requires and verifies client's certificate
-			tlsOptions.ClientAuth = tls.RequireAndVerifyClientCert
+	if cli.CommonFlags.NoTLS == false {
+		tlsOptions := cli.CommonFlags.TLSOptions
+		if cli.Config.NoTLSClientVerify == true {
+			tlsOptions.ClientAuth = tls.NoClientCert
 		}
 		tlsConfig, err := tlsconfig.Server(tlsOptions)
 		if err != nil {
@@ -114,18 +98,27 @@ func (cli *DaemonCli) start() (err error) {
 		}
 		serverConfig.TLSConfig = tlsConfig
 	}
-
-	if len(cli.Config.Hosts) == 0 {
-		cli.Config.Hosts = make([]string, 1)
+	if cli.CommonFlags.NoRsa == false {
+		serverConfig.RSAVerify = cli.CommonFlags.RsaSignFile
 	}
 
+	Hosts := make([]string, 0)
+	Hosts = append(Hosts, cli.CommonFlags.Host)
+	/*
+		if !strings.Contains(cli.CommonFlags.Host, "127.0.0.1") &&
+			!strings.Contains(cli.CommonFlags.Host, "localhost") {
+			_, port, err := net.SplitHostPort(cli.CommonFlags.Host)
+			Hosts = append(Hosts, fmt.Sprintf(`127.0.0.1:%s`, port))
+		}
+
+	*/
 	api := apiserver.New(serverConfig)
 	cli.api = api
 
-	for i := 0; i < len(cli.Config.Hosts); i++ {
+	for i := 0; i < len(Hosts); i++ {
 		var err error
 
-		protoAddr := cli.Config.Hosts[i]
+		protoAddr := Hosts[i]
 		protoAddrParts := strings.SplitN(protoAddr, "://", 2)
 		if len(protoAddrParts) != 2 {
 			return fmt.Errorf("bad format %s, expected PROTO://ADDR", protoAddr)
@@ -136,34 +129,19 @@ func (cli *DaemonCli) start() (err error) {
 
 		// It's a bad idea to bind to TCP without tlsverify.
 		if proto == "tcp" && (serverConfig.TLSConfig == nil || serverConfig.TLSConfig.ClientAuth != tls.RequireAndVerifyClientCert) {
-			logrus.Warn("[!] DON'T BIND ON ANY IP ADDRESS WITHOUT setting -tlsverify IF YOU DON'T KNOW WHAT YOU'RE DOING [!]")
+			logrus.Warn("[!] DON'T BIND ON ANY IP ADDRESS WITHOUT enable TLS IF YOU DON'T KNOW WHAT YOU'RE DOING [!]")
 		}
+
 		ls, err := listeners.Init(proto, addr, serverConfig.SocketGroup, serverConfig.TLSConfig)
 		if err != nil {
 			return err
 		}
 		ls = wrapListeners(proto, ls)
-		// If we're binding to a TCP port, make sure that a container doesn't try to use it.
-		if proto == "tcp" {
-			if err := allocateDaemonPort(addr); err != nil {
-				return err
-			}
-		}
+
 		logrus.Debugf("Listener created for HTTP on %s (%s)", protoAddrParts[0], protoAddrParts[1])
-		api.Accept(protoAddrParts[1], ls...)
+		api.Accept(protoAddrParts[1], ls)
 	}
 
-	if err := migrateKey(); err != nil {
-		return err
-	}
-	cli.TrustKeyPath = cli.commonFlags.TrustKey
-
-	registryService := registry.NewService(cli.Config.ServiceOptions)
-	containerdRemote, err := libcontainerd.New(cli.getLibcontainerdRoot(), cli.getPlatformRemoteOptions()...)
-	if err != nil {
-		return err
-	}
-	cli.api = api
 	signal.Trap(func() {
 		cli.stop()
 		<-stopc // wait for daemonCli.start() to return
@@ -178,24 +156,12 @@ func (cli *DaemonCli) start() (err error) {
 		return fmt.Errorf("Error starting daemon: %v", err)
 	}
 
-	name, _ := os.Hostname()
-
-	c, err := cluster.New(cluster.Config{
-		Root:    cli.Config.Root,
-		Name:    name,
-		Backend: d,
-	})
-	if err != nil {
-		logrus.Fatalf("Error creating cluster component: %v", err)
-	}
-
 	logrus.Info("Daemon has completed initialization")
 
 	logrus.WithFields(logrus.Fields{
-		"version":     dockerversion.Version,
-		"commit":      dockerversion.GitCommit,
-		"graphdriver": d.GraphDriverName(),
-	}).Info("Docker daemon")
+		"version":   verison.SRV_VERSION,
+		"buildtime": verison.BUILDTIME,
+	}).Info("Agent daemon")
 
 	cli.initMiddlewares(api, serverConfig)
 	initRouter(api, d, c)

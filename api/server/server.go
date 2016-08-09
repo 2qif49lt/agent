@@ -23,11 +23,11 @@ const versionMatcher = "/v{version:[0-9.]+}"
 // Config provides the configuration for the API server
 type Config struct {
 	Logging     bool
-	EnableCors  bool
 	CorsHeaders string
 	Version     string
 	SocketGroup string
 	TLSConfig   *tls.Config
+	RSAVerify   string // 参数校验
 }
 
 // HTTPServer contains an instance of http server and the listener.
@@ -72,16 +72,14 @@ func (s *Server) UseMiddleware(m middleware.Middleware) {
 }
 
 // Accept sets a listener the server accepts connections into.
-func (s *Server) Accept(addr string, listeners ...net.Listener) {
-	for _, listener := range listeners {
-		httpServer := &HTTPServer{
-			srv: &http.Server{
-				Addr: addr,
-			},
-			l: listener,
-		}
-		s.servers = append(s.servers, httpServer)
+func (s *Server) Accept(addr string, listener net.Listener) {
+	httpServer := &HTTPServer{
+		srv: &http.Server{
+			Addr: addr,
+		},
+		l: listener,
 	}
+	s.servers = append(s.servers, httpServer)
 }
 
 // Close closes servers and thus stop receiving requests

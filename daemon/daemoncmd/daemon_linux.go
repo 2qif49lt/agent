@@ -1,6 +1,4 @@
-// +build linux
-
-package main
+package daemoncmd
 
 import systemdDaemon "github.com/coreos/go-systemd/daemon"
 

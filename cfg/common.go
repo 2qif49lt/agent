@@ -69,9 +69,9 @@ func InitCommonFlags() *CommonFlags {
 
 	fs.StringVar(&com.RsaSignFile, "rsakey", filepath.Join(certPath, DefaultRsaSignFile), "Path to Rsa Sign public/private key file")
 
-	fs.StringVar(&tlsOptions.Host, "host", "", "Agentd listen address or Agent connect to,[ip]:port")
+	fs.StringVar(&com.Host, "host", "", "Agentd listen address or Agent connect to,[ip]:port")
 
-	fs.StringVar(&tlsOptions.Master, "master", "", "Address of master service")
+	fs.StringVar(&com.Master, "master", "", "Address of master service")
 
 	/*
 		--host参数可以为一下格式:

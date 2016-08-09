@@ -2,28 +2,39 @@ package daemoncmd
 
 import (
 	"fmt"
+	"github.com/2qif49lt/agent/cfg"
+	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/daemon"
+	"github.com/2qif49lt/cobra"
+)
+
+const (
+	daemonConfigFileFlag = "config-file"
 )
 
 func newStartCommand() *cobra.Command {
-	daemoncfg := &daemon.Config{}
+	daemonCli := NewDaemonCli()
 
 	cmd := &cobra.Command{
 		Use:   "start [OPTIONS]",
 		Short: "启动agentd",
 		Args:  cli.NoArgs(),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runStart(daemoncfg)
+			return runStart(daemonCli)
 		},
 	}
 
 	flags := cmd.Flags()
-	daemoncfg.InstallFlags(flags)
+	daemonCli.InstallFlags(flags)
+	defaultConfigPath := filepath.Join(cfg.GetConfigDir(), cfg.ConfigFileName)
+
+	daemonCli.configFile = flags.String(daemonConfigFileFlag, defaultConfigPath,
+		fmt.Sprintf("Daemon configuration file,default: %s"), defaultConfigPath)
 
 	return cmd
 }
 
-func runStart(daemoncfg *daemon.Config) error {
+func runStart(daemonCli *DaemonCli) error {
 	return nil
 }
 

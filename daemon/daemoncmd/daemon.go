@@ -163,7 +163,19 @@ func (cli *DaemonCli) start() (err error) {
 	logrus.WithFields(logrus.Fields{
 		"version":   verison.SRV_VERSION,
 		"buildtime": verison.BUILDTIME,
-	}).Info("Agent daemon")
+	}).Info("Agent daemon start")
+
+	logrus.SetDefaultFileOut()
+	loglev, err := logrus.ParseLevel(cli.CommonFlags.LogLevel)
+	if err != nil {
+		loglev = logrus.InfoLevel
+	}
+	logrus.SetLevel(loglev)
+
+	logrus.WithFields(logrus.Fields{
+		"version":   verison.SRV_VERSION,
+		"buildtime": verison.BUILDTIME,
+	}).Info("Agent daemon start")
 
 	cli.initMiddlewares(api, serverConfig)
 	initRouter(api, d)
@@ -176,9 +188,6 @@ func (cli *DaemonCli) start() (err error) {
 	// daemon doesn't exit
 	serveAPIWait := make(chan error)
 	go api.Wait(serveAPIWait) // 开始服务
-
-	// after the daemon is done setting up we can notify systemd api
-	notifySystem()
 
 	// Daemon is fully initialized and handling API traffic
 	// Wait for serve API to complete

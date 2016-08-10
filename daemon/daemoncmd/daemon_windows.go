@@ -41,10 +41,6 @@ func wrapListeners(proto string, ls net.Listener) net.Listener {
 	return ls
 }
 
-// notifySystem sends a message to the host when the server is ready to be used
-func notifySystem() {
-}
-
 // notifyShutdown is called after the daemon shuts down but before the process exits.
 func notifyShutdown(err error) {
 }

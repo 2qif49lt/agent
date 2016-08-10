@@ -17,6 +17,21 @@ type Command struct {
 	Description string
 }
 
+type byName []Command
+
+func (a byName) Len() int           { return len(a) }
+func (a byName) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a byName) Less(i, j int) bool { return a[i].Name < a[j].Name }
+
+// TODO(tiborvass): do not show 'daemon' on client-only binaries
+
+func SortCommands(commands []Command) []Command {
+	tmp := make([]Command, len(commands))
+	copy(tmp, commands)
+	sort.Sort(byName(tmp))
+	return tmp
+}
+
 // Cli represents a command line interface.
 type Cli struct {
 	Stdout   io.Writer

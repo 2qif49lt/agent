@@ -1,6 +1,6 @@
 // +build !windows,!solaris
 
-package main
+package daemoncmd
 
 import (
 	"fmt"

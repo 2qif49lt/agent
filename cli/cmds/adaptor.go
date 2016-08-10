@@ -52,7 +52,7 @@ func (c CobraAdaptor) Usage() []cli.Command {
 			cmds = append(cmds, cli.Command{Name: cmd.Name(), Description: cmd.Short})
 		}
 	}
-	return cmds
+	return cli.SortCommands(cmds)
 }
 
 func (c CobraAdaptor) run(cmd string, args []string) error {

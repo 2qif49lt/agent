@@ -6,10 +6,7 @@ import (
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/daemon"
 	"github.com/2qif49lt/cobra"
-)
-
-const (
-	daemonConfigFileFlag = "config-file"
+	"github.com/kardianos/service"
 )
 
 func newStartCommand() *cobra.Command {
@@ -24,73 +21,24 @@ func newStartCommand() *cobra.Command {
 		},
 	}
 
-	flags := cmd.Flags()
-	daemonCli.InstallFlags(flags)
-	defaultConfigPath := filepath.Join(cfg.GetConfigDir(), cfg.ConfigFileName)
-
-	daemonCli.configFile = flags.String(daemonConfigFileFlag, defaultConfigPath,
-		fmt.Sprintf("Daemon configuration file,default: %s"), defaultConfigPath)
-
 	return cmd
 }
 
 func runStart(daemonCli *DaemonCli) error {
-	return nil
-}
+	prg := &program{daemonCli}
 
-func newStopCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "stop",
-		Short: "停止agentd",
-		Args:  cli.NoArgs(),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return runStop()
-		},
+	if isconsole := service.Interactive(); isconsole {
+		prg.StartConsole()
+	} else {
+		svcConfig := &service.Config{
+			Name: cfg.C.SrvName,
+		}
+		srv, err := service.New(prg, svcConfig)
+		if err != nil {
+			return err
+		}
+		return srv.Run()
 	}
 
-	return cmd
-}
-
-func runStop() error {
-	return nil
-}
-
-func newReStartCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "restart [OPTIONS]",
-		Short: "重启",
-		Args:  cli.NoArgs(),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			err := runStatus()
-			if err != nil {
-				return err
-			}
-
-			err = runStop()
-			if err != nil {
-				return err
-			}
-
-			return runStart()
-		},
-	}
-
-	return cmd
-}
-
-func newStatusCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "status",
-		Short: "查看agentd 运行状态",
-		Args:  cli.NoArgs(),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return runStatus()
-		},
-	}
-
-	return cmd
-}
-
-func runStatus() error {
 	return nil
 }

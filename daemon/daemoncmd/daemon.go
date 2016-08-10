@@ -22,7 +22,6 @@ import (
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 	"github.com/2qif49lt/agent/pkg/jsonlog"
 	"github.com/2qif49lt/agent/pkg/listeners"
-	"github.com/2qif49lt/agent/pkg/pidfile"
 	"github.com/2qif49lt/agent/pkg/signal"
 	"github.com/2qif49lt/agent/pkg/system"
 	"github.com/2qif49lt/agent/plugin"
@@ -52,34 +51,41 @@ func NewDaemonCli() *DaemonCli {
 	}
 }
 
-func (cli *DaemonCli) start() (err error) {
+func (cli *DaemonCli) run() {
 	stopc := make(chan bool)
 	defer close(stopc)
 
-	// read config
+	signal.Trap(func() {
+		cli.stop()
+		<-stopc // wait for daemonCli.run() to return
+	})
 
-	if cli.CommonFlags.Debug {
-		utils.EnableDebug()
+	// The serve API routine never exits unless an error occurs
+	// We need to start it as a goroutine and wait on it so
+	// daemon doesn't exit
+	serveAPIWait := make(chan error)
+	go cli.api.Wait(serveAPIWait) // 开始服务
+
+	// Daemon is fully initialized and handling API traffic
+	// Wait for serve API to complete
+	errAPI := <-serveAPIWait
+
+	shutdownDaemon(cli.d, 15)
+
+	if errAPI != nil {
+		return logrus.Errorf("Shutting down due to ServeAPI error: %v", errAPI)
 	}
+}
+func (cli *DaemonCli) start() (err error) {
+
+	// read config
 
 	if utils.ExperimentalBuild() {
 		logrus.Warn("Running experimental build")
 	}
 
 	if err := setDefaultUmask(); err != nil {
-		return fmt.Errorf("Failed to set umask: %v", err)
-	}
-
-	if cli.Config.Pidfile != "" {
-		pf, err := pidfile.New(cli.Config.Pidfile)
-		if err != nil {
-			return fmt.Errorf("Error starting daemon: %v", err)
-		}
-		defer func() {
-			if err := pf.Remove(); err != nil {
-				logrus.Error(err)
-			}
-		}()
+		return logrus.Errorf("Failed to set umask: %v", err)
 	}
 
 	serverConfig := &apiserver.Config{
@@ -123,7 +129,7 @@ func (cli *DaemonCli) start() (err error) {
 		protoAddr := Hosts[i]
 		protoAddrParts := strings.SplitN(protoAddr, "://", 2)
 		if len(protoAddrParts) != 2 {
-			return fmt.Errorf("bad format %s, expected PROTO://ADDR", protoAddr)
+			return logrus.Errorf("bad format %s, expected PROTO://ADDR", protoAddr)
 		}
 
 		proto := protoAddrParts[0]
@@ -144,19 +150,20 @@ func (cli *DaemonCli) start() (err error) {
 		api.Accept(protoAddrParts[1], ls)
 	}
 
-	signal.Trap(func() {
-		cli.stop()
-		<-stopc // wait for daemonCli.start() to return
-	})
-
 	if err := pluginInit(); err != nil {
 		return err
 	}
 
 	d, err := daemon.NewDaemon(cli.Config)
 	if err != nil {
-		return fmt.Errorf("Error starting daemon: %v", err)
+		return logrus.Errorf("Error starting daemon: %v", err)
 	}
+
+	cli.initMiddlewares(api, serverConfig)
+	initRouter(api, d)
+
+	cli.d = d
+	cli.setupConfigReloadTrap()
 
 	logrus.Info("Daemon has completed initialization")
 
@@ -165,39 +172,12 @@ func (cli *DaemonCli) start() (err error) {
 		"buildtime": verison.BUILDTIME,
 	}).Info("Agent daemon start")
 
-	logrus.SetDefaultFileOut()
 	loglev, err := logrus.ParseLevel(cli.CommonFlags.LogLevel)
 	if err != nil {
 		loglev = logrus.InfoLevel
 	}
+
 	logrus.SetLevel(loglev)
-
-	logrus.WithFields(logrus.Fields{
-		"version":   verison.SRV_VERSION,
-		"buildtime": verison.BUILDTIME,
-	}).Info("Agent daemon start")
-
-	cli.initMiddlewares(api, serverConfig)
-	initRouter(api, d)
-
-	cli.d = d
-	cli.setupConfigReloadTrap()
-
-	// The serve API routine never exits unless an error occurs
-	// We need to start it as a goroutine and wait on it so
-	// daemon doesn't exit
-	serveAPIWait := make(chan error)
-	go api.Wait(serveAPIWait) // 开始服务
-
-	// Daemon is fully initialized and handling API traffic
-	// Wait for serve API to complete
-	errAPI := <-serveAPIWait
-
-	shutdownDaemon(d, 15)
-
-	if errAPI != nil {
-		return fmt.Errorf("Shutting down due to ServeAPI error: %v", errAPI)
-	}
 
 	return nil
 }
@@ -216,7 +196,9 @@ func (cli *DaemonCli) reloadConfig() {
 }
 
 func (cli *DaemonCli) stop() {
-	cli.api.Close()
+	if cli.api != nil {
+		cli.api.Close()
+	}
 }
 
 // shutdownDaemon just wraps daemon.Shutdown() to handle a timeout in case

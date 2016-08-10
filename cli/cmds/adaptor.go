@@ -36,7 +36,6 @@ func NewCobraAdaptor(com *cfg.CommonFlags) CobraAdaptor {
 	plugin.NewPluginCommand(rootCmd, agentCli)
 
 	rootCmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
-	rootCmd.PersistentFlags().MarkShorthandDeprecated("help", "please use --help")
 
 	return CobraAdaptor{
 		rootCmd:  rootCmd,

@@ -223,7 +223,7 @@ func loadDaemonCliConfig(config *daemon.Config, flags *flag.FlagSet, commonConfi
 func initRouter(s *apiserver.Server, d *daemon.Daemon) {
 	routers := []router.Router{
 		systemrouter.NewRouter(d),
-		pluginrouter.NewRouter(d),
+		pluginrouter.NewRouter(plugin.GetManager()),
 		// 路由
 	}
 

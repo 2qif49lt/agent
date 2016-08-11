@@ -51,3 +51,11 @@ func (s StatT) Mtim() syscall.Timespec {
 func (s StatT) GetLastModification() syscall.Timespec {
 	return s.Mtim()
 }
+
+func Stat(path string) (*StatT, error) {
+	s := &syscall.Stat_t{}
+	if err := syscall.Stat(path, s); err != nil {
+		return nil, err
+	}
+	return fromStatT(s)
+}

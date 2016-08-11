@@ -9,7 +9,7 @@ import (
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/pkg/connections/sockets"
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
-	"github.com/2qif49lt/agent/pkg/opt"
+	"github.com/2qif49lt/agent/pkg/opts"
 	"github.com/2qif49lt/agent/version"
 )
 

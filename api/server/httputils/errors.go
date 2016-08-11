@@ -8,7 +8,6 @@ import (
 	"github.com/2qif49lt/agent/api/types/versions"
 	"github.com/2qif49lt/logrus"
 	"github.com/gorilla/mux"
-	"google.golang.org/grpc"
 )
 
 // httpStatusError is an interface
@@ -87,7 +86,11 @@ func MakeErrorHandler(err error) http.HandlerFunc {
 			}
 			WriteJSON(w, statusCode, response)
 		} else {
-			http.Error(w, grpc.ErrorDesc(err), statusCode)
+			errmsg := 'Internal Server Error'
+			if err != nil{
+				errmsg = err.Error()
+			}
+			http.Error(w, errmsg, statusCode)
 		}
 	}
 }

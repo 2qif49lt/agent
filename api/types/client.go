@@ -5,7 +5,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/2qif49lt/api/types/filters"
+	"github.com/2qif49lt/agent/api/types/filters"
 	"github.com/docker/go-units"
 )
 

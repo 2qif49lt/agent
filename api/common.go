@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"github.com/docker/libtrust"
 	"mime"
 	"path/filepath"
 	"sort"
@@ -11,7 +12,6 @@ import (
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/pkg/system"
 	"github.com/2qif49lt/logrus"
-	"github.com/docker/libtrust"
 )
 
 // Common constants for daemon and client.

@@ -4,7 +4,7 @@ package cfg
 
 import (
 	"github.com/2qif49lt/agent/cfg/cfgfile"
-	"github.com/2qif49lt/utils"
+	"github.com/2qif49lt/agent/utils"
 	"path/filepath"
 
 	"fmt"

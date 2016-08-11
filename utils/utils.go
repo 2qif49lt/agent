@@ -8,34 +8,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/2qif49lt/agent/pkg/archive"
 	"github.com/2qif49lt/agent/pkg/stringid"
 )
-
-var globalTestID string
-
-// TestDirectory creates a new temporary directory and returns its path.
-// The contents of directory at path `templateDir` is copied into the
-// new directory.
-func TestDirectory(templateDir string) (dir string, err error) {
-	if globalTestID == "" {
-		globalTestID = stringid.GenerateNonCryptoID()[:4]
-	}
-	prefix := fmt.Sprintf("docker-test%s-%s-", globalTestID, GetCallerName(2))
-	if prefix == "" {
-		prefix = "docker-test-"
-	}
-	dir, err = ioutil.TempDir("", prefix)
-	if err = os.Remove(dir); err != nil {
-		return
-	}
-	if templateDir != "" {
-		if err = archive.CopyWithTar(templateDir, dir); err != nil {
-			return
-		}
-	}
-	return
-}
 
 // GetCallerName introspects the call stack and returns the name of the
 // function `depth` levels down in the stack.

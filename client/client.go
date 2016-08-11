@@ -2,6 +2,7 @@ package client
 
 import (
 	"net/http"
+	"os"
 	"runtime"
 
 	"github.com/2qif49lt/agent/api"
@@ -13,7 +14,7 @@ import (
 	"github.com/2qif49lt/agent/version"
 )
 
-// Cli represents the agent command line client.
+// AgentCli represents the agent command line client.
 // Instances of the client can be returned from NewDockerCli.
 type AgentCli struct {
 	// initializing closure
@@ -21,7 +22,7 @@ type AgentCli struct {
 	common *cfg.CommonFlags
 
 	// api client
-	client apiclient.Client
+	client apiclient.APIClient
 }
 
 // Initialize calls the init function that will setup the configuration for the client
@@ -34,7 +35,7 @@ func (cli *AgentCli) Initialize() error {
 }
 
 // Client returns the APIClient
-func (cli *AgentCli) Client() apiclient.Client {
+func (cli *AgentCli) Client() apiclient.APIClient {
 	return cli.client
 }
 
@@ -42,7 +43,7 @@ func (cli *AgentCli) Client() apiclient.Client {
 // The key file, protocol (i.e. unix) and address are passed in as strings, along with the tls.Config.
 // If the tls.Config is set the client scheme will be set to https.
 func NewAgentCli(com *cfg.CommonFlags) *AgentCli {
-	cli := &Cli{
+	cli := &AgentCli{
 		common: com,
 	}
 
@@ -61,8 +62,8 @@ func NewAgentCli(com *cfg.CommonFlags) *AgentCli {
 }
 
 // NewAPIClientFromFlags creates a new APIClient from command line flags
-func NewAPIClientFromFlags(com *cfg.CommonFlags) (apiclient.Client, error) {
-	host, err = opts.ParseHost(!com.NoTLS, com.Host)
+func NewAPIClientFromFlags(com *cfg.CommonFlags) (apiclient.APIClient, error) {
+	host, err := opts.ParseHost(!com.NoTLS, com.Host)
 
 	customHeaders := map[string]string{}
 	customHeaders["User-Agent"] = clientUserAgent()
@@ -74,10 +75,10 @@ func NewAPIClientFromFlags(com *cfg.CommonFlags) (apiclient.Client, error) {
 
 	httpClient, err := newHTTPClient(host, com.TLSOptions)
 	if err != nil {
-		return &client.Client{}, err
+		return &apiclient.Client{}, err
 	}
 
-	return client.NewClient(host, verStr, httpClient, customHeaders)
+	return apiclient.NewClient(host, verStr, httpClient, customHeaders)
 }
 
 func newHTTPClient(host string, tlsOptions *tlsconfig.Options) (*http.Client, error) {
@@ -93,7 +94,7 @@ func newHTTPClient(host string, tlsOptions *tlsconfig.Options) (*http.Client, er
 	tr := &http.Transport{
 		TLSClientConfig: config,
 	}
-	proto, addr, _, err := client.ParseHost(host)
+	proto, addr, _, err := apiclient.ParseHost(host)
 	if err != nil {
 		return nil, err
 	}

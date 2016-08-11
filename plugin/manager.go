@@ -8,6 +8,8 @@ import (
 	"sync"
 
 	"github.com/2qif49lt/agent/api/types"
+	"github.com/2qif49lt/agent/pkg/ioutils"
+	"github.com/2qif49lt/logrus"
 )
 
 var manager *Manager
@@ -37,10 +39,10 @@ func (p *plugin) Name() string {
 	return p.p.Name
 }
 
-func (pm *Manager) newPlugin(ref reference.Named, id string) *plugin {
+func (pm *Manager) newPlugin(name, id string) *plugin {
 	p := &plugin{
 		p: types.Plugin{
-			Name: ref.Name(),
+			Name: name,
 			ID:   id,
 		},
 		stateSourcePath:   filepath.Join(pm.libRoot, id, "state"),
@@ -173,4 +175,17 @@ func (pm *Manager) enable(p *plugin) error {
 
 func (pm *Manager) disable(p *plugin) error {
 	return fmt.Errorf("Not implemented")
+}
+
+// fixme: not safe
+func (pm *Manager) save() error {
+	filePath := filepath.Join(pm.libRoot, "plugins.json")
+
+	jsonData, err := json.Marshal(pm.nameToID)
+	if err != nil {
+		logrus.Debugf("Error in json.Marshal: %v", err)
+		return err
+	}
+	ioutils.AtomicWriteFile(filePath, jsonData, 0600)
+	return nil
 }

@@ -1,14 +1,14 @@
 package cli
 
 import (
-	"github.com/2qif49lt/agent/cfg"
-	flag "github.com/2qif49lt/pflag"
-
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"sort"
 	"strings"
+
+	flag "github.com/2qif49lt/pflag"
 )
 
 // Command is the struct containing the command name and description

@@ -3,7 +3,6 @@ package daemon
 import (
 	"os"
 	"runtime"
-	"sync/atomic"
 	"time"
 
 	"github.com/2qif49lt/agent/api/types"
@@ -50,7 +49,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 	}
 
 	v := &types.Info{
-		ID:                daemon.AgentID,
+		ID:                daemon.configStore.AgentID,
 		Debug:             utils.IsDebugEnabled(),
 		NFd:               fileutils.GetTotalUsedFds(),
 		NGoroutines:       runtime.NumGoroutine(),
@@ -63,7 +62,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 		NCPU:              runtime.NumCPU(),
 		MemTotal:          meminfo.MemTotal,
 		ExperimentalBuild: utils.ExperimentalBuild(),
-		ServerVersion:     api.Version,
+		ServerVersion:     version.SRV_VERSION,
 		HTTPProxy:         sockets.GetProxyEnv("http_proxy"),
 		HTTPSProxy:        sockets.GetProxyEnv("https_proxy"),
 		NoProxy:           sockets.GetProxyEnv("no_proxy"),

@@ -1,14 +1,14 @@
-// +build linux freebsd
+// +build linux freebsd darwin
 
 package daemon
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"runtime/debug"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/pkg/parsers/kernel"
@@ -73,10 +73,6 @@ func configureMaxThreads(config *Config) error {
 }
 
 func (daemon *Daemon) stats() (*types.StatsJSON, error) {
-	if !c.IsRunning() {
-		return nil, fmt.Errorf(`agent daemon is not running`)
-	}
 	s := &types.StatsJSON{}
-	s.Read = time.Unix(int64(stats.Timestamp), 0)
 	return s, nil
 }

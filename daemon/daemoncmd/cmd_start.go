@@ -1,10 +1,8 @@
 package daemoncmd
 
 import (
-	"fmt"
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/cli"
-	"github.com/2qif49lt/agent/daemon"
 	"github.com/2qif49lt/cobra"
 	"github.com/kardianos/service"
 )
@@ -15,7 +13,7 @@ func newStartCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start [OPTIONS]",
 		Short: "启动agentd",
-		Args:  cli.NoArgs(),
+		Args:  cli.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runStart(daemonCli)
 		},

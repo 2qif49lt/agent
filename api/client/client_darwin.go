@@ -6,4 +6,4 @@ import (
 )
 
 // DefaultAgentdHost
-const DefaultAgentdHost = fmt.Sprintf(`tcp://127.0.0.1:%d`, cfg.DefaultAgentdListenPort)
+var DefaultAgentdHost = fmt.Sprintf(`tcp://127.0.0.1:%d`, cfg.DefaultAgentdListenPort)

@@ -3,11 +3,7 @@ package daemoncmd
 import (
 	"crypto/tls"
 	"fmt"
-	"io"
-	"net"
-	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"time"
 
@@ -20,10 +16,8 @@ import (
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/daemon"
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
-	"github.com/2qif49lt/agent/pkg/jsonlog"
 	"github.com/2qif49lt/agent/pkg/listeners"
 	"github.com/2qif49lt/agent/pkg/signal"
-	"github.com/2qif49lt/agent/pkg/system"
 	"github.com/2qif49lt/agent/plugin"
 	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/agent/version"
@@ -73,7 +67,7 @@ func (cli *DaemonCli) run() {
 	shutdownDaemon(cli.d, 15)
 
 	if errAPI != nil {
-		return logrus.Errorf("Shutting down due to ServeAPI error: %v", errAPI)
+		logrus.Errorf("Shutting down due to ServeAPI error: %v", errAPI)
 	}
 }
 func (cli *DaemonCli) start() (err error) {
@@ -85,13 +79,14 @@ func (cli *DaemonCli) start() (err error) {
 	}
 
 	if err := setDefaultUmask(); err != nil {
-		return logrus.Errorf("Failed to set umask: %v", err)
+		logrus.Errorf("Failed to set umask: %v", err)
+		return err
 	}
 
 	serverConfig := &apiserver.Config{
 		Logging:     true,
 		SocketGroup: cli.Config.SocketGroup,
-		Version:     verison.SRV_VERSION,
+		Version:     version.SRV_VERSION,
 		CorsHeaders: cli.Config.CorsHeaders,
 	}
 
@@ -100,7 +95,7 @@ func (cli *DaemonCli) start() (err error) {
 		if cli.Config.NoTLSClientVerify == true {
 			tlsOptions.ClientAuth = tls.NoClientCert
 		}
-		tlsConfig, err := tlsconfig.Server(tlsOptions)
+		tlsConfig, err := tlsconfig.Server(*tlsOptions)
 		if err != nil {
 			return err
 		}
@@ -129,7 +124,9 @@ func (cli *DaemonCli) start() (err error) {
 		protoAddr := Hosts[i]
 		protoAddrParts := strings.SplitN(protoAddr, "://", 2)
 		if len(protoAddrParts) != 2 {
-			return logrus.Errorf("bad format %s, expected PROTO://ADDR", protoAddr)
+			err = fmt.Errorf("bad format %s, expected PROTO://ADDR", protoAddr)
+			logrus.Errorf(err.Error())
+			return err
 		}
 
 		proto := protoAddrParts[0]
@@ -156,7 +153,8 @@ func (cli *DaemonCli) start() (err error) {
 
 	d, err := daemon.NewDaemon(cli.Config)
 	if err != nil {
-		return logrus.Errorf("Error starting daemon: %v", err)
+		logrus.Errorf("Error starting daemon: %v", err)
+		return err
 	}
 
 	cli.initMiddlewares(api, serverConfig)
@@ -168,8 +166,8 @@ func (cli *DaemonCli) start() (err error) {
 	logrus.Info("Daemon has completed initialization")
 
 	logrus.WithFields(logrus.Fields{
-		"version":   verison.SRV_VERSION,
-		"buildtime": verison.BUILDTIME,
+		"version":   version.SRV_VERSION,
+		"buildtime": version.BUILDTIME,
 	}).Info("Agent daemon start")
 
 	loglev, err := logrus.ParseLevel(cli.CommonFlags.LogLevel)
@@ -218,47 +216,7 @@ func shutdownDaemon(d *daemon.Daemon, timeout time.Duration) {
 	}
 }
 
-func loadDaemonCliConfig(config *daemon.Config, flags *flag.FlagSet, commonConfig *cliflags.CommonFlags, configFile string) (*daemon.Config, error) {
-	config.Debug = commonConfig.Debug
-	config.Hosts = commonConfig.Hosts
-	config.LogLevel = commonConfig.LogLevel
-	config.TLS = commonConfig.TLS
-	config.TLSVerify = commonConfig.TLSVerify
-	config.CommonTLSOptions = daemon.CommonTLSOptions{}
-
-	if commonConfig.TLSOptions != nil {
-		config.CommonTLSOptions.CAFile = commonConfig.TLSOptions.CAFile
-		config.CommonTLSOptions.CertFile = commonConfig.TLSOptions.CertFile
-		config.CommonTLSOptions.KeyFile = commonConfig.TLSOptions.KeyFile
-	}
-
-	if configFile != "" {
-		c, err := daemon.MergeDaemonConfigurations(config, flags, configFile)
-		if err != nil {
-			if flags.IsSet(daemonConfigFileFlag) || !os.IsNotExist(err) {
-				return nil, fmt.Errorf("unable to configure the Docker daemon with file %s: %v\n", configFile, err)
-			}
-		}
-		// the merged configuration can be nil if the config file didn't exist.
-		// leave the current configuration as it is if when that happens.
-		if c != nil {
-			config = c
-		}
-	}
-
-	if err := daemon.ValidateConfiguration(config); err != nil {
-		return nil, err
-	}
-
-	// Regardless of whether the user sets it to true or false, if they
-	// specify TLSVerify at all then we need to turn on TLS
-	if config.IsValueSet(cliflags.TLSVerifyKey) {
-		config.TLS = true
-	}
-
-	// ensure that the log level is the one set after merging configurations
-	cliflags.SetDaemonLogLevel(config.LogLevel)
-
+func loadDaemonCliConfig(config *daemon.Config, flags *flag.FlagSet, commonConfig *cfg.CommonFlags, configFile string) (*daemon.Config, error) {
 	return config, nil
 }
 

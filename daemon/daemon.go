@@ -13,7 +13,6 @@ import (
 	"path/filepath"
 	"sync"
 	"syscall"
-	"time"
 
 	"github.com/2qif49lt/agent/api"
 	//	"github.com/2qif49lt/agent/api/types"
@@ -21,7 +20,6 @@ import (
 	"github.com/2qif49lt/agent/daemon/events"
 	"github.com/2qif49lt/agent/pkg/progress"
 	"github.com/2qif49lt/agent/pkg/streamformatter"
-	"github.com/2qif49lt/agent/pkg/system"
 	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/logrus"
 

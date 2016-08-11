@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/2qif49lt/agent/api/client/transport"
@@ -43,7 +42,7 @@ func NewEnvClient() (*Client, error) {
 
 	if agentCertPath := cfg.GetCertPath(); agentCertPath != "" {
 		options := tlsconfig.Options{
-			CAFile:             cfg.ComCfg.TlsCaFile,
+			CAFile:             cfg.ComCfg.TLSOptions.CAFile,
 			InsecureSkipVerify: os.Getenv("AGENT_TLS_SKIP_CERT_VERIFY") != "",
 		}
 		tlsc, err := tlsconfig.Client(options)

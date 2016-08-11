@@ -1,7 +1,6 @@
 package daemon
 
 import (
-	"strings"
 	"time"
 
 	"github.com/2qif49lt/agent/api/types/events"
@@ -16,7 +15,7 @@ func (daemon *Daemon) LogDaemonEventWithAttributes(action string, attributes map
 			attributes["name"] = info.Name
 		}
 		actor := events.Actor{
-			ID:         daemon.AgentID,
+			ID:         daemon.configStore.AgentID,
 			Attributes: attributes,
 		}
 		daemon.EventsService.Log(action, events.DaemonEventType, actor)

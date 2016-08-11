@@ -1,14 +1,10 @@
 package utils
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
-
-	"github.com/2qif49lt/agent/pkg/stringid"
 )
 
 // GetCallerName introspects the call stack and returns the name of the

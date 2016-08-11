@@ -87,17 +87,6 @@ func (e *Events) Log(action, eventType string, actor eventtypes.Actor) {
 		TimeNano: now.UnixNano(),
 	}
 
-	// fill deprecated fields for container and images
-	switch eventType {
-	case eventtypes.ContainerEventType:
-		jm.ID = actor.ID
-		jm.Status = action
-		jm.From = actor.Attributes["image"]
-	case eventtypes.ImageEventType:
-		jm.ID = actor.ID
-		jm.Status = action
-	}
-
 	e.mu.Lock()
 	if len(e.events) == cap(e.events) {
 		// discard oldest event

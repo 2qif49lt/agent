@@ -1,10 +1,5 @@
 package types
 
-import (
-	"os"
-	"time"
-)
-
 // Version contains response of Remote API:
 // GET "/version"
 type Version struct {

@@ -2,13 +2,10 @@ package client
 
 import (
 	"fmt"
-	"strings"
 
 	"golang.org/x/net/context"
 
 	Cli "github.com/2qif49lt/agent/cli"
-	"github.com/2qif49lt/agent/pkg/ioutils"
-	"github.com/2qif49lt/agent/utils"
 	flag "github.com/2qif49lt/pflag"
 )
 

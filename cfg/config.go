@@ -39,11 +39,12 @@ var (
 )
 
 func init() {
+	prgpath, _ := utils.GetProcAbsDir()
 	if configDir == "" {
-		configDir = filepath.Join(utils.GetProcAbsDir(), configFileDir)
+		configDir = filepath.Join(prgpath, configFileDir)
 	}
 	if certPath == "" {
-		certPath = filepath.Join(utils.GetProcAbsDir(), certFileDir)
+		certPath = filepath.Join(prgpath, certFileDir)
 	}
 }
 
@@ -93,7 +94,8 @@ func Load() (*cfgfile.ConfigFile, error) {
 		return nil, fmt.Errorf("%s - %v", cfgfile.Filename, err)
 	}
 
-	tmp, err := ioutil.ReadFile(filepath.Join(utils.GetProcAbsDir(), DefaultUniqueAgentIdFile))
+	prgpath, _ := utils.GetProcAbsDir()
+	tmp, err := ioutil.ReadFile(filepath.Join(prgpath, DefaultUniqueAgentIdFile))
 
 	cfgfile.Agentid = string(tmp)
 

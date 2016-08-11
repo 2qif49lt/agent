@@ -1,5 +1,9 @@
 package plugin
 
+import (
+	enginetypes "github.com/2qif49lt/agent/api/types"
+)
+
 // Backend for Plugin
 type Backend interface {
 	Disable(name string) error

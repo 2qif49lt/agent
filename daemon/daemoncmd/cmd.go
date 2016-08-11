@@ -2,7 +2,7 @@ package daemoncmd
 
 import (
 	"fmt"
-	"github.com/2qif49lt/agent/daemon"
+	"github.com/2qif49lt/cobra"
 	"github.com/2qif49lt/logrus"
 	"github.com/kardianos/service"
 )
@@ -16,7 +16,7 @@ func NewDaemonCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "daemon ",
 		Short: "Manage agent daemon",
-		Run: func(cmd *cobra.Command, args []string) error {
+		Run: func(cmd *cobra.Command, args []string) {
 			fmt.Println(cmd.UsageString())
 		},
 	}

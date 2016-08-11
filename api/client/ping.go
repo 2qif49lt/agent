@@ -1,7 +1,6 @@
 package client
 
 import (
-	"fmt"
 	"net/url"
 
 	"golang.org/x/net/context"
@@ -11,11 +10,13 @@ import (
 func (cli *Client) Ping(ctx context.Context, ping string) (string, error) {
 	v := url.Values{}
 	v.Set("msg", ping)
-	serverResp, err := cli.get(ctx, "/ping", v, nil)
+	rsp, err := cli.get(ctx, "/ping", v, nil)
 	if err != nil {
 		return "", err
 	}
-	defer ensureReaderClosed(serverResp)
+	defer ensureReaderClosed(rsp)
 
-	return serverResp, nil
+	buf := [1024]byte{}
+	rsp.body.Read(buf[:])
+	return string(buf[:]), nil
 }

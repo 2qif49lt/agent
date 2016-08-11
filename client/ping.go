@@ -2,7 +2,6 @@ package client
 
 import (
 	"fmt"
-	"net/url"
 	"strings"
 
 	"golang.org/x/net/context"

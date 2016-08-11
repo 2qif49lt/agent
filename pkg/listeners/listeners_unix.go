@@ -15,11 +15,7 @@ import (
 func Init(proto, addr, socketGroup string, tlsConfig *tls.Config) (net.Listener, error) {
 	switch proto {
 	case "tcp":
-		l, err := sockets.NewTCPSocket(addr, tlsConfig)
-		if err != nil {
-			return nil, err
-		}
-		ls = append(ls, l)
+		return sockets.NewTCPSocket(addr, tlsConfig)
 	case "unix":
 		l, err := sockets.NewUnixSocket(addr, socketGroup)
 		if err != nil {

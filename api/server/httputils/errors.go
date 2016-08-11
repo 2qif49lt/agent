@@ -86,8 +86,8 @@ func MakeErrorHandler(err error) http.HandlerFunc {
 			}
 			WriteJSON(w, statusCode, response)
 		} else {
-			errmsg := 'Internal Server Error'
-			if err != nil{
+			errmsg := `Internal Server Error`
+			if err != nil {
 				errmsg = err.Error()
 			}
 			http.Error(w, errmsg, statusCode)

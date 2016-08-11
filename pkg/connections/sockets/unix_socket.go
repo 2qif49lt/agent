@@ -1,4 +1,4 @@
-// +build linux freebsd solaris
+// +build linux freebsd solaris darwin
 
 package sockets
 
@@ -40,7 +40,7 @@ func setSocketGroup(path, group string) error {
 		return nil
 	}
 	if err := changeGroup(path, group); err != nil {
-		if group != "docker" {
+		if group != "agentd" {
 			return err
 		}
 		logrus.Debugf("Warning: could not change group %s to docker: %v", path, err)

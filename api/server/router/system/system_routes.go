@@ -27,12 +27,9 @@ func pingHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, va
 	if err := httputils.ParseForm(r); err != nil {
 		return err
 	}
-	msg, err := r.Form.Get("msg")
-	if err != nil {
-		return err
-	}
+	msg := r.Form.Get("msg")
 
-	_, err = w.Write([]byte(fmt.Sprintf(`OK: %s`, msg)))
+	_, err := w.Write([]byte(fmt.Sprintf(`OK: %s`, msg)))
 	return err
 }
 

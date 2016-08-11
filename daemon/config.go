@@ -1,15 +1,8 @@
 package daemon
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"io"
-	"io/ioutil"
-	"strings"
 	"sync"
 
-	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/logrus"
 	flag "github.com/2qif49lt/pflag"
 )

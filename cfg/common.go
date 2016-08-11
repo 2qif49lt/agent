@@ -2,7 +2,6 @@ package cfg
 
 import (
 	"crypto/tls"
-	"fmt"
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 	flag "github.com/2qif49lt/pflag"
 	"path/filepath"
@@ -64,7 +63,7 @@ func InitCommonFlags() *CommonFlags {
 	fs.StringVar(&com.TLSOptions.CAFile, "tlsca", filepath.Join(certPath, DeafultTlsCaFile), "Trust certs signed only by this CA")
 
 	fs.StringVar(&com.TLSOptions.KeyFile, "tlskey", filepath.Join(certPath, DefaultTlsKeyFile), "Path to TLS key file")
-	fs.StringVar(&com.TLSOptions.CertFile, "tlscert", filepath.Join(certPath, DefaultCertFile), "Path to TLS certificate file")
+	fs.StringVar(&com.TLSOptions.CertFile, "tlscert", filepath.Join(certPath, DefultTlsCertFile), "Path to TLS certificate file")
 	//	fs.BoolVar(&com.TLSOptions.InsecureSkipVerify,"tlsskip", false, "controls whether a client verifies the server's certificate")
 
 	fs.StringVar(&com.RsaSignFile, "rsakey", filepath.Join(certPath, DefaultRsaSignFile), "Path to Rsa Sign public/private key file")
@@ -92,7 +91,7 @@ func InitCommonFlags() *CommonFlags {
 func postParse(com *CommonFlags) {
 	if com != nil {
 		if com.NoTLS == true {
-			com.TlsOptions = nil
+			com.TLSOptions = nil
 		} else {
 			com.TLSOptions.ClientAuth = tls.RequireAndVerifyClientCert
 			com.TLSOptions.InsecureSkipVerify = false

@@ -150,6 +150,8 @@ func (cli *Cli) CmdHelp(args ...string) error {
 	}
 
 	if cli.Usage == nil {
+		flag.Usage()
+	} else {
 		cli.Usage()
 	}
 

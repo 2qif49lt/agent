@@ -18,8 +18,8 @@ import (
 )
 
 var (
-	comflag   = cfg.InitCommonFlags()
-	flHelp    = flag.BoolP("help", "h", false, "Print usage")
+	comflag = cfg.InitCommonFlags()
+	//	flHelp    = flag.BoolP("help", "h", false, "Print usage")
 	flVersion = flag.BoolP("version", "v", false, "Print version information and quit")
 )
 
@@ -48,13 +48,6 @@ func main() {
 
 	if *flVersion {
 		showVersion()
-		return
-	}
-
-	if *flHelp {
-		// if global flag --help is present, regardless of what other options and commands there are,
-		// just print the usage.
-		flag.Usage()
 		return
 	}
 

@@ -2,19 +2,19 @@ package main
 
 import (
 	_ "github.com/2qif49lt/dump"
-	log "github.com/2qif49lt/logrus"
+	//	log "github.com/2qif49lt/logrus"
 
 	"github.com/2qif49lt/agent/cfg"
-	"github.com/2qif49lt/agent/client"
-
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/cli/cmds"
-	"github.com/2qif49lt/agent/pkg/signal"
+	"github.com/2qif49lt/agent/client"
+	"github.com/2qif49lt/agent/version"
+	//"github.com/2qif49lt/agent/pkg/signal"
 	flag "github.com/2qif49lt/pflag"
 
 	"fmt"
 	"os"
-	"time"
+	//	"time"
 )
 
 var (
@@ -26,7 +26,7 @@ var (
 func main() {
 
 	flag.Merge(flag.CommandLine, comflag.FlagSet)
-	cobraAdaptor := cobraadaptor.NewCobraAdaptor(comflag)
+	cobraAdaptor := cmds.NewCobraAdaptor(comflag)
 
 	flag.Usage = func() {
 		fmt.Fprint(os.Stdout, "Usage: agent [OPTIONS] COMMAND [arg...]\n       agent [ --help |-h | -v | --version ]\n\n")
@@ -64,7 +64,7 @@ func main() {
 	if err := c.Run(flag.Args()...); err != nil {
 		if sterr, ok := err.(cli.StatusError); ok {
 			if sterr.Status != "" {
-				fmt.Fprintln(stderr, sterr.Status)
+				fmt.Fprintln(os.Stdout, sterr.Status)
 			}
 			// StatusError should only be used for errors, and all errors should
 			// have a non-zero exit status, so never exit with 0
@@ -73,11 +73,11 @@ func main() {
 			}
 			os.Exit(sterr.StatusCode)
 		}
-		fmt.Fprintln(stderr, err)
+		fmt.Fprintln(os.Stdout, err)
 		os.Exit(1)
 	}
 }
 
 func showVersion() {
-	fmt.Printf("Agent version %s, build %s\n", VERSION, BUILDTIME)
+	fmt.Printf("Agent version %s, build %s\n", version.CLI_VERSION, version.BUILDTIME)
 }

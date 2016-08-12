@@ -4,6 +4,8 @@ import (
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
+	"github.com/2qif49lt/agent/client/plugin"
+	"github.com/2qif49lt/agent/client/system"
 	"github.com/2qif49lt/agent/daemon/daemoncmd"
 
 	"github.com/2qif49lt/cobra"

@@ -32,7 +32,7 @@ func NewEventsCommand(agentCli *client.AgentCli) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "events [OPTIONS]",
 		Short: "Get real time events from the server",
-		Args:  cli.NoArgs,
+		Args:  cli.RequiresMaxArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runEvents(agentCli, &opts)
 		},
@@ -47,6 +47,9 @@ func NewEventsCommand(agentCli *client.AgentCli) *cobra.Command {
 }
 
 func runEvents(agentCli *client.AgentCli, opts *eventsOptions) error {
+	if initerr := agentCli.Initialize(); initerr != nil {
+		return initerr
+	}
 	eventFilterArgs := filters.NewArgs()
 
 	// Consolidate all filter flags, and sanity check them early.

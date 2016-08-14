@@ -5,20 +5,31 @@ import (
 
 	"golang.org/x/net/context"
 
-	Cli "github.com/2qif49lt/agent/cli"
-	flag "github.com/2qif49lt/pflag"
+	"github.com/2qif49lt/agent/cli"
+	"github.com/2qif49lt/cobra"
 )
 
-// CmdInfo displays system-wide information.
-//
-// Usage: agent info
-func (cli *AgentCli) CmdInfo(args ...string) error {
-	cmd := Cli.Subcmd("info")
-	cmd.Require(flag.Exact, 0)
+// NewInfoCommand returns a cobra command for `agent info` subcommands
+func NewInfoCommand(agentCli *AgentCli) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "info",
+		Short: "Displays system-wide information.",
+		Args:  cli.NoArgs,
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return agentCli.Initialize()
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			err := runInfo(agentCli)
+			if err != nil {
+				fmt.Println(err)
+			}
+		},
+	}
 
-	cmd.ParseFlags(args)
-
-	info, err := cli.client.Info(context.Background())
+	return cmd
+}
+func runInfo(agentCli *AgentCli) error {
+	info, err := agentCli.client.Info(context.Background())
 	if err != nil {
 		return err
 	}
@@ -26,5 +37,5 @@ func (cli *AgentCli) CmdInfo(args ...string) error {
 	//显示结果
 
 	fmt.Println(info)
-	return nil
+	return err
 }

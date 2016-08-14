@@ -1,7 +1,7 @@
 package plugin
 
 import (
-	"fmt"
+	//	"fmt"
 
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
@@ -14,9 +14,6 @@ func NewPluginCommand(rootCmd *cobra.Command, agentCli *client.AgentCli) {
 		Use:   "plugin",
 		Short: "Manage agent plugins",
 		Args:  cli.NoArgs,
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(cmd.UsageString())
-		},
 	}
 
 	cmd.AddCommand(

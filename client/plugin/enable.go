@@ -12,6 +12,10 @@ func newEnableCommand(agentCli *client.AgentCli) *cobra.Command {
 		Use:   "enable",
 		Short: "Enable a plugin",
 		Args:  cli.ExactArgs(1),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return agentCli.Initialize()
+		},
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return agentCli.Client().PluginEnable(context.Background(), args[0])
 		},

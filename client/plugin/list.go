@@ -18,6 +18,10 @@ func newListCommand(agentCli *client.AgentCli) *cobra.Command {
 		Short:   "List plugins",
 		Aliases: []string{"list"},
 		Args:    cli.ExactArgs(0),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return agentCli.Initialize()
+		},
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runList(agentCli)
 		},

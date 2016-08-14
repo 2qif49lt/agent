@@ -16,6 +16,9 @@ func newRemoveCommand(agentCli *client.AgentCli) *cobra.Command {
 		Short:   "Remove a plugin",
 		Aliases: []string{"remove"},
 		Args:    cli.RequiresMinArgs(1),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return agentCli.Initialize()
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runRemove(agentCli, args)
 		},

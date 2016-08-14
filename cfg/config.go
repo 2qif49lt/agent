@@ -23,12 +23,12 @@ const (
 
 	DefaultUniqueAgentIdFile = "agentid"
 
-	DeafultTlsCaFile  = "ca_cert.pem"
-	DefaultTlsKeyFile = "agent_key.pem" // 作为服务器和客户端时所需的证书不一样.
-	DefultTlsCertFile = "agent_cert.pem"
+	DeafultTlsCaFile  = "ca-cert.pem"
+	DefaultTlsKeyFile = "agentd-key.pem" // 作为服务器和客户端时所需的证书不一样.
+	DefultTlsCertFile = "agentd-cert.pem"
 
 	// DefaultSignPubFile 参数签名
-	DefaultRsaSignFile = "rsa.pem" // 用于检查调用者参数签名,agentd使用公钥,agent使用密钥.
+	DefaultRsaSignFile = "rsa-pub.pem" // 用于检查调用者参数签名,agentd使用公钥,agent使用密钥.
 )
 
 var C *cfgfile.ConfigFile

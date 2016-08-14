@@ -16,6 +16,10 @@ func newInstallCommand(agentCli *client.AgentCli) *cobra.Command {
 		Use:   "install",
 		Short: "Install a plugin",
 		Args:  cli.RequiresMinArgs(1), // 插件名,参数为版本号
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return agentCli.Initialize()
+		},
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runInstall(agentCli, args[0], args[1:])
 		},

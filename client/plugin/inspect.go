@@ -15,6 +15,10 @@ func newInspectCommand(agentCli *client.AgentCli) *cobra.Command {
 		Use:   "inspect",
 		Short: "Inspect a plugin",
 		Args:  cli.ExactArgs(1),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return agentCli.Initialize()
+		},
+
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runInspect(agentCli, args[0])
 		},

@@ -44,7 +44,10 @@ func NewVersionCommand(agentCli *client.AgentCli) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version [OPTIONS]",
 		Short: "Show the agent version information",
-		Args:  cli.ExactArgs(0),
+		Args:  cli.RequiresMaxArgs(1),
+		PreRunE: func(cmd *cobra.Command, args []string) error {
+			return agentCli.Initialize()
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runVersion(agentCli, &opts)
 		},
@@ -67,8 +70,7 @@ func runVersion(agentCli *client.AgentCli, opts *versionOptions) error {
 
 	tmpl, err := templates.Parse(templateFormat)
 	if err != nil {
-		return cli.StatusError{StatusCode: 64,
-			Status: "Template parsing error: " + err.Error()}
+		return err
 	}
 
 	vd := types.VersionResponse{

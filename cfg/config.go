@@ -7,10 +7,8 @@ import (
 	"github.com/2qif49lt/agent/utils"
 	"path/filepath"
 
-	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
 )
 
 const (
@@ -31,7 +29,7 @@ const (
 	DefaultRsaSignFile = "rsa-pub.pem" // 用于检查调用者参数签名,agentd使用公钥,agent使用密钥.
 )
 
-var C *cfgfile.ConfigFile
+var Conf *cfgfile.ConfigFile
 
 var (
 	configDir = os.Getenv("AGENT_CONFIG_PATH") // agent配置文件目录
@@ -73,68 +71,27 @@ func newcfgfile(fp string) *cfgfile.ConfigFile {
 	}
 }
 
+func InitConf() error {
+	_, err := Load()
+	return err
+}
+
 // Load reads the configuration files
 func Load() (*cfgfile.ConfigFile, error) {
-	cfgfile := newcfgfile(filepath.Join(GetConfigDir(), ConfigFileName))
+	prgpath, _ := utils.GetProcAbsDir()
 
-	if _, err := os.Stat(cfgfile.Filename); err == nil {
-		file, err := os.Open(cfgfile.Filename)
-		if err != nil {
-			return nil, fmt.Errorf("%s - %v", cfgfile.Filename, err)
-		}
-		defer file.Close()
-
-		err = cfgfile.LoadFromReader(file)
-		if err != nil {
-			err = fmt.Errorf("%s - %v", cfgfile.Filename, err)
-			return nil, err
-		}
-		return cfgfile, nil
-	} else {
-		return nil, fmt.Errorf("%s - %v", cfgfile.Filename, err)
+	conf := newcfgfile(filepath.Join(prgpath, ConfigFileName))
+	err := conf.Load()
+	if err != nil && err != cfgfile.ErrConfigFileMiss {
+		return nil, err
 	}
 
-	prgpath, _ := utils.GetProcAbsDir()
 	tmp, err := ioutil.ReadFile(filepath.Join(prgpath, DefaultUniqueAgentIdFile))
-
-	cfgfile.Agentid = string(tmp)
+	conf.Agentid = string(tmp)
 
 	if err == nil {
-		C = cfgfile
+		Conf = conf
 	}
 
-	return cfgfile, err
-}
-
-// IsTlsLegal return whether agentd install properly
-func IsTlsLegal(cfg *cfgfile.ConfigFile) error {
-	isexist := func(fn string) bool {
-		_, err := os.Stat(filepath.Join(GetCertPath(), fn))
-		return err == nil || os.IsExist(err)
-	}
-	if isexist(DeafultTlsCaFile) && isexist(DefaultTlsKeyFile) &&
-		isexist(DefultTlsCertFile) && isexist(DefaultRsaSignFile) {
-		return nil
-	}
-	return fmt.Errorf("cert or rsa files not exist")
-}
-
-func MergeCommonConfig(com *CommonFlags, f *cfgfile.ConfigFile) {
-
-	fn := func(to *string, from, def string) {
-		*to = strings.TrimSpace(*to)
-		from = strings.TrimSpace(from)
-
-		if *to == "" {
-			*to = from
-			if *to == "" {
-				*to = def
-			}
-		}
-	}
-	fn(&com.LogLevel, f.Loglvl, "InfoLevel")
-	fn(&com.Host, f.Host, fmt.Sprintf(`127.0.0.1:%d`, DefaultAgentdListenPort))
-	fn(&com.Master, f.Master.Srvs, "127.0.0.1:3568")
-
-	postParse(com)
+	return conf, err
 }

@@ -9,17 +9,41 @@ import (
 	"path/filepath"
 )
 
+var (
+	ErrConfigFileMiss = fmt.Errorf(`config file miss,continue run with the minimum setting`)
+)
+
 // ConfigFile ~/.agent/config.toml file info,for agentd.
 
 type ConfigFile struct {
 	SrvName string `toml:"srvname,omitempty"` // default Agentd
-	Host    string `toml:"host,omitempty"`    // if ip is empty, listen on 127.0.0.1 only
+	Host    string `toml:"host,omitempty"`    // if ip is empty, agentd listen all ip;agent connect 127.0.0.1
 	Loglvl  string `toml:"loglvl,omitempty"`  // default InfoLevel
 	Master  struct {
 		Srvs string `toml:"services,omitempty"`
 	}
 	Filename string `toml:"-"` // Note: for internal use only
 	Agentid  string `toml:"-"`
+}
+
+func (configFile *ConfigFile) Load() error {
+	if _, err := os.Stat(configFile.Filename); err == nil {
+		file, err := os.Open(configFile.Filename)
+		if err != nil {
+			return fmt.Errorf("%s - %v", configFile.Filename, err)
+		}
+		defer file.Close()
+
+		err = configFile.LoadFromReader(file)
+		if err != nil {
+			err = fmt.Errorf("%s - %v", configFile.Filename, err)
+			return err
+		}
+		return nil
+	} else {
+		configFile.SrvName = "helios"
+		return ErrConfigFileMiss
+	}
 }
 
 // LoadFromReader reads the configuration data given

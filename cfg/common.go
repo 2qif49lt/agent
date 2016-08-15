@@ -2,9 +2,13 @@ package cfg
 
 import (
 	"crypto/tls"
+	"fmt"
+	"github.com/2qif49lt/agent/cfg/cfgfile"
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 	flag "github.com/2qif49lt/pflag"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
 /*
@@ -88,13 +92,73 @@ func InitCommonFlags() *CommonFlags {
 	ComCfg = com
 	return com
 }
-func postParse(com *CommonFlags) {
-	if com != nil {
-		if com.NoTLS == true {
-			com.TLSOptions = nil
+
+// PostCheck 在参数解析后执行检查合并参数
+func PostCheck() error {
+	if ComCfg == nil {
+		return fmt.Errorf(`common flags is not been initialized!`)
+	} else {
+		if ComCfg.NoTLS == true {
+			ComCfg.TLSOptions = nil
 		} else {
-			com.TLSOptions.ClientAuth = tls.RequireAndVerifyClientCert
-			com.TLSOptions.InsecureSkipVerify = false
+			ComCfg.TLSOptions.ClientAuth = tls.RequireAndVerifyClientCert
+			ComCfg.TLSOptions.InsecureSkipVerify = false
 		}
 	}
+
+	if Conf == nil {
+		return fmt.Errorf(`config is not been loaded!`)
+	}
+
+	mergeCommonConfig(ComCfg, Conf)
+
+	if err := isTlsLegal(ComCfg.NoTLS, ComCfg.NoRsa); err != nil {
+		return err
+	}
+	return nil
+}
+
+// 如果命令行参数为空,则以配置文件值替换,如果配置文件也为空,则这里设置值
+func mergeCommonConfig(com *CommonFlags, f *cfgfile.ConfigFile) {
+
+	fn := func(to *string, from, def string) {
+		*to = strings.TrimSpace(*to)
+		from = strings.TrimSpace(from)
+
+		if *to == "" {
+			*to = from
+			if *to == "" {
+				*to = def
+			}
+		}
+	}
+	fn(&com.LogLevel, f.Loglvl, "InfoLevel")
+	fn(&com.Host, f.Host, fmt.Sprintf(`127.0.0.1:%d`, DefaultAgentdListenPort))
+	fn(&com.Master, f.Master.Srvs, "127.0.0.1:3678")
+}
+
+// IsTlsLegal return whether agentd install properly
+func isTlsLegal(notls, norsa bool) error {
+	isexist := func(fn string) bool {
+		_, err := os.Stat(filepath.Join(GetCertPath(), fn))
+		return err == nil || os.IsExist(err)
+	}
+
+	if !notls {
+		if isexist(DeafultTlsCaFile) && isexist(DefaultTlsKeyFile) &&
+			isexist(DefultTlsCertFile) {
+			return nil
+		} else {
+			return fmt.Errorf("cert files not exist")
+		}
+	}
+
+	if !norsa {
+		if isexist(DefaultRsaSignFile) {
+			return nil
+		} else {
+			return fmt.Errorf("rsa files not exist")
+		}
+	}
+	return nil
 }

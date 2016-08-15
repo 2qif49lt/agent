@@ -1,4 +1,4 @@
-package daemoncmd
+package daemon
 
 import (
 	"github.com/2qif49lt/agent/cfg"
@@ -12,9 +12,21 @@ func newStartCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "start [OPTIONS]",
-		Short: "启动agentd",
+		Short: "本地功能,启动agentd",
 		Args:  cli.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			name := cfg.Conf.SrvName
+			snflag := cmd.Flags().Lookup(daemonFlagSrvName)
+			if snflag != nil {
+				sn := snflag.Value.String()
+				if sn != "" {
+					name = sn
+				}
+			}
+
+			if name == "" {
+				name = "agentd"
+			}
 			return runStart(daemonCli)
 		},
 	}
@@ -29,7 +41,7 @@ func runStart(daemonCli *DaemonCli) error {
 		prg.StartConsole()
 	} else {
 		svcConfig := &service.Config{
-			Name: cfg.C.SrvName,
+			Name: cfg.Conf.SrvName,
 		}
 		srv, err := service.New(prg, svcConfig)
 		if err != nil {

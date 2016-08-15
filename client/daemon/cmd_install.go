@@ -1,4 +1,4 @@
-package daemoncmd
+package daemon
 
 import (
 	"fmt"
@@ -9,20 +9,25 @@ import (
 )
 
 func newInstallCommand() *cobra.Command {
-
 	cmd := &cobra.Command{
-		Use:   "install [service name]",
-		Short: "安装 agentd 作为服务,若不提供名称则以配置文件内 srvname",
-		Args:  cli.RequiresMaxArgs(1),
+		Use:   "install",
+		Short: "本地功能,将安装agentd服务",
+		Args:  cli.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			name := cfg.C.SrvName
-			if len(args) > 0 {
-				name = args[0]
+			name := cfg.Conf.SrvName
+			snflag := cmd.Flags().Lookup(daemonFlagSrvName)
+			if snflag != nil {
+				sn := snflag.Value.String()
+				if sn != "" {
+					name = sn
+				}
+			}
+			if name == "" {
+				name = "agentd"
 			}
 			return runInstall(name)
 		},
 	}
-
 	return cmd
 }
 
@@ -42,19 +47,29 @@ func runInstall(name string) error {
 }
 
 func newUnInstallCommand() *cobra.Command {
+	sn := ""
+
 	cmd := &cobra.Command{
-		Use:   "uninstall [service name]",
-		Short: "卸载 agentd 服务,若不提供名称则以配置文件内 srvname",
-		Args:  cli.RequiresMaxArgs(1),
+		Use:   "uninstall",
+		Short: "本地功能,将卸载agentd服务",
+		Args:  cli.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			name := cfg.C.SrvName
-			if len(args) > 0 {
-				name = args[0]
+			name := cfg.Conf.SrvName
+			snflag := cmd.Flags().Lookup(daemonFlagSrvName)
+			if snflag != nil {
+				sn := snflag.Value.String()
+				if sn != "" {
+					name = sn
+				}
+			}
+			if name == "" {
+				name = "agentd"
 			}
 			return runUnInstall(name)
 		},
 	}
-
+	flags := cmd.Flags()
+	flags.StringVarP(&sn, "name", "n", "", "指定服务名,若空则使用配置文件内值")
 	return cmd
 }
 

@@ -30,7 +30,8 @@ func newStartCommand() *cobra.Command {
 			return runStart(daemonCli)
 		},
 	}
-
+	flags := cmd.Flags()
+	daemonCli.InitFlags(flags)
 	return cmd
 }
 

@@ -45,9 +45,3 @@ func checkSystem() error {
 	}
 	return err
 }
-
-// configureMaxThreads sets the Go runtime max threads threshold
-// which is 90% of the kernel setting from /proc/sys/kernel/threads-max
-func configureMaxThreads(config *Config) error {
-	return nil
-}

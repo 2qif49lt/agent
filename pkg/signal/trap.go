@@ -32,7 +32,7 @@ func Trap(cleanup func()) {
 				continue
 			}
 			go func(sig os.Signal) {
-				println("Processing signal ", sig)
+				println("Exit signal ", sig.String())
 				switch sig {
 				case os.Interrupt, syscall.SIGTERM:
 					if atomic.LoadUint32(&interruptCount) < 3 {

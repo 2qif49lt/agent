@@ -72,7 +72,7 @@ func InitCommonFlags() *CommonFlags {
 
 	fs.StringVar(&com.RsaSignFile, "rsakey", filepath.Join(certPath, DefaultRsaSignFile), "Path to Rsa Sign public/private key file")
 
-	fs.StringVar(&com.Host, "host", "", "Agentd listen address or Agent connect to,[ip]:port")
+	fs.StringVar(&com.Host, "host", "", "Agentd listen address or Agent connect to,proto://[ip]:port")
 
 	fs.StringVar(&com.Master, "master", "", "Address of master service")
 
@@ -133,7 +133,7 @@ func mergeCommonConfig(com *CommonFlags, f *cfgfile.ConfigFile) {
 		}
 	}
 	fn(&com.LogLevel, f.Loglvl, "InfoLevel")
-	fn(&com.Host, f.Host, fmt.Sprintf(`127.0.0.1:%d`, DefaultAgentdListenPort))
+	fn(&com.Host, f.Host, fmt.Sprintf(`tcp://127.0.0.1:%d`, DefaultAgentdListenPort))
 	fn(&com.Master, f.Master.Srvs, "127.0.0.1:3678")
 }
 

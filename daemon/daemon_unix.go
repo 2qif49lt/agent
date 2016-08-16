@@ -4,11 +4,7 @@ package daemon
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
-	"runtime/debug"
-	"strconv"
-	"strings"
 
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/pkg/parsers/kernel"
@@ -53,23 +49,6 @@ func checkSystem() error {
 		return fmt.Errorf("The agent daemon needs to be run as root")
 	}
 	return checkKernel()
-}
-
-// configureMaxThreads sets the Go runtime max threads threshold
-// which is 90% of the kernel setting from /proc/sys/kernel/threads-max
-func configureMaxThreads(config *Config) error {
-	mt, err := ioutil.ReadFile("/proc/sys/kernel/threads-max")
-	if err != nil {
-		return err
-	}
-	mtint, err := strconv.Atoi(strings.TrimSpace(string(mt)))
-	if err != nil {
-		return err
-	}
-	maxThreads := (mtint / 100) * 90
-	debug.SetMaxThreads(maxThreads)
-	logrus.Debugf("Golang's threads limit set to %d", maxThreads)
-	return nil
 }
 
 func (daemon *Daemon) stats() (*types.StatsJSON, error) {

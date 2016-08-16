@@ -22,8 +22,8 @@ const (
 	DefaultUniqueAgentIdFile = "agentid"
 
 	DeafultTlsCaFile  = "ca-cert.pem"
-	DefaultTlsKeyFile = "agentd-key.pem" // 作为服务器和客户端时所需的证书不一样.
-	DefultTlsCertFile = "agentd-cert.pem"
+	DefaultTlsKeyFile = "tls-key.pem" // 作为服务器和客户端时所需的证书不一样.
+	DefultTlsCertFile = "tls-cert.pem"
 
 	// DefaultSignPubFile 参数签名
 	DefaultRsaSignFile = "rsa-pub.pem" // 用于检查调用者参数签名,agentd使用公钥,agent使用密钥.

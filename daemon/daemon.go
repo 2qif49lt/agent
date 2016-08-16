@@ -11,6 +11,8 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
+	"runtime/debug"
 	"sync"
 	"syscall"
 
@@ -74,9 +76,6 @@ func (daemon *Daemon) restore() error {
 	group.Wait()
 
 	if !debug {
-		if logrus.GetLevel() == logrus.InfoLevel {
-			fmt.Println()
-		}
 		logrus.Info("restore: done.")
 	}
 
@@ -95,12 +94,12 @@ func NewDaemon(config *Config) (daemon *Daemon, err error) {
 	if !platformSupported {
 		return nil, errSystemNotSupported
 	}
-
-	// Validate platform-specific requirements
-	if err := checkSystem(); err != nil {
-		return nil, err
+	if config.Root == true {
+		// Validate platform-specific requirements
+		if err := checkSystem(); err != nil {
+			return nil, err
+		}
 	}
-
 	// set up SIGUSR1 handler on Unix-like systems, or a Win32 global event
 	// on Windows to dump Go routine stacks
 	setupDumpStackTrap()
@@ -194,5 +193,17 @@ func (daemon *Daemon) Reload(config *Config) error {
 		}
 	}()
 
+	return nil
+}
+
+// configureMaxThreads sets the Go runtime max threads threshold
+func configureMaxThreads(config *Config) error {
+	if config.OSMaxThreadNum > 0 {
+		cpus := runtime.NumCPU()
+		maxThreads := cpus * config.OSMaxThreadNum
+		debug.SetMaxThreads(maxThreads)
+
+		logrus.Infof("Program threads limit set to %d", maxThreads)
+	}
 	return nil
 }

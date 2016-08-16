@@ -28,7 +28,7 @@ func NewDaemonCommand() *cobra.Command {
 		newUnInstallCommand(),
 	)
 	cmd.PersistentFlags().StringP(daemonFlagSrvName, daemonFlagSrvNameShort, "",
-		"指定服务名,若空则使用配置文件内值,若无配置则默认agentd")
+		"指定服务名,若空则使用配置文件内值,若无配置则默认")
 	return cmd
 }
 

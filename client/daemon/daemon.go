@@ -44,6 +44,9 @@ func NewDaemonCli() *DaemonCli {
 		CommonFlags: cfg.ComCfg,
 	}
 }
+func (cli *DaemonCli) InitFlags(cmd *flag.FlagSet) {
+	cli.Config.InstallFlags(cmd)
+}
 
 func (cli *DaemonCli) run() {
 	stopc := make(chan bool)

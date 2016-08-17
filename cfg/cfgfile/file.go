@@ -41,7 +41,7 @@ func (configFile *ConfigFile) Load() error {
 		}
 		return nil
 	} else {
-		configFile.SrvName = "helios"
+		configFile.SrvName = "agentd"
 		return ErrConfigFileMiss
 	}
 }

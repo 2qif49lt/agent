@@ -9,8 +9,9 @@ import (
 
 // Config defines the configuration of a agent daemon.
 type Config struct {
-	Root              bool // 是否以root启动
-	OSMaxThreadNum    int  // 程序最多占有多少线程数. 单位CPU个数.比如2 表示2倍CPU数量的线程
+	SrvName           string // 服务名
+	Root              bool   // 是否以root启动
+	OSMaxThreadNum    int    // 程序最多占有多少线程数. 单位CPU个数.比如2 表示2倍CPU数量的线程
 	AgentID           string
 	CorsHeaders       string
 	NoTLSClientVerify bool // 是否要求客户端验证
@@ -30,6 +31,7 @@ func ReloadConfiguration(configFile string, flags *flag.FlagSet, reload func(*Co
 // Subsequent calls to `flag.Parse` will populate config with values parsed
 // from the command-line.
 func (config *Config) InstallFlags(flags *flag.FlagSet) {
+	flags.StringVarP(&config.SrvName, "name", "n", "", "指定服务名,若空则使用配置文件内值,若无配置则默认")
 	flags.BoolVarP(&config.Root, "root", "r", true, "Run agent as root")
 	flags.IntVarP(&config.OSMaxThreadNum, "thread-num", "t", 0, "Set the maximum OS threads used by agentd,unit is the num of logical cpu.")
 	flags.StringVar(&config.AgentID, "agent-id", "", "Specify agent id")

@@ -1,6 +1,6 @@
 # 配置文件会替换cmdline里的未设置的值
 # windows service name,linux daemon name.
-srvname = "helios" 
+srvname = "heliosd" 
 
 [master]
 services = "https://master.example.com:3567"

@@ -64,3 +64,9 @@ func GetProcAbsDir() (string, error) {
 	}
 	return filepath.Dir(abs), nil
 }
+func ErrStr(e error) string {
+	if e == nil {
+		return "SUCC"
+	}
+	return "Erros: " + e.Error()
+}

@@ -6,6 +6,8 @@ import (
 	"runtime"
 	"sync/atomic"
 	"syscall"
+
+	"github.com/2qif49lt/logrus"
 )
 
 // Trap sets up a simplified signal "trap", appropriate for common
@@ -32,7 +34,7 @@ func Trap(cleanup func()) {
 				continue
 			}
 			go func(sig os.Signal) {
-				println("Exit signal ", sig.String())
+				logrus.Warnf("Exit signal: %s", sig.String())
 				switch sig {
 				case os.Interrupt, syscall.SIGTERM:
 					if atomic.LoadUint32(&interruptCount) < 3 {
@@ -46,10 +48,10 @@ func Trap(cleanup func()) {
 						}
 					} else {
 						// 3 SIGTERM/INT signals received; force exit without cleanup
-						println("Forcing  daemon shutdown without cleanup; 3 interrupts received")
+						logrus.Warnf("Forcing  daemon shutdown without cleanup; 3 interrupts received")
 					}
 				case syscall.SIGQUIT:
-					println("Forcing daemon shutdown without cleanup on SIGQUIT")
+					logrus.Warnf("Forcing daemon shutdown without cleanup on SIGQUIT")
 				}
 				//for the SIGINT/TERM, and SIGQUIT non-clean shutdown case, exit with 128 + signal #
 				os.Exit(128 + int(sig.(syscall.Signal)))

@@ -56,18 +56,23 @@ func GetCertPath() string {
 	return certPath
 }
 
+var changeConfigDir = false
+var changeCertPahth = false
+
 // SetConfigDir sets the directory the configuration file is stored in
 func SetConfigDir(dir string) {
+	changeConfigDir = true
 	configDir = dir
 }
 func SetCertPath(dir string) {
+	changeCertPahth = true
 	certPath = dir
 }
 
 // newcfgfile initializes an empty configuration file for the given file path 'fp'
 func newcfgfile(fp string) *cfgfile.ConfigFile {
 	return &cfgfile.ConfigFile{
-		SrvName:  "Agentd",
+		SrvName:  "agentd",
 		Filename: fp,
 	}
 }
@@ -79,7 +84,9 @@ func InitConf() error {
 
 // Load reads the configuration files
 func load() (*cfgfile.ConfigFile, error) {
-	logrus.Infoln("use config:", filepath.Join(configDir, ConfigFileName))
+	if changeConfigDir {
+		logrus.Infoln("use config:", filepath.Join(configDir, ConfigFileName))
+	}
 	conf := newcfgfile(filepath.Join(configDir, ConfigFileName))
 	err := conf.Load()
 	if err != nil && err != cfgfile.ErrConfigFileMiss {

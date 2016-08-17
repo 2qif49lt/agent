@@ -5,6 +5,7 @@ package cfg
 import (
 	"github.com/2qif49lt/agent/cfg/cfgfile"
 	"github.com/2qif49lt/agent/utils"
+	"github.com/2qif49lt/logrus"
 	"path/filepath"
 
 	"io/ioutil"
@@ -72,20 +73,19 @@ func newcfgfile(fp string) *cfgfile.ConfigFile {
 }
 
 func InitConf() error {
-	_, err := Load()
+	_, err := load()
 	return err
 }
 
 // Load reads the configuration files
-func Load() (*cfgfile.ConfigFile, error) {
-	prgpath, _ := utils.GetProcAbsDir()
-
-	conf := newcfgfile(filepath.Join(prgpath, ConfigFileName))
+func load() (*cfgfile.ConfigFile, error) {
+	logrus.Infoln("use config:", filepath.Join(configDir, ConfigFileName))
+	conf := newcfgfile(filepath.Join(configDir, ConfigFileName))
 	err := conf.Load()
 	if err != nil && err != cfgfile.ErrConfigFileMiss {
 		return nil, err
 	}
-
+	prgpath, _ := utils.GetProcAbsDir()
 	tmp, err := ioutil.ReadFile(filepath.Join(prgpath, DefaultUniqueAgentIdFile))
 	conf.Agentid = string(tmp)
 

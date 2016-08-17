@@ -37,18 +37,15 @@ func checkKernel() error {
 	return nil
 }
 
-// verifyDaemonSettings performs validation of daemon config struct
-func verifyDaemonSettings(config *Config) error {
+// checkSystem validates platform-specific requirements
+func checkSystem(broot bool) error {
+	if broot == true {
+		if os.Geteuid() != 0 {
+			return fmt.Errorf("The agent daemon needs to be run as root")
+		}
+	}
 
 	return nil
-}
-
-// checkSystem validates platform-specific requirements
-func checkSystem() error {
-	if os.Geteuid() != 0 {
-		return fmt.Errorf("The agent daemon needs to be run as root")
-	}
-	return checkKernel()
 }
 
 func (daemon *Daemon) stats() (*types.StatsJSON, error) {

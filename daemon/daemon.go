@@ -94,11 +94,9 @@ func NewDaemon(config *Config) (daemon *Daemon, err error) {
 	if !platformSupported {
 		return nil, errSystemNotSupported
 	}
-	if config.Root == true {
-		// Validate platform-specific requirements
-		if err := checkSystem(); err != nil {
-			return nil, err
-		}
+	// Validate platform-specific requirements
+	if err := checkSystem(config.Root); err != nil {
+		return nil, err
 	}
 	// set up SIGUSR1 handler on Unix-like systems, or a Win32 global event
 	// on Windows to dump Go routine stacks
@@ -205,5 +203,10 @@ func configureMaxThreads(config *Config) error {
 
 		logrus.Infof("Program threads limit set to %d", maxThreads)
 	}
+	return nil
+}
+
+// verifyDaemonSettings performs validation of daemon config struct
+func verifyDaemonSettings(config *Config) error {
 	return nil
 }

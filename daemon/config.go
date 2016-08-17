@@ -29,12 +29,11 @@ func ReloadConfiguration(configFile string, flags *flag.FlagSet, reload func(*Co
 // the current process.
 // Subsequent calls to `flag.Parse` will populate config with values parsed
 // from the command-line.
-func (config *Config) InstallFlags(cmd *flag.FlagSet) {
-	cmd.BoolVarP(&config.Root, "root", "r", true, "run agent as root")
-	cmd.IntVarP(&config.OSMaxThreadNum, "thread-num", "t", 0, "Set the maximum OS threads used by agentd,unit is the num of logical cpu.")
-
-	cmd.StringVar(&config.AgentID, "agent-id", "", "Set CORS headers in the remote API")
-	cmd.StringVar(&config.CorsHeaders, "api-cors-header", "", "Set CORS headers in the remote API")
-	cmd.BoolVar(&config.NoTLSClientVerify, "noverify", false, "DO NOT verify client certificate")
-	cmd.StringVarP(&config.SocketGroup, "group", "g", "agentd", "Group name for the unix socket")
+func (config *Config) InstallFlags(flags *flag.FlagSet) {
+	flags.BoolVarP(&config.Root, "root", "r", true, "Run agent as root")
+	flags.IntVarP(&config.OSMaxThreadNum, "thread-num", "t", 0, "Set the maximum OS threads used by agentd,unit is the num of logical cpu.")
+	flags.StringVar(&config.AgentID, "agent-id", "", "Specify agent id")
+	flags.StringVar(&config.CorsHeaders, "api-cors-header", "", "Set CORS headers in the remote API")
+	flags.BoolVar(&config.NoTLSClientVerify, "noverify", false, "DO NOT verify client certificate")
+	flags.StringVarP(&config.SocketGroup, "group", "g", "agentd", "Group name for the unix socket")
 }

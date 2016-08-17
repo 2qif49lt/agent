@@ -43,6 +43,8 @@ type CommonFlags struct {
 	RsaSignFile string // agentd 签名密钥 agent端有效 // agent签名密钥  agentd端有效
 
 	Master string
+
+	ConfigFolder string
 }
 
 var ComCfg *CommonFlags = nil
@@ -76,6 +78,8 @@ func InitCommonFlags() *CommonFlags {
 
 	fs.StringVar(&com.Master, "master", "", "Address of master service")
 
+	fs.StringVar(&com.ConfigFolder, "config-folder", "", "Specify the config folder path,by default:process path/config")
+
 	/*
 		--host参数可以为一下格式:
 			1.master://target agent id:{port/name}. 表示要通过master 中转请求到目标服务器上的port服务,默认为agent.
@@ -106,8 +110,18 @@ func PostCheck() error {
 		}
 	}
 
-	if Conf == nil {
-		return fmt.Errorf(`config is not been loaded!`)
+	if ComCfg.ConfigFolder != "" {
+		var err error
+		ComCfg.ConfigFolder, err = filepath.Abs(ComCfg.ConfigFolder)
+		if err != nil {
+			return err
+		}
+		SetConfigDir(ComCfg.ConfigFolder)
+	}
+
+	err := InitConf()
+	if err != nil {
+		return err
 	}
 
 	mergeCommonConfig(ComCfg, Conf)

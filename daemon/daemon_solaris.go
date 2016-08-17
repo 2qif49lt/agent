@@ -16,32 +16,20 @@ const (
 	platformSupported = true
 )
 
-func checkKernel() error {
-	// solaris can rely upon checkSystem() below, we don't skew kernel versions
-	return nil
-}
-
-// verifyDaemonSettings performs validation of daemon config struct
-func verifyDaemonSettings(config *Config) error {
-	// checkSystem validates platform-specific requirements
-	return nil
-}
-
-func checkSystem() error {
+func checkSystem(broot bool) error {
 	// check OS version for compatibility, ensure running in global zone
 	var err error
-	var id C.zoneid_t
 
-	if id, err = C.getzoneid(); err != nil {
-		return fmt.Errorf("Exiting. Error getting zone id: %+v", err)
-	}
-	if int(id) != 0 {
-		return fmt.Errorf("Exiting because the Docker daemon is not running in the global zone")
+	if broot == true {
+		var id C.zoneid_t
+
+		if id, err = C.getzoneid(); err != nil {
+			return fmt.Errorf("Exiting. Error getting zone id: %+v", err)
+		}
+		if int(id) != 0 {
+			return fmt.Errorf("Exiting because the agent daemon is not running in the global zone")
+		}
 	}
 
-	v, err := kernel.GetKernelVersion()
-	if kernel.CompareKernelVersion(*v, kernel.VersionInfo{Kernel: 5, Major: 12, Minor: 0}) < 0 {
-		return fmt.Errorf("Your Solaris kernel version: %s doesn't support Docker. Please upgrade to 5.12.0", v.String())
-	}
 	return err
 }

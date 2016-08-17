@@ -18,7 +18,7 @@ func setupDumpStackTrap() {
 		sa := syscall.SecurityAttributes{
 			Length: 0,
 		}
-		ev := "Global\\docker-daemon-" + fmt.Sprint(os.Getpid())
+		ev := "Global\\agent-daemon-" + fmt.Sprint(os.Getpid())
 		if h, _ := system.CreateEvent(&sa, false, false, ev); h != 0 {
 			logrus.Debugf("Stackdump - waiting signal at %s", ev)
 			for {

@@ -1,12 +1,23 @@
+/*
+1. test operatons on darwin
+	install ./agent daemon  install -n=helloagentd --agent-id=abcdefghijklmnopqrstuvwxyz -D
+	unstall ./agent daemon uninstall -n=helloagentd
+
+	cat /Library/LaunchDaemons/helloagentd.plist
+	launchctl load/unload /Library/LaunchDaemons/helloagentd.plist
+	launchctl list|grep helloagentd
+*/
 package daemon
 
 import (
+	"fmt"
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/cli"
 	coredaemon "github.com/2qif49lt/agent/daemon"
 	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/cobra"
 	"github.com/2qif49lt/logrus"
+	flag "github.com/2qif49lt/pflag"
 	"github.com/kardianos/service"
 )
 
@@ -22,10 +33,13 @@ func newInstallCommand() *cobra.Command {
 			if conf.SrvName != "" {
 				name = conf.SrvName
 			}
-			//		conargs := make([]string, 0)
-
-			logrus.Println("args", cmd.Name(), cmd.PersistentFlags().Args())
-			return runInstall(name, args)
+			conargs := make([]string, 0)
+			conargs = append(conargs, args...)
+			cmd.Flags().Visit(func(f *flag.Flag) {
+				tmp := fmt.Sprintf(`--%s=%s`, f.Name, f.Value.String())
+				conargs = append(conargs, tmp)
+			})
+			return runInstall(name, conargs)
 		},
 	}
 	flags := install.Flags()

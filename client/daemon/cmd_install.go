@@ -64,8 +64,8 @@ func runInstall(name string, args []string) error {
 	}
 	err = srv.Install()
 	logrus.WithFields(logrus.Fields{
-		"name":   name,
-		"return": utils.ErrStr(err),
+		"name":  name,
+		"error": utils.ErrStr(err),
 	}).Info(`install service`)
 	return err
 }
@@ -106,8 +106,8 @@ func runUnInstall(name string) error {
 	}
 	err = srv.Uninstall()
 	logrus.WithFields(logrus.Fields{
-		"name":   name,
-		"return": utils.ErrStr(err),
+		"name":  name,
+		"error": utils.ErrStr(err),
 	}).Info(`uninstall service`)
 	return err
 }

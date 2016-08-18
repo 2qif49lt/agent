@@ -11,9 +11,10 @@ import (
 
 func newStartCommand() *cobra.Command {
 	daemonCli := NewDaemonCli()
+	console := false
 
 	cmd := &cobra.Command{
-		Use:   "start [OPTIONS]",
+		Use:   "start",
 		Short: "本地功能,启动agentd",
 		Args:  cli.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
@@ -26,29 +27,123 @@ func newStartCommand() *cobra.Command {
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runStart(daemonCli)
+			return runStart(daemonCli, console)
 		},
 	}
 	flags := cmd.Flags()
 	daemonCli.InitFlags(flags)
+	flags.BoolVarP(&console, "console", "c", false, "是否cosole模式")
+
 	return cmd
 }
 
-func runStart(daemonCli *DaemonCli) error {
+func runStart(daemonCli *DaemonCli, console bool) error {
 	prg := &program{daemonCli}
 
-	if isconsole := service.Interactive(); isconsole {
+	if console {
 		return prg.StartConsole()
 	} else {
 		svcConfig := &service.Config{
 			Name: daemonCli.Config.SrvName,
 		}
-		srv, err := service.New(prg, svcConfig)
-		err = srv.Run()
+		srv, _ := service.New(prg, svcConfig)
+
+		var err error
+		if service.Interactive() == false {
+			err = srv.Run()
+		} else {
+			err = service.Control(srv, "start")
+		}
+
 		logrus.WithFields(logrus.Fields{
-			"name":   svcConfig.Name,
-			"return": utils.ErrStr(err),
+			"name":  svcConfig.Name,
+			"error": utils.ErrStr(err),
 		}).Info(`start service`)
+
 		return err
 	}
+}
+
+func newStopCommand() *cobra.Command {
+	sn := ""
+
+	cmd := &cobra.Command{
+		Use:   "stop",
+		Short: "本地功能,停止agentd,可以附加原因",
+		Args:  cli.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			name := cfg.Conf.SrvName
+			snflag := cmd.Flags().Lookup("name")
+			if snflag != nil {
+				sn := snflag.Value.String()
+				if sn != "" {
+					name = sn
+				}
+			}
+
+			return runStop(name)
+		},
+	}
+	flags := cmd.Flags()
+	flags.StringVarP(&sn, "name", "n", "", "指定服务名,若空则使用配置文件内值")
+	return cmd
+}
+
+func runStop(name string) error {
+	svcConfig := &service.Config{
+		Name: name,
+	}
+	prg := &program{}
+	srv, err := service.New(prg, svcConfig)
+	if err != nil {
+		return err
+	}
+	err = srv.Stop()
+	logrus.WithFields(logrus.Fields{
+		"name":  name,
+		"error": utils.ErrStr(err),
+	}).Info(`stop service`)
+	return err
+}
+
+func newReStartCommand() *cobra.Command {
+	sn := ""
+
+	cmd := &cobra.Command{
+		Use:   "restart [reason]",
+		Short: "本地功能,重启agentd",
+		Args:  cli.NoArgs,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			name := cfg.Conf.SrvName
+			snflag := cmd.Flags().Lookup("name")
+			if snflag != nil {
+				sn := snflag.Value.String()
+				if sn != "" {
+					name = sn
+				}
+			}
+
+			return runReStart(name)
+		},
+	}
+	flags := cmd.Flags()
+	flags.StringVarP(&sn, "name", "n", "", "指定服务名,若空则使用配置文件内值")
+	return cmd
+}
+
+func runReStart(name string) error {
+	svcConfig := &service.Config{
+		Name: name,
+	}
+	prg := &program{}
+	srv, err := service.New(prg, svcConfig)
+	if err != nil {
+		return err
+	}
+	err = srv.Restart()
+	logrus.WithFields(logrus.Fields{
+		"name":  name,
+		"error": utils.ErrStr(err),
+	}).Info(`restart service`)
+	return err
 }

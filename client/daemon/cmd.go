@@ -21,6 +21,8 @@ func NewDaemonCommand() *cobra.Command {
 		newInstallCommand(),
 		newStartCommand(),
 		newUnInstallCommand(),
+		newStopCommand(),
+		newReStartCommand(),
 	)
 
 	return cmd

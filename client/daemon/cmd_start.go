@@ -17,12 +17,15 @@ func newStartCommand() *cobra.Command {
 		Short: "本地功能,启动agentd",
 		Args:  cli.NoArgs,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			return nil
-		},
-		RunE: func(cmd *cobra.Command, args []string) error {
 			if daemonCli.Config.SrvName == "" {
 				daemonCli.Config.SrvName = cfg.Conf.SrvName
 			}
+			if daemonCli.Config.AgentID == "" {
+				daemonCli.Config.AgentID = cfg.Conf.Agentid
+			}
+			return nil
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
 			return runStart(daemonCli)
 		},
 	}

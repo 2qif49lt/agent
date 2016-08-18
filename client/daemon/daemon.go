@@ -171,8 +171,8 @@ func (cli *DaemonCli) start() (err error) {
 	logrus.WithFields(logrus.Fields{
 		"version":   version.SRV_VERSION,
 		"buildtime": version.BUILDTIME,
-		"agent id":  cli.Config.AgentID,
-	}).Info("Agent daemon start")
+		"agentid":   cli.Config.AgentID,
+	}).Info("Daemon start")
 
 	loglev, err := logrus.ParseLevel(cli.CommonFlags.LogLevel)
 	if err != nil {

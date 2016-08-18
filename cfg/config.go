@@ -10,6 +10,7 @@ import (
 
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 const (
@@ -94,7 +95,7 @@ func load() (*cfgfile.ConfigFile, error) {
 	}
 	prgpath, _ := utils.GetProcAbsDir()
 	tmp, err := ioutil.ReadFile(filepath.Join(prgpath, DefaultUniqueAgentIdFile))
-	conf.Agentid = string(tmp)
+	conf.Agentid = strings.TrimSpace(string(tmp))
 
 	if err == nil {
 		Conf = conf

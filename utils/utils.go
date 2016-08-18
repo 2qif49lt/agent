@@ -66,7 +66,7 @@ func GetProcAbsDir() (string, error) {
 }
 func ErrStr(e error) string {
 	if e == nil {
-		return "SUCC"
+		return "nil"
 	}
-	return "Erros: " + e.Error()
+	return e.Error()
 }

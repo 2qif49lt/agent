@@ -83,6 +83,10 @@ func InitConf() error {
 	return err
 }
 
+const (
+	CLIENT_AGENT_ID = `00000000-0000-0000-0000-000000000000`
+)
+
 // Load reads the configuration files
 func load() (*cfgfile.ConfigFile, error) {
 	if changeConfigDir {
@@ -95,11 +99,13 @@ func load() (*cfgfile.ConfigFile, error) {
 	}
 	prgpath, _ := utils.GetProcAbsDir()
 	tmp, err := ioutil.ReadFile(filepath.Join(prgpath, DefaultUniqueAgentIdFile))
-	conf.Agentid = strings.TrimSpace(string(tmp))
-
-	if err == nil {
-		Conf = conf
+	if err != nil {
+		conf.Agentid = CLIENT_AGENT_ID
+	} else {
+		conf.Agentid = strings.TrimSpace(string(tmp))
 	}
 
-	return conf, err
+	Conf = conf
+
+	return conf, nil
 }

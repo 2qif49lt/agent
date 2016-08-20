@@ -12,17 +12,31 @@ import (
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 	"github.com/2qif49lt/agent/pkg/opts"
 	"github.com/2qif49lt/agent/version"
+	flag "github.com/2qif49lt/pflag"
 )
+
+type Config struct {
+	*cfg.CommonFlags
+	// 操作命令的JSON格式
+	Mission string
+}
 
 // AgentCli represents the agent command line client.
 // Instances of the client can be returned from NewDockerCli.
 type AgentCli struct {
-	// initializing closure
-	init   func() error
-	common *cfg.CommonFlags
+	*Config
 
+	// initializing closure
+	init func() error
 	// api client
 	client apiclient.APIClient
+}
+
+func (config *Config) installFlags(flags *flag.FlagSet) {
+	flags.StringVarP(&config.Mission, "mission-file", "m", "", "specify the json formated mission file path,the content's field will overwrite the flags")
+}
+func (cli *AgentCli) InitFlags(cmd *flag.FlagSet) {
+	cli.Config.installFlags(cmd)
 }
 
 // Initialize calls the init function that will setup the configuration for the client
@@ -44,7 +58,9 @@ func (cli *AgentCli) Client() apiclient.APIClient {
 // If the tls.Config is set the client scheme will be set to https.
 func NewAgentCli(com *cfg.CommonFlags) *AgentCli {
 	cli := &AgentCli{
-		common: com,
+		Config: &Config{
+			CommonFlags: com,
+		},
 	}
 
 	cli.init = func() error {

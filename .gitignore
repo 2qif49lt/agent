@@ -4,6 +4,7 @@ binary/agent
 !binary/config/
 !binary/cert/
 !binary/agentid
+!binary/mission.json
 agent.sublime-workspace
 
 

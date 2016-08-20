@@ -3,9 +3,6 @@
 package client
 
 import (
-	"io"
-
-	"github.com/2qif49lt/agent/api/types"
 	"golang.org/x/net/context"
 )
 
@@ -17,3 +14,8 @@ type APIClient interface {
 
 // Ensure that Client always implements APIClient.
 var _ APIClient = &Client{}
+
+// Info returns information about the agentd server.
+func (cli *Client) Experimental(ctx context.Context) error {
+	return nil
+}

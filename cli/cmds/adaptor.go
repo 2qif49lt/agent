@@ -8,7 +8,7 @@ import (
 	"github.com/2qif49lt/agent/client/system"
 
 	"github.com/2qif49lt/cobra"
-	"github.com/2qif49lt/pflag"
+	flag "github.com/2qif49lt/pflag"
 
 	"os"
 )
@@ -48,8 +48,9 @@ func NewCobraAdaptor(com *cfg.CommonFlags) CobraAdaptor {
 	)
 	plugin.NewPluginCommand(rootCmd, agentCli)
 
-	cmdflags := rootCmd.PersistentFlags()
-	pflag.Merge(cmdflags, com.FlagSet)
+	persinFlags := rootCmd.PersistentFlags()
+	flag.Merge(persinFlags, com.FlagSet)
+	agentCli.InitFlags(persinFlags)
 
 	return CobraAdaptor{
 		rootCmd:  rootCmd,

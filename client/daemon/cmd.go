@@ -24,7 +24,8 @@ func NewDaemonCommand() *cobra.Command {
 		newStopCommand(),
 		newReStartCommand(),
 	)
-
+	// opt-json为client 专属
+	cmd.AddDrop("mission-file")
 	return cmd
 }
 

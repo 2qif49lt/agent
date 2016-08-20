@@ -3,7 +3,7 @@
 	[
 		{
             "folder_exclude_patterns": [".svn", ".git", ".sass-cache","log","agent"],
-			"file_include_patterns": ["*.go","*.md","makefile","*.sh","*.toml","*.pem"],
+			"file_include_patterns": ["*.go","*.md","makefile","*.sh","*.toml","*.pem","*.json"],
 			"follow_symlinks": true,
 			"path": "."
 		}

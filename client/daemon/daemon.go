@@ -74,8 +74,11 @@ func (cli *DaemonCli) run() {
 	}
 }
 func (cli *DaemonCli) start() (err error) {
-
-	// read config
+	loglev, err := logrus.ParseLevel(cli.CommonFlags.LogLevel)
+	if err != nil {
+		loglev = logrus.InfoLevel
+	}
+	logrus.SetLevel(loglev)
 
 	if utils.ExperimentalBuild() {
 		logrus.Warn("Running experimental build")
@@ -111,11 +114,8 @@ func (cli *DaemonCli) start() (err error) {
 	Hosts := make([]string, 0)
 	Hosts = append(Hosts, cli.CommonFlags.Host)
 	/*
-		if !strings.Contains(cli.CommonFlags.Host, "127.0.0.1") &&
-			!strings.Contains(cli.CommonFlags.Host, "localhost") {
-			_, port, err := net.SplitHostPort(cli.CommonFlags.Host)
-			Hosts = append(Hosts, fmt.Sprintf(`127.0.0.1:%s`, port))
-		}
+
+		todo: 如果cli.CommonFlags.Host只指定了端口,则在LOOPBACK上为正常http服务器,并且没有参数校验
 
 	*/
 	api := apiserver.New(serverConfig)
@@ -173,13 +173,6 @@ func (cli *DaemonCli) start() (err error) {
 		"buildtime": version.BUILDTIME,
 		"agentid":   cli.Config.AgentID,
 	}).Info("Daemon start")
-
-	loglev, err := logrus.ParseLevel(cli.CommonFlags.LogLevel)
-	if err != nil {
-		loglev = logrus.InfoLevel
-	}
-
-	logrus.SetLevel(loglev)
 
 	return nil
 }

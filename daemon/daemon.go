@@ -22,9 +22,7 @@ import (
 	"github.com/2qif49lt/agent/daemon/events"
 	"github.com/2qif49lt/agent/pkg/progress"
 	"github.com/2qif49lt/agent/pkg/streamformatter"
-	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/logrus"
-
 	"github.com/docker/libtrust"
 )
 
@@ -42,13 +40,7 @@ type Daemon struct {
 
 // 恢复状态
 func (daemon *Daemon) restore() error {
-	var (
-		debug = utils.IsDebugEnabled()
-	)
-
-	if !debug {
-		logrus.Info("restore: start.")
-	}
+	logrus.Debug("Restore: start.")
 
 	group := sync.WaitGroup{}
 	for i := 0; i != 10; i++ {
@@ -75,9 +67,7 @@ func (daemon *Daemon) restore() error {
 
 	group.Wait()
 
-	if !debug {
-		logrus.Info("restore: done.")
-	}
+	logrus.Debug("Restore: done.")
 
 	return nil
 }

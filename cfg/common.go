@@ -3,12 +3,13 @@ package cfg
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/2qif49lt/agent/cfg/cfgfile"
-	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
-	flag "github.com/2qif49lt/pflag"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/2qif49lt/agent/cfg/cfgfile"
+	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
+	flag "github.com/2qif49lt/pflag"
 )
 
 /*
@@ -101,13 +102,17 @@ func InitCommonFlags() *CommonFlags {
 func PostCheck() error {
 	if ComCfg == nil {
 		return fmt.Errorf(`common flags is not been initialized!`)
+	}
+
+	if ComCfg.Debug == true {
+		ComCfg.LogLevel = "debug"
+	}
+
+	if ComCfg.NoTLS == true {
+		ComCfg.TLSOptions = nil
 	} else {
-		if ComCfg.NoTLS == true {
-			ComCfg.TLSOptions = nil
-		} else {
-			ComCfg.TLSOptions.ClientAuth = tls.RequireAndVerifyClientCert
-			ComCfg.TLSOptions.InsecureSkipVerify = false
-		}
+		ComCfg.TLSOptions.ClientAuth = tls.RequireAndVerifyClientCert
+		ComCfg.TLSOptions.InsecureSkipVerify = false
 	}
 
 	if ComCfg.ConfigFolder != "" {
@@ -135,7 +140,7 @@ func PostCheck() error {
 // 如果命令行参数为空,则以配置文件值替换,如果配置文件也为空,则这里设置值
 func mergeCommonConfig(com *CommonFlags, f *cfgfile.ConfigFile) {
 
-	fn := func(to *string, from, def string) {
+	ifthenifthen := func(to *string, from, def string) {
 		*to = strings.TrimSpace(*to)
 		from = strings.TrimSpace(from)
 
@@ -146,9 +151,9 @@ func mergeCommonConfig(com *CommonFlags, f *cfgfile.ConfigFile) {
 			}
 		}
 	}
-	fn(&com.LogLevel, f.Loglvl, "InfoLevel")
-	fn(&com.Host, f.Host, fmt.Sprintf(`tcp://127.0.0.1:%d`, DefaultAgentdListenPort))
-	fn(&com.Master, f.Master.Srvs, "127.0.0.1:3678")
+	ifthenifthen(&com.LogLevel, f.Loglvl, "info")
+	ifthenifthen(&com.Host, f.Host, fmt.Sprintf(`tcp://127.0.0.1:%d`, DefaultAgentdListenPort))
+	ifthenifthen(&com.Master, f.Master.Srvs, "127.0.0.1:3678")
 }
 
 // IsTlsLegal return whether agentd install properly

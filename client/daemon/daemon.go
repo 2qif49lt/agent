@@ -14,7 +14,7 @@ import (
 	pluginrouter "github.com/2qif49lt/agent/api/server/router/plugin"
 	systemrouter "github.com/2qif49lt/agent/api/server/router/system"
 	"github.com/2qif49lt/agent/cfg"
-	coredaemon "github.com/2qif49lt/agent/daemon"
+	clientdaemon "github.com/2qif49lt/agent/daemon"
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 	"github.com/2qif49lt/agent/pkg/listeners"
 	"github.com/2qif49lt/agent/pkg/signal"
@@ -27,17 +27,17 @@ import (
 
 // DaemonCli represents the daemon CLI.
 type DaemonCli struct {
-	*coredaemon.Config
+	*clientdaemon.Config
 	*cfg.CommonFlags
 
 	configFile *string
 	api        *apiserver.Server
-	d          *coredaemon.Daemon
+	d          *clientdaemon.Daemon
 }
 
 // NewDaemonCli returns a pre-configured daemon CLI
 func NewDaemonCli() *DaemonCli {
-	daemonConfig := new(coredaemon.Config)
+	daemonConfig := new(clientdaemon.Config)
 
 	return &DaemonCli{
 		Config:      daemonConfig,
@@ -90,10 +90,11 @@ func (cli *DaemonCli) start() (err error) {
 	}
 
 	serverConfig := &apiserver.Config{
-		Logging:     true,
-		SocketGroup: cli.Config.SocketGroup,
-		Version:     version.SRV_VERSION,
-		CorsHeaders: cli.Config.CorsHeaders,
+		Logging:       true,
+		SocketGroup:   cli.Config.SocketGroup,
+		Version:       version.SRV_VERSION,
+		CorsHeaders:   cli.Config.CorsHeaders,
+		CertExtenAuth: cli.Config.CertExtenAuth,
 	}
 
 	if cli.CommonFlags.NoTLS == false {
@@ -154,7 +155,7 @@ func (cli *DaemonCli) start() (err error) {
 		return err
 	}
 
-	d, err := coredaemon.NewDaemon(cli.Config)
+	d, err := clientdaemon.NewDaemon(cli.Config)
 	if err != nil {
 		logrus.Errorf("Error starting daemon: %v", err)
 		return err
@@ -178,14 +179,14 @@ func (cli *DaemonCli) start() (err error) {
 }
 
 func (cli *DaemonCli) reloadConfig() {
-	reload := func(config *coredaemon.Config) {
+	reload := func(config *clientdaemon.Config) {
 		if err := cli.d.Reload(config); err != nil {
 			logrus.Errorf("Error reconfiguring the daemon: %v", err)
 			return
 		}
 	}
 
-	if err := coredaemon.ReloadConfiguration(*cli.configFile, flag.CommandLine, reload); err != nil {
+	if err := clientdaemon.ReloadConfiguration(*cli.configFile, flag.CommandLine, reload); err != nil {
 		logrus.Error(err)
 	}
 }
@@ -199,7 +200,7 @@ func (cli *DaemonCli) stop() {
 // shutdownDaemon just wraps daemon.Shutdown() to handle a timeout in case
 // d.Shutdown() is waiting too long to kill container or worst it's
 // blocked there
-func shutdownDaemon(d *coredaemon.Daemon, timeout time.Duration) {
+func shutdownDaemon(d *clientdaemon.Daemon, timeout time.Duration) {
 	ch := make(chan struct{})
 	go func() {
 		d.Shutdown()
@@ -213,11 +214,11 @@ func shutdownDaemon(d *coredaemon.Daemon, timeout time.Duration) {
 	}
 }
 
-func loadDaemonCliConfig(config *coredaemon.Config, flags *flag.FlagSet, commonConfig *cfg.CommonFlags, configFile string) (*coredaemon.Config, error) {
+func loadDaemonCliConfig(config *clientdaemon.Config, flags *flag.FlagSet, commonConfig *cfg.CommonFlags, configFile string) (*clientdaemon.Config, error) {
 	return config, nil
 }
 
-func initRouter(s *apiserver.Server, d *coredaemon.Daemon) {
+func initRouter(s *apiserver.Server, d *clientdaemon.Daemon) {
 	routers := []router.Router{
 		systemrouter.NewRouter(d),
 		pluginrouter.NewRouter(plugin.GetManager()),

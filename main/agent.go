@@ -28,3 +28,5 @@ func main() {
 	cobraAdaptor := cmds.NewCobraAdaptor(comflag)
 	cobraAdaptor.Cmd().Execute()
 }
+
+// todo  服务器路由层加入证书扩展字段认证.

@@ -16,7 +16,9 @@ type Config struct {
 	CorsHeaders       string
 	NoTLSClientVerify bool // 是否要求客户端验证
 	SocketGroup       string
-	reloadLock        sync.Mutex
+	CertExtenAuth     bool // 对证书1.2.3.4字段进行检查
+
+	reloadLock sync.Mutex
 }
 
 // ReloadConfiguration reads the configuration in the host and reloads the daemon and server.
@@ -38,4 +40,6 @@ func (config *Config) InstallFlags(flags *flag.FlagSet) {
 	flags.StringVar(&config.CorsHeaders, "api-cors-header", "", "Set CORS headers in the remote API")
 	flags.BoolVar(&config.NoTLSClientVerify, "noverify", false, "DO NOT verify client certificate")
 	flags.StringVarP(&config.SocketGroup, "group", "g", "agentd", "Group name for the unix socket")
+	flags.BoolVar(&config.CertExtenAuth, "cert-exten-auth", false, "check the extenion field for routing")
+
 }

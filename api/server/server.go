@@ -22,12 +22,13 @@ const versionMatcher = "/v{version:[0-9.]+}"
 
 // Config provides the configuration for the API server
 type Config struct {
-	Logging     bool
-	CorsHeaders string
-	Version     string
-	SocketGroup string
-	TLSConfig   *tls.Config
-	RSAVerify   string // 参数校验
+	Logging       bool
+	CorsHeaders   string
+	Version       string
+	SocketGroup   string
+	TLSConfig     *tls.Config
+	RSAVerify     string // 参数校验
+	CertExtenAuth bool   // 对证书1.2.3.4字段进行检查
 }
 
 // HTTPServer contains an instance of http server and the listener.

@@ -13,7 +13,7 @@ import (
 	"fmt"
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/cli"
-	coredaemon "github.com/2qif49lt/agent/daemon"
+	clientdaemon "github.com/2qif49lt/agent/daemon"
 	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/cobra"
 	"github.com/2qif49lt/logrus"
@@ -22,7 +22,7 @@ import (
 )
 
 func newInstallCommand() *cobra.Command {
-	conf := &coredaemon.Config{}
+	conf := &clientdaemon.Config{}
 
 	install := &cobra.Command{
 		Use:   "install",

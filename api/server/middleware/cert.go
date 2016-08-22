@@ -17,6 +17,7 @@ const (
 )
 
 // CertExtensionAuthMiddleware check client's certificate's custom field 1.2.3.4 for authenticating.
+// 可能考虑只对插件进行类似的授权鉴定
 func CertExtensionAuthMiddleware(handler func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error) func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
 		if r.TLS != nil {

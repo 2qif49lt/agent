@@ -29,4 +29,4 @@ func main() {
 	cobraAdaptor.Cmd().Execute()
 }
 
-// todo  服务器路由层加入证书扩展字段认证.
+// todo  完成文件输入结构.

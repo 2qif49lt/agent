@@ -19,6 +19,9 @@ func (s *Server) handleWithGlobalMiddlewares(handler httputils.APIFunc) httputil
 	if s.cfg.Logging && logrus.GetLevel() == logrus.DebugLevel {
 		next = middleware.DebugRequestMiddleware(next)
 	}
+	if s.cfg.CertExtenAuth {
+		next = middleware.CertExtensionAuthMiddleware(next)
+	}
 
 	return next
 }

@@ -36,12 +36,13 @@ then
 	rm -v new-server.csr
 elif [ $1 = "client" ]
 then
+	# 字符串可以是正则，如权限全开：.+
 	ext='extendedKeyUsage =critical,clientAuth\n 1.2.3.4=ASN1:UTF8String:'
 	if [ $# -gt 1 ]
 	then
 		ext="${ext}$2"
 	else
-		ext="${ext}none"
+		ext="${ext}ping info"
 	fi
 	echo "$ext"
 	echo "${ext}" > extfile.cnf

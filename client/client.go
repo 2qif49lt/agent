@@ -64,7 +64,7 @@ func NewAgentCli(com *cfg.CommonFlags) *AgentCli {
 	}
 
 	cli.init = func() error {
-		client, err := NewAPIClientFromFlags(com)
+		client, err := NewAPIClient(cli.Config)
 		if err != nil {
 			return err
 		}
@@ -77,9 +77,13 @@ func NewAgentCli(com *cfg.CommonFlags) *AgentCli {
 	return cli
 }
 
-// NewAPIClientFromFlags creates a new APIClient from command line flags
-func NewAPIClientFromFlags(com *cfg.CommonFlags) (apiclient.APIClient, error) {
-	host, err := opts.ParseHost(!com.NoTLS, com.Host)
+// NewAPIClient creates a new APIClient
+func NewAPIClient(clicfg *Config) (apiclient.APIClient, error) {
+	com := clicfg.CommonFlags
+	host, err := opts.ParseHost(com.Host)
+	if err != nil {
+		return nil, err
+	}
 
 	customHeaders := map[string]string{}
 	customHeaders["User-Agent"] = clientUserAgent()
@@ -91,7 +95,7 @@ func NewAPIClientFromFlags(com *cfg.CommonFlags) (apiclient.APIClient, error) {
 
 	httpClient, err := newHTTPClient(host, com.TLSOptions)
 	if err != nil {
-		return &apiclient.Client{}, err
+		return nil, err
 	}
 
 	return apiclient.NewClient(host, verStr, httpClient, customHeaders)

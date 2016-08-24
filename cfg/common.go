@@ -75,7 +75,7 @@ func InitCommonFlags() *CommonFlags {
 
 	fs.StringVar(&com.RsaSignFile, "rsakey", filepath.Join(certPath, DefaultRsaSignFile), "Path to Rsa Sign public/private key file")
 
-	fs.StringVar(&com.Host, "host", "", "Agentd listen address or Agent connect to,proto://[ip]:port")
+	fs.StringVarP(&com.Host, "host", "H", "", "Agentd listen address or Agent connect to,proto://[ip]:port")
 
 	fs.StringVar(&com.Master, "master", "", "Address of master service")
 
@@ -83,15 +83,15 @@ func InitCommonFlags() *CommonFlags {
 
 	/*
 		--host参数可以为一下格式:
-			1.master://target agent id:{port/name}. 表示要通过master 中转请求到目标服务器上的port服务,默认为agent.
+			1.master://target agent id:{port/name}. 表示要通过master 中转请求到目标服务器上的port服务,默认为agent3567.
 			2.tcp://target agent ip:{port}.
-			3.unix:///var/run/agentd.sock
-			4.npipe:////./pipe/agentd_engine
-			5.tcp://127.0.0.1:{port}
+			3.unix:///var/run/agentd.sock 或缩写：unix://
+			4.npipe:////./pipe/agentd_engine 或缩写 npipe://
+			5.tcp://127.0.0.1:{port}  详细写法见pkg/opts/hosts_test.go
 			6.空
 
 		当--host参数为空,作为agent时连127.0.0.1:3567
-						作为agent时,且配置文件Host字段为空时:则监听127.0.0.1:3567
+						作为agentd时,且配置文件Host字段为空时:则监听127.0.0.1:3567
 
 	*/
 	ComCfg = com

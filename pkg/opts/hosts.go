@@ -11,15 +11,11 @@ import (
 var (
 	// DefaultHTTPPort Default HTTP Port used if only the protocol is provided to -H flag e.g. agent daemon -H tcp://
 	DefaultHTTPPort = 3567 // Default HTTP Port
-	// DefaultTLSHTTPPort Default HTTP Port used when TLS enabled
-	DefaultTLSHTTPPort = 3568 // Default TLS encrypted HTTP Port
 	// DefaultUnixSocket Path for the unix socket.
 	// agent daemon by default always listens on the default unix socket
 	DefaultUnixSocket = "/var/run/agentd.sock"
 	// DefaultTCPHost constant defines the default host string used by agent on Windows
 	DefaultTCPHost = fmt.Sprintf("tcp://%s:%d", DefaultHTTPHost, DefaultHTTPPort)
-	// DefaultTLSHost constant defines the default host string used by agent for TLS sockets
-	DefaultTLSHost = fmt.Sprintf("tcp://%s:%d", DefaultHTTPHost, DefaultTLSHTTPPort)
 	// DefaultNamedPipe defines the default named pipe used by agent on Windows
 	DefaultNamedPipe = `//./pipe/agentd_engine`
 )
@@ -27,9 +23,9 @@ var (
 // ValidateHost validates that the specified string is a valid host and returns it.
 func ValidateHost(val string) (string, error) {
 	host := strings.TrimSpace(val)
-	// The empty string means default and is not handled by parseDockerDaemonHost
+	// The empty string means default and is not handled by parseAgentDaemonHost
 	if host != "" {
-		_, err := parseDockerDaemonHost(host)
+		_, err := parseAgentDaemonHost(host)
 		if err != nil {
 			return val, err
 		}
@@ -40,17 +36,13 @@ func ValidateHost(val string) (string, error) {
 }
 
 // ParseHost and set defaults for a Daemon host string
-func ParseHost(defaultToTLS bool, val string) (string, error) {
+func ParseHost(val string) (string, error) {
 	host := strings.TrimSpace(val)
 	if host == "" {
-		if defaultToTLS {
-			host = DefaultTLSHost
-		} else {
-			host = DefaultHost
-		}
+		host = DefaultTCPHost
 	} else {
 		var err error
-		host, err = parseDockerDaemonHost(host)
+		host, err = parseAgentDaemonHost(host)
 		if err != nil {
 			return val, err
 		}
@@ -58,15 +50,17 @@ func ParseHost(defaultToTLS bool, val string) (string, error) {
 	return host, nil
 }
 
-// parseDockerDaemonHost parses the specified address and returns an address that will be used as the host.
+// parseAgentDaemonHost parses the specified address and returns an address that will be used as the host.
 // Depending of the address specified, this may return one of the global Default* strings defined in hosts.go.
-func parseDockerDaemonHost(addr string) (string, error) {
+func parseAgentDaemonHost(addr string) (string, error) {
 	addrParts := strings.Split(addr, "://")
 	if len(addrParts) == 1 && addrParts[0] != "" {
 		addrParts = []string{"tcp", addrParts[0]}
 	}
 
 	switch addrParts[0] {
+	case "master":
+		return parseMasterAddr("master", addrParts[1])
 	case "tcp":
 		return parseTCPAddr(addrParts[1], DefaultTCPHost)
 	case "unix":
@@ -78,6 +72,14 @@ func parseDockerDaemonHost(addr string) (string, error) {
 	default:
 		return "", fmt.Errorf("Invalid bind address format: %s", addr)
 	}
+}
+
+func parseMasterAddr(proto, tarid string) (string, error) {
+	tarpart := strings.Split(tarid, ":")
+	if len(tarpart) == 1 {
+		tarid = fmt.Sprint("%s:%d", tarid, DefaultHTTPPort)
+	}
+	return fmt.Sprintf("%s://%s", proto, tarid), nil
 }
 
 // parseSimpleProtoAddr parses and validates that the specified address is a valid

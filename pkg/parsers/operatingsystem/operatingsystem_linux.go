@@ -61,17 +61,3 @@ func GetOperatingSystem() (string, error) {
 	// c.f. http://www.freedesktop.org/software/systemd/man/os-release.html
 	return "Linux", nil
 }
-
-// IsContainerized returns true if we are running inside a container.
-func IsContainerized() (bool, error) {
-	b, err := ioutil.ReadFile(proc1Cgroup)
-	if err != nil {
-		return false, err
-	}
-	for _, line := range bytes.Split(b, []byte{'\n'}) {
-		if len(line) > 0 && !bytes.HasSuffix(line, []byte{'/'}) && !bytes.HasSuffix(line, []byte("init.scope")) {
-			return true, nil
-		}
-	}
-	return false, nil
-}

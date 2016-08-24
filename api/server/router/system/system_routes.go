@@ -29,7 +29,7 @@ func pingHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, va
 	}
 	msg := r.Form.Get("msg")
 
-	_, err := w.Write([]byte(fmt.Sprintf(`OK: %s`, msg)))
+	_, err := w.Write([]byte(fmt.Sprintf(`PONG: %s`, msg)))
 	return err
 }
 

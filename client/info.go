@@ -1,12 +1,11 @@
 package client
 
 import (
-	"fmt"
-
 	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/cobra"
+	"github.com/2qif49lt/logrus"
 )
 
 // NewInfoCommand returns a cobra command for `agent info` subcommands
@@ -21,7 +20,7 @@ func NewInfoCommand(agentCli *AgentCli) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			err := runInfo(agentCli)
 			if err != nil {
-				fmt.Println(err)
+				logrus.Errorln(err)
 			}
 		},
 	}
@@ -36,6 +35,6 @@ func runInfo(agentCli *AgentCli) error {
 
 	//显示结果
 
-	fmt.Println(info)
-	return err
+	logrus.Println(info)
+	return nil
 }

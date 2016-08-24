@@ -33,16 +33,6 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 		operatingSystem = s
 	}
 
-	// Don't do containerized check on Windows
-	if runtime.GOOS != "windows" {
-		if inContainer, err := operatingsystem.IsContainerized(); err != nil {
-			logrus.Errorf("Could not determine if daemon is containerized: %v", err)
-			operatingSystem += " (error determining if containerized)"
-		} else if inContainer {
-			operatingSystem += " (containerized)"
-		}
-	}
-
 	meminfo, err := system.ReadMemInfo()
 	if err != nil {
 		logrus.Errorf("Could not read system memory info: %v", err)

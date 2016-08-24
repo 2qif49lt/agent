@@ -1,13 +1,13 @@
 package client
 
 import (
-	"fmt"
 	"strings"
 
 	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/cobra"
+	"github.com/2qif49lt/logrus"
 )
 
 // NewPingCommand returns a cobra command for `agent ping some message` subcommands
@@ -23,7 +23,7 @@ func NewPingCommand(agentCli *AgentCli) *cobra.Command {
 		Run: func(cmd *cobra.Command, args []string) {
 			err := runPing(agentCli, args)
 			if err != nil {
-				fmt.Println(err)
+				logrus.Errorln(err)
 			}
 		},
 	}
@@ -37,6 +37,6 @@ func runPing(agentCli *AgentCli, args []string) error {
 
 	//显示结果
 
-	fmt.Println(args, pong)
-	return err
+	logrus.Println(pong)
+	return nil
 }

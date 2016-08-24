@@ -27,11 +27,3 @@ func GetOperatingSystem() (string, error) {
 	}
 	return "", errors.New("release not found")
 }
-
-// IsContainerized returns true if we are running inside a container.
-func IsContainerized() (bool, error) {
-	if C.getzoneid() != 0 {
-		return true, nil
-	}
-	return false, nil
-}

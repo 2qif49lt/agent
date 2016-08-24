@@ -41,9 +41,3 @@ func GetOperatingSystem() (string, error) {
 
 	return ret, nil
 }
-
-// IsContainerized returns true if we are running inside a container.
-// No-op on Windows, always returns false.
-func IsContainerized() (bool, error) {
-	return false, nil
-}

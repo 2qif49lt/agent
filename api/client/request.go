@@ -23,17 +23,17 @@ type serverResponse struct {
 	statusCode int
 }
 
-// head sends an http request to the docker API using the method HEAD.
+// head sends an http request to the agent API using the method HEAD.
 func (cli *Client) head(ctx context.Context, path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
 	return cli.sendRequest(ctx, "HEAD", path, query, nil, headers)
 }
 
-// getWithContext sends an http request to the docker API using the method GET with a specific go context.
+// getWithContext sends an http request to the agent API using the method GET with a specific go context.
 func (cli *Client) get(ctx context.Context, path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
 	return cli.sendRequest(ctx, "GET", path, query, nil, headers)
 }
 
-// postWithContext sends an http request to the docker API using the method POST with a specific go context.
+// postWithContext sends an http request to the agent API using the method POST with a specific go context.
 func (cli *Client) post(ctx context.Context, path string, query url.Values, obj interface{}, headers map[string][]string) (*serverResponse, error) {
 	return cli.sendRequest(ctx, "POST", path, query, obj, headers)
 }
@@ -42,17 +42,17 @@ func (cli *Client) postRaw(ctx context.Context, path string, query url.Values, b
 	return cli.sendClientRequest(ctx, "POST", path, query, body, headers)
 }
 
-// put sends an http request to the docker API using the method PUT.
+// put sends an http request to the agent API using the method PUT.
 func (cli *Client) put(ctx context.Context, path string, query url.Values, obj interface{}, headers map[string][]string) (*serverResponse, error) {
 	return cli.sendRequest(ctx, "PUT", path, query, obj, headers)
 }
 
-// put sends an http request to the docker API using the method PUT.
+// put sends an http request to the agent API using the method PUT.
 func (cli *Client) putRaw(ctx context.Context, path string, query url.Values, body io.Reader, headers map[string][]string) (*serverResponse, error) {
 	return cli.sendClientRequest(ctx, "PUT", path, query, body, headers)
 }
 
-// delete sends an http request to the docker API using the method DELETE.
+// delete sends an http request to the agent API using the method DELETE.
 func (cli *Client) delete(ctx context.Context, path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
 	return cli.sendRequest(ctx, "DELETE", path, query, nil, headers)
 }
@@ -105,7 +105,7 @@ func (cli *Client) sendClientRequest(ctx context.Context, method, path string,
 		req.Host = "agentd"
 	} else {
 		if cli.proto == "master" {
-			req.Host = cli.addr // agentid:port
+			req.Host = cli.addr // agentid:port to dododo
 		}
 	}
 	req.URL.Host = cli.addr //////////

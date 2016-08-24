@@ -19,6 +19,9 @@ func (badRequestError) HTTPErrorStatusCode() int {
 
 // VersionMiddleware is a middleware that
 // validates the client and server versions.
+// defaultVersion: defautl version if client dont take
+// minVersion: minimum api version server support
+// serverVersion: the server api's version
 type VersionMiddleware struct {
 	serverVersion  string
 	defaultVersion string

@@ -35,6 +35,6 @@ func runInfo(agentCli *AgentCli) error {
 
 	//显示结果
 
-	logrus.Println(info)
+	logrus.WithTryJson(info).Info("JOB SUCC")
 	return nil
 }

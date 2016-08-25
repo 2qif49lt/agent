@@ -33,7 +33,7 @@ type AgentCli struct {
 }
 
 func (config *Config) installFlags(flags *flag.FlagSet) {
-	flags.StringVarP(&config.Mission, "mission-file", "m", "", "specify the json formated mission file path,the content's field will overwrite the flags")
+	//	flags.StringVarP(&config.Mission, "mission-file", "m", "", "specify the json formated mission file path,the content's field will overwrite the flags")
 }
 func (cli *AgentCli) InitFlags(cmd *flag.FlagSet) {
 	cli.Config.installFlags(cmd)

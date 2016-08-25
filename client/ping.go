@@ -37,6 +37,6 @@ func runPing(agentCli *AgentCli, args []string) error {
 
 	//显示结果
 
-	logrus.Println(pong)
+	logrus.WithTryJson(pong).Info("JOB SUCC")
 	return nil
 }

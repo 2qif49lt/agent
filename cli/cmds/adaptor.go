@@ -50,7 +50,8 @@ func NewCobraAdaptor(com *cfg.CommonFlags) CobraAdaptor {
 
 	persinFlags := rootCmd.PersistentFlags()
 	flag.Merge(persinFlags, com.FlagSet)
-	agentCli.InitFlags(persinFlags)
+	// agentCli.InitFlags(persinFlags)
+	rootCmd.AddDrop("mission-file")
 
 	return CobraAdaptor{
 		rootCmd:  rootCmd,

@@ -1,3 +1,9 @@
 {
-	""
-}
+	"reservedcmd":"ping",
+	"reservedpara":["hello" ,2.5],
+	"tlscert":"./cert/client-cert.pem",
+	"tlskey":"./cert/client-key.pem",
+	"D":true,
+	"host":["tcp://127.0.0.1:3567"],
+	"norsa":false
+ }

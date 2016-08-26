@@ -9,13 +9,15 @@ import (
 	"github.com/2qif49lt/logrus"
 	flag "github.com/2qif49lt/pflag"
 
+	"io/ioutil"
 	"math/rand"
 	"os"
 	"time"
 )
 
 var (
-	fmission = flag.StringP("mission-file", "m", "", "specify the json formated mission file path,the content's field will overwrite the flags")
+	missionfs = flag.NewFlagSet("mission", flag.ContinueOnError)
+	fmission  = missionfs.StringP("mission-file", "m", "", "specify the json formated mission file path,the content's field will overwrite the flags")
 )
 
 func initProgram() {
@@ -28,15 +30,35 @@ func init() {
 	initProgram()
 }
 
-func main() {
-	flag.Parse()
-	if *fmission != "" {
-		logrus.Infoln(*fmission)
-	}
+// ***todo: complete the memory usage info in osx
 
+func main() {
+	args := preCheckMissionArgs()
 	comflag := cfg.InitCommonFlags()
 	cobraAdaptor := cmds.NewCobraAdaptor(comflag)
-	cobraAdaptor.Cmd().Execute()
+
+	cobraAdaptor.SetArgs(args)
+	cobraAdaptor.Execute()
 }
 
-// todo  完成文件输入结构.
+func preCheckMissionArgs() []string {
+	args := os.Args[1:]
+	missionfs.SetOutput(ioutil.Discard)
+
+	err := missionfs.Parse(args)
+	if err == nil && *fmission != "" {
+		m := NewMission()
+		if err = m.Read(*fmission); err != nil {
+			logrus.Errorln(err)
+			os.Exit(1)
+		}
+		args, err = m.ToArgs()
+		if err != nil {
+			logrus.Errorln(err)
+			os.Exit(1)
+		}
+		logrus.WithTryJson(m).Infoln("use mission file specify flags")
+		logrus.WithTryJson(args).Infoln("equal command line")
+	}
+	return args
+}

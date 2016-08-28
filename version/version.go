@@ -2,7 +2,7 @@ package version
 
 // Version 当前API 版本
 const (
-	SRV_VERSION = "1.23.0"
+	SRV_VERSION = "0.1.0"
 	CLI_VERSION = "0.1.0"
 )
 

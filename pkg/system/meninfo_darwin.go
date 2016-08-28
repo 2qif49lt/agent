@@ -28,6 +28,30 @@ void freeswapusage(struct xsw_usage* usage){
 	if (usage == NULL) return;
 	free(usage);
 }
+size_t getfreememory(){
+	size_t pagesize = 0;
+	size_t freepages = 0;
+	size_t speculativepages = 0;
+	size_t size = sizeof(pagesize);
+	int iret = -1;
+
+	iret = sysctlbyname("vm.pagesize",&pagesize,&size,NULL,0);
+	if(iret != 0){
+		return -1;
+	}
+
+	iret = sysctlbyname("vm.page_free_count",&freepages,&size,NULL,0);
+	if(iret != 0){
+		return -1;
+	}
+
+	iret = sysctlbyname("vm.page_speculative_count",&speculativepages,&size,NULL,0);
+	if(iret != 0){
+		return -1;
+	}
+
+	return (freepages + speculativepages) * pagesize;
+}
 */
 import "C"
 
@@ -39,9 +63,7 @@ func getTotalMem() int64 {
 }
 
 func getFreeMem() int64 {
-	pagesize := C.sysconf(C._SC_PAGESIZE)
-	npages := 1024 * 1024 * 1024 //C.sysconf(C._SC_AVPHYS_PAGES)
-	return int64(pagesize) * int64(npages)
+	return int64(C.getfreememory())
 }
 
 // ReadMemInfo retrieves memory statistics of the host system and returns a
@@ -68,15 +90,15 @@ func ReadMemInfo() (*MemInfo, error) {
 func getSysSwap() (int64, int64, error) {
 	var tSwap int64
 	var fSwap int64
-	var pagesize int64
+	//	var pagesize int64
 
 	usage := C.getswapusage()
 	if usage == nil {
 		return 0, 0, fmt.Errorf(`get swap file usage fail`)
 	}
-	pagesize = int64(usage.xsu_pagesize)
-	tSwap = int64(usage.xsu_total) * pagesize
-	fSwap = int64(usage.xsu_avail) * pagesize
+	//	pagesize = int64(usage.xsu_pagesize)
+	tSwap = int64(usage.xsu_total)
+	fSwap = int64(usage.xsu_avail)
 
 	C.freeswapusage(usage)
 	return tSwap, fSwap, nil

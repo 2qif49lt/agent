@@ -36,6 +36,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 	meminfo, err := system.ReadMemInfo()
 	if err != nil {
 		logrus.Errorf("Could not read system memory info: %v", err)
+		return nil, err
 	}
 
 	v := &types.Info{
@@ -43,7 +44,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 		Debug:             utils.IsDebugEnabled(),
 		NFd:               fileutils.GetTotalUsedFds(),
 		NGoroutines:       runtime.NumGoroutine(),
-		SystemTime:        time.Now().Format(time.RFC3339Nano),
+		SystemTime:        time.Now().Format("2006-01-02 15:04:05"),
 		NEventsListener:   daemon.EventsService.SubscribersCount(),
 		KernelVersion:     kernelVersion,
 		OperatingSystem:   operatingSystem,

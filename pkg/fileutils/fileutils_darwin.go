@@ -1,8 +1,27 @@
 package fileutils
 
-// GetTotalUsedFds Returns the number of used File Descriptors by
-// reading it via /proc filesystem.
+import (
+	"os"
+	"os/exec"
+	"strconv"
+	"strings"
+)
+
+// GetTotalUsedFds returns the number of used File Descriptors by
+// executing `lsof -p PID`
 func GetTotalUsedFds() int {
-	// lsof -p pid
-	return -1
+	pid := os.Getpid()
+
+	cmd := exec.Command("lsof", "-p", strconv.Itoa(pid))
+
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return -1
+	}
+
+	outputStr := strings.TrimSpace(string(output))
+
+	fds := strings.Split(outputStr, "\n")
+
+	return len(fds) - 1
 }

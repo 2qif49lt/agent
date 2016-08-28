@@ -30,8 +30,6 @@ func init() {
 	initProgram()
 }
 
-// ***todo: complete the memory usage info in osx
-
 func main() {
 	args := preCheckMissionArgs()
 	comflag := cfg.InitCommonFlags()

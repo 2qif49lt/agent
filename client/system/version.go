@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"os"
 	"runtime"
-	"time"
 
 	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
+	"github.com/2qif49lt/agent/pkg/parsers/kernel"
 	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/agent/utils/templates"
 	"github.com/2qif49lt/agent/version"
 	"github.com/2qif49lt/cobra"
+	"github.com/2qif49lt/logrus"
 )
 
 var versionTemplate = `Client:
@@ -22,7 +23,8 @@ var versionTemplate = `Client:
  API version:  {{.Client.APIVersion}}
  Go version:   {{.Client.GoVersion}}
  Built:        {{.Client.BuildTime}}
- OS/Arch:      {{.Client.Os}}/{{.Client.Arch}}{{if .Client.Experimental}}
+ OS/Arch:      {{.Client.Os}}/{{.Client.Arch}}
+ Kernel:       {{.Client.KernelVersion}}{{if .Client.Experimental}}
  Experimental: {{.Client.Experimental}}{{end}}{{if .ServerOK}}
 
 Server:
@@ -30,7 +32,8 @@ Server:
  API version:  {{.Server.APIVersion}}
  Go version:   {{.Server.GoVersion}}
  Built:        {{.Server.BuildTime}}
- OS/Arch:      {{.Server.Os}}/{{.Server.Arch}}{{if .Server.Experimental}}
+ OS/Arch:      {{.Server.Os}}/{{.Server.Arch}}
+ Kernel:       {{.Server.KernelVersion}}{{if .Server.Experimental}}
  Experimental: {{.Server.Experimental}}{{end}}{{end}}`
 
 type versionOptions struct {
@@ -72,35 +75,29 @@ func runVersion(agentCli *client.AgentCli, opts *versionOptions) error {
 	if err != nil {
 		return err
 	}
+	kernelVersion := "<unknown>"
+	if kv, err := kernel.GetKernelVersion(); err != nil {
+		logrus.Warnf("Could not get kernel version: %v", err)
+	} else {
+		kernelVersion = kv.String()
+	}
 
 	vd := types.VersionResponse{
 		Client: &types.Version{
-			Version:      version.CLI_VERSION,
-			APIVersion:   agentCli.Client().ClientVersion(),
-			GoVersion:    runtime.Version(),
-			BuildTime:    version.BUILDTIME,
-			Os:           runtime.GOOS,
-			Arch:         runtime.GOARCH,
-			Experimental: utils.ExperimentalBuild(),
+			Version:       version.CLI_VERSION,
+			APIVersion:    agentCli.Client().ClientVersion(),
+			GoVersion:     runtime.Version(),
+			BuildTime:     version.BUILDTIME,
+			Os:            runtime.GOOS,
+			Arch:          runtime.GOARCH,
+			KernelVersion: kernelVersion,
+			Experimental:  utils.ExperimentalBuild(),
 		},
 	}
 
 	serverVersion, err := agentCli.Client().ServerVersion(ctx)
 	if err == nil {
 		vd.Server = &serverVersion
-	}
-
-	// first we need to make BuildTime more human friendly
-	t, errTime := time.Parse(time.RFC3339Nano, vd.Client.BuildTime)
-	if errTime == nil {
-		vd.Client.BuildTime = t.Format(time.ANSIC)
-	}
-
-	if vd.ServerOK() {
-		t, errTime = time.Parse(time.RFC3339Nano, vd.Server.BuildTime)
-		if errTime == nil {
-			vd.Server.BuildTime = t.Format(time.ANSIC)
-		}
 	}
 
 	if err2 := tmpl.Execute(os.Stdout, vd); err2 != nil && err == nil {

@@ -4,13 +4,13 @@ package types
 // GET "/version"
 type Version struct {
 	Version       string
-	APIVersion    string `json:"ApiVersion"`
+	APIVersion    string
 	GoVersion     string
 	Os            string
 	Arch          string
-	KernelVersion string `json:",omitempty"`
-	Experimental  bool   `json:",omitempty"`
-	BuildTime     string `json:",omitempty"`
+	KernelVersion string
+	Experimental  bool
+	BuildTime     string
 }
 
 // Info contains response of Remote API:
@@ -30,8 +30,8 @@ type Info struct {
 	MemTotal          int64
 	ExperimentalBuild bool
 	ServerVersion     string
-	HTTPProxy         string `json:"HttpProxy"`
-	HTTPSProxy        string `json:"HttpsProxy"`
+	HTTPProxy         string
+	HTTPSProxy        string
 	NoProxy           string
 	Name              string
 }

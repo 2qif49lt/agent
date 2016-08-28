@@ -1,6 +1,6 @@
 // +build !cgo
 
-package graphdb
+package eventdb
 
 // NewSqliteConn return a new sqlite connection.
 func NewSqliteConn(root string) (*Database, error) {

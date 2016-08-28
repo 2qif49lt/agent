@@ -1,4 +1,4 @@
-package graphdb
+package eventdb
 
 import "sort"
 

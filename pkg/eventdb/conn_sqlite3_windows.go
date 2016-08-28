@@ -1,6 +1,6 @@
-// +build cgo,!windows
+// +build cgo,windows
 
-package graphdb
+package eventdb
 
 import (
 	_ "github.com/mattn/go-sqlite3" // registers sqlite

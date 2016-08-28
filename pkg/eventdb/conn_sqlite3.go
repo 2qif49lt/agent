@@ -1,6 +1,4 @@
-// +build cgo
-
-package graphdb
+package eventdb
 
 import "database/sql"
 

@@ -6,6 +6,7 @@ import (
 	"runtime"
 
 	"github.com/2qif49lt/agent/api/types/versions"
+	"github.com/2qif49lt/logrus"
 	"golang.org/x/net/context"
 )
 
@@ -41,6 +42,9 @@ func NewVersionMiddleware(s, d, m string) VersionMiddleware {
 // WrapHandler returns a new handler function wrapping the previous one in the request chain.
 func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error) func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
+		logrus.Debugln("VersionMiddleware enter")
+		defer logrus.Debugln("VersionMiddleware leave")
+
 		apiVersion := vars["version"]
 		if apiVersion == "" {
 			apiVersion = v.defaultVersion

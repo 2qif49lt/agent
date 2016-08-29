@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/2qif49lt/agent/errors"
+	"github.com/2qif49lt/logrus"
 	"golang.org/x/net/context"
 )
 
@@ -20,12 +21,15 @@ const (
 // 可能考虑只对插件进行类似的授权鉴定
 func CertExtensionAuthMiddleware(handler func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error) func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
+		logrus.Debugln("CertExtensionAuthMiddleware enter")
+		defer logrus.Debugln("CertExtensionAuthMiddleware leave")
+
 		if r.TLS != nil {
 			if cert := r.TLS.PeerCertificates[0]; cert != nil {
 				bauth := false
 				auth := ""
 
-				for _, exten := range cert.ExtraExtensions {
+				for _, exten := range cert.Extensions {
 					if exten.Id.String() == defaultExtenOID {
 						_, err := asn1.Unmarshal(exten.Value, &auth)
 						if err != nil {
@@ -34,19 +38,31 @@ func CertExtensionAuthMiddleware(handler func(ctx context.Context, w http.Respon
 						break
 					}
 				}
+				logrus.Debugln("CertExtensionAuthMiddleware auth:", auth)
 
 				if auth == "" {
 					auth = defaultExtenAuth
 				}
 				paths := strings.Split(r.URL.Path, "/")
+				cleanpaths := []string{}
+				for _, v := range paths {
+					tmpv := strings.TrimSpace(v)
+					if len(tmpv) != 0 {
+						cleanpaths = append(cleanpaths, tmpv)
+					}
+				}
+				paths = cleanpaths
 
 				if len(paths) > 0 {
 					command := paths[0]
+					if len(paths) > 1 {
+						command = paths[1]
+					}
 					authexps := strings.Split(auth, " ")
 
 					for _, authexp := range authexps {
 						authexp = fmt.Sprintf(`^%s$`, authexp)
-						if match, err := regexp.MatchString(authexp, command); match == true && err != nil {
+						if match, err := regexp.MatchString(authexp, command); match == true && err == nil {
 							bauth = true
 							break
 						}

@@ -27,6 +27,9 @@ func NewUserAgentMiddleware(s string) UserAgentMiddleware {
 // WrapHandler returns a new handler function wrapping the previous one in the request chain.
 func (u UserAgentMiddleware) WrapHandler(handler func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error) func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
+		logrus.Debugln("UserAgentMiddleware enter")
+		defer logrus.Debugln("UserAgentMiddleware leave")
+
 		ctx = context.WithValue(ctx, httputils.UAStringKey, r.Header.Get("User-Agent"))
 
 		if strings.Contains(r.Header.Get("User-Agent"), "Agent-Client/") {

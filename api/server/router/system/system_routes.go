@@ -43,6 +43,8 @@ func (s *systemRouter) getInfo(ctx context.Context, w http.ResponseWriter, r *ht
 }
 
 func (s *systemRouter) getVersion(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {
+	logrus.Debugln("getVersion handler")
+
 	info := s.backend.SystemVersion()
 	info.APIVersion = api.DefaultVersion
 

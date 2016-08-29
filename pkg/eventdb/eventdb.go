@@ -8,6 +8,8 @@ import (
 	"sync"
 )
 
+// 所有请求的操作agentd都应生存一个guid mission id 和一个本地自增id
+
 const (
 	createEntityTable = `
     CREATE TABLE IF NOT EXISTS entity (
@@ -26,6 +28,30 @@ const (
 
 	createEdgeIndices = `
     CREATE UNIQUE INDEX IF NOT EXISTS "name_parent_ix" ON "edge" (parent_id, name);
+    `
+
+	// mission 事件
+	createMissionsTable = `
+    CREATE TABLE IF NOT EXISTS missions (
+    	id integer PRIMARY KEY autoincrement,
+        mid text NOT NULL,
+        version text NOT NULL,
+        command text NOT NULL,
+        paras text NOT NULL,
+        result text NOT NULL DEFAULT 'OK'
+        cost integer NOT NULL,
+        DATE DEFAULT (datetime('now','localtime')),
+        CONSTRAINT key_unique UNIQUE (mid)
+    );
+    `
+	// 通用事件
+	createLogsTable = `
+
+    `
+
+	// plugin 事件
+	createPluginsTable = `
+  
     `
 )
 
@@ -87,43 +113,7 @@ func NewDatabase(conn *sql.DB) (*Database, error) {
 	}
 	db := &Database{conn: conn}
 
-	// Create root entities
-	tx, err := conn.Begin()
-	if err != nil {
-		return nil, err
-	}
-
-	if _, err := tx.Exec(createEntityTable); err != nil {
-		return nil, err
-	}
-	if _, err := tx.Exec(createEdgeTable); err != nil {
-		return nil, err
-	}
-	if _, err := tx.Exec(createEdgeIndices); err != nil {
-		return nil, err
-	}
-
-	if _, err := tx.Exec("DELETE FROM entity where id = ?", "0"); err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	if _, err := tx.Exec("INSERT INTO entity (id) VALUES (?);", "0"); err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	if _, err := tx.Exec("DELETE FROM edge where entity_id=? and name=?", "0", "/"); err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	if _, err := tx.Exec("INSERT INTO edge (entity_id, name) VALUES(?,?);", "0", "/"); err != nil {
-		tx.Rollback()
-		return nil, err
-	}
-
-	if err := tx.Commit(); err != nil {
+	if _, err := conn.Exec(createMissionsTable); err != nil {
 		return nil, err
 	}
 

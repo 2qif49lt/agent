@@ -23,5 +23,6 @@ func (s *Server) handleWithGlobalMiddlewares(handler httputils.APIFunc) httputil
 		next = middleware.CertExtensionAuthMiddleware(next)
 	}
 
+	next = middleware.EventDBMiddleware(next)
 	return next
 }

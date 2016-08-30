@@ -11,7 +11,6 @@ import (
 	"github.com/2qif49lt/agent/pkg/connections/sockets"
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 	"github.com/2qif49lt/agent/pkg/opts"
-	"github.com/2qif49lt/agent/version"
 	flag "github.com/2qif49lt/pflag"
 )
 
@@ -88,7 +87,7 @@ func NewAPIClient(clicfg *Config) (apiclient.APIClient, error) {
 	customHeaders := map[string]string{}
 	customHeaders["User-Agent"] = clientUserAgent()
 
-	verStr := api.DefaultVersion
+	verStr := api.CLI_VERSION
 	if tmpStr := os.Getenv("AGENT_API_VERSION"); tmpStr != "" {
 		verStr = tmpStr
 	}
@@ -127,5 +126,5 @@ func newHTTPClient(host string, tlsOptions *tlsconfig.Options) (*http.Client, er
 }
 
 func clientUserAgent() string {
-	return "Agent-Client/" + version.CLI_VERSION + " (" + runtime.GOOS + ")"
+	return "Agent-Client/" + " (" + runtime.GOOS + ")"
 }

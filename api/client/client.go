@@ -7,13 +7,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/client/transport"
 	"github.com/2qif49lt/agent/cfg"
 	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 )
-
-// DefaultVersion is the version of the current stable API.client 属于该api版本下
-const DefaultVersion string = "1.23"
 
 // Client is the API client that performs all operations
 // against a agent server.
@@ -30,44 +28,6 @@ type Client struct {
 	version string
 	// custom http headers configured by users.
 	customHTTPHeaders map[string]string
-}
-
-// NewEnvClient initializes a new API client based on environment variables.
-// Use AGENTD_HOST to set the url to the agent server.
-// Use AGENT_API_VERSION to set the version of the API to reach, leave empty for latest.
-// Use AGENT_CERT_PATH to load the tls certificates from.
-// Use AGENT_TLS_SKIP_CERT_VERIFY to disable or enable TLS verification, enable by default.
-func NewEnvClient() (*Client, error) {
-	var client *http.Client
-
-	if agentCertPath := cfg.GetCertPath(); agentCertPath != "" {
-		options := tlsconfig.Options{
-			CAFile:             cfg.ComCfg.TLSOptions.CAFile,
-			InsecureSkipVerify: os.Getenv("AGENT_TLS_SKIP_CERT_VERIFY") != "",
-		}
-		tlsc, err := tlsconfig.Client(options)
-		if err != nil {
-			return nil, err
-		}
-
-		client = &http.Client{
-			Transport: &http.Transport{
-				TLSClientConfig: tlsc,
-			},
-		}
-	}
-
-	host := cfg.ComCfg.Host
-	if host == fmt.Sprintf(`:%d`, cfg.DefaultAgentdListenPort) {
-		host = DefaultAgentdHost
-	}
-
-	version := os.Getenv("AGENT_API_VERSION")
-	if version == "" {
-		version = DefaultVersion
-	}
-
-	return NewClient(host, version, client, nil)
 }
 
 // NewClient initializes a new API client for the given host and API version.

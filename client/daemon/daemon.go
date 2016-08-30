@@ -20,7 +20,6 @@ import (
 	"github.com/2qif49lt/agent/pkg/signal"
 	"github.com/2qif49lt/agent/plugin"
 	"github.com/2qif49lt/agent/utils"
-	"github.com/2qif49lt/agent/version"
 	"github.com/2qif49lt/logrus"
 	flag "github.com/2qif49lt/pflag"
 )
@@ -92,7 +91,7 @@ func (cli *DaemonCli) start() (err error) {
 	serverConfig := &apiserver.Config{
 		Logging:       true,
 		SocketGroup:   cli.Config.SocketGroup,
-		Version:       version.SRV_VERSION,
+		Version:       api.SRV_VERSION,
 		CorsHeaders:   cli.Config.CorsHeaders,
 		CertExtenAuth: cli.Config.CertExtenAuth,
 	}
@@ -119,8 +118,8 @@ func (cli *DaemonCli) start() (err error) {
 		todo: 如果cli.CommonFlags.Host只指定了端口,则在LOOPBACK上为正常http服务器,并且没有参数校验
 
 	*/
-	api := apiserver.New(serverConfig)
-	cli.api = api
+	apisrv := apiserver.New(serverConfig)
+	cli.api = apisrv
 
 	for i := 0; i < len(Hosts); i++ {
 		var err error
@@ -148,7 +147,7 @@ func (cli *DaemonCli) start() (err error) {
 		ls = wrapListeners(proto, ls)
 
 		logrus.Debugf("Listener created for HTTP on %s (%s)", protoAddrParts[0], protoAddrParts[1])
-		api.Accept(protoAddrParts[1], ls)
+		apisrv.Accept(protoAddrParts[1], ls)
 	}
 
 	if err := pluginInit(); err != nil {
@@ -161,8 +160,8 @@ func (cli *DaemonCli) start() (err error) {
 		return err
 	}
 
-	cli.initMiddlewares(api, serverConfig)
-	initRouter(api, d)
+	cli.initMiddlewares(apisrv, serverConfig)
+	initRouter(apisrv, d)
 
 	cli.d = d
 	cli.setupConfigReloadTrap()
@@ -170,8 +169,8 @@ func (cli *DaemonCli) start() (err error) {
 	logrus.Info("Daemon has completed initialization")
 
 	logrus.WithFields(logrus.Fields{
-		"version":   version.SRV_VERSION,
-		"buildtime": version.BUILDTIME,
+		"version":   api.SRV_VERSION,
+		"buildtime": api.BUILDTIME,
 		"agentid":   cli.Config.AgentID,
 	}).Info("Daemon start")
 

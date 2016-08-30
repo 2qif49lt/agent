@@ -19,10 +19,16 @@ func EventDBMiddleware(handler func(ctx context.Context, w http.ResponseWriter, 
 		defer logrus.Debugln("EventDBMiddleware leave")
 
 		paths := strings.Split(r.URL.Path, "/")
-
-		if len(paths) > 0 {
-			command := paths[0]
-			fmt.Println(command, paths)
+		cleanpaths := []string{}
+		for _, v := range paths {
+			tmpv := strings.TrimSpace(v)
+			if len(tmpv) != 0 {
+				cleanpaths = append(cleanpaths, tmpv)
+			}
+		}
+		paths = cleanpaths
+		if len(paths) > 1 {
+			_ = paths[1]
 		} else {
 			return errors.NewErrorWithStatusCode(fmt.Errorf(`url wrong`), http.StatusNotFound)
 		}

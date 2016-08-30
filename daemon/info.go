@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/pkg/connections/sockets"
 	"github.com/2qif49lt/agent/pkg/fileutils"
@@ -13,7 +14,6 @@ import (
 	"github.com/2qif49lt/agent/pkg/platform"
 	"github.com/2qif49lt/agent/pkg/system"
 	"github.com/2qif49lt/agent/utils"
-	"github.com/2qif49lt/agent/version"
 	"github.com/2qif49lt/logrus"
 )
 
@@ -53,7 +53,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 		NCPU:              runtime.NumCPU(),
 		MemTotal:          meminfo.MemTotal,
 		ExperimentalBuild: utils.ExperimentalBuild(),
-		ServerVersion:     version.SRV_VERSION,
+		ServerVersion:     api.SRV_VERSION,
 		HTTPProxy:         sockets.GetProxyEnv("http_proxy"),
 		HTTPSProxy:        sockets.GetProxyEnv("https_proxy"),
 		NoProxy:           sockets.GetProxyEnv("no_proxy"),
@@ -73,11 +73,11 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 // SystemVersion returns version information about the daemon.
 func (daemon *Daemon) SystemVersion() types.Version {
 	v := types.Version{
-		Version:      version.SRV_VERSION,
+		Version:      api.SRV_VERSION,
 		GoVersion:    runtime.Version(),
 		Os:           runtime.GOOS,
 		Arch:         runtime.GOARCH,
-		BuildTime:    version.BUILDTIME,
+		BuildTime:    api.BUILDTIME,
 		Experimental: utils.ExperimentalBuild(),
 	}
 

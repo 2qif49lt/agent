@@ -12,15 +12,6 @@ import (
 	"github.com/2qif49lt/logrus"
 )
 
-// Common constants for daemon and client.
-const (
-	// Version of Current REST API
-	DefaultVersion string = "0.1.0"
-
-	// MinVersion represents Minimum REST API version supported
-	MinVersion string = "0.1.0"
-)
-
 func formGroup(key string, start, last int) string {
 	parts := strings.Split(key, "/")
 	groupType := parts[0]

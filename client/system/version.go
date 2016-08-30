@@ -7,13 +7,13 @@ import (
 
 	"golang.org/x/net/context"
 
+	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
 	"github.com/2qif49lt/agent/pkg/parsers/kernel"
 	"github.com/2qif49lt/agent/utils"
 	"github.com/2qif49lt/agent/utils/templates"
-	"github.com/2qif49lt/agent/version"
 	"github.com/2qif49lt/cobra"
 	"github.com/2qif49lt/logrus"
 )
@@ -84,10 +84,10 @@ func runVersion(agentCli *client.AgentCli, opts *versionOptions) error {
 
 	vd := types.VersionResponse{
 		Client: &types.Version{
-			Version:       version.CLI_VERSION,
+			Version:       api.CLI_VERSION,
 			APIVersion:    agentCli.Client().ClientVersion(),
 			GoVersion:     runtime.Version(),
-			BuildTime:     version.BUILDTIME,
+			BuildTime:     api.BUILDTIME,
 			Os:            runtime.GOOS,
 			Arch:          runtime.GOARCH,
 			KernelVersion: kernelVersion,

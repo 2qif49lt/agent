@@ -87,10 +87,11 @@ func NewAPIClient(clicfg *Config) (apiclient.APIClient, error) {
 	customHeaders := map[string]string{}
 	customHeaders["User-Agent"] = clientUserAgent()
 
-	verStr := api.CLI_VERSION
+	verStr := api.API_VERSION
 	if tmpStr := os.Getenv("AGENT_API_VERSION"); tmpStr != "" {
 		verStr = tmpStr
 	}
+	customHeaders["version"] = verStr
 
 	httpClient, err := newHTTPClient(host, com.TLSOptions)
 	if err != nil {
@@ -126,5 +127,5 @@ func newHTTPClient(host string, tlsOptions *tlsconfig.Options) (*http.Client, er
 }
 
 func clientUserAgent() string {
-	return "Agent-Client/" + " (" + runtime.GOOS + ")"
+	return "Agent-Client/" + runtime.GOOS
 }

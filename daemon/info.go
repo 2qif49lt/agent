@@ -53,7 +53,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 		NCPU:              runtime.NumCPU(),
 		MemTotal:          meminfo.MemTotal,
 		ExperimentalBuild: utils.ExperimentalBuild(),
-		ServerVersion:     api.SRV_VERSION,
+		ServerVersion:     api.API_VERSION,
 		HTTPProxy:         sockets.GetProxyEnv("http_proxy"),
 		HTTPSProxy:        sockets.GetProxyEnv("https_proxy"),
 		NoProxy:           sockets.GetProxyEnv("no_proxy"),
@@ -73,7 +73,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 // SystemVersion returns version information about the daemon.
 func (daemon *Daemon) SystemVersion() types.Version {
 	v := types.Version{
-		Version:      api.SRV_VERSION,
+		Version:      api.API_VERSION,
 		GoVersion:    runtime.Version(),
 		Os:           runtime.GOOS,
 		Arch:         runtime.GOARCH,

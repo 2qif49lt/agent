@@ -27,8 +27,8 @@ func EventDBMiddleware(handler func(ctx context.Context, w http.ResponseWriter, 
 			}
 		}
 		paths = cleanpaths
-		if len(paths) > 1 {
-			_ = paths[1]
+		if len(paths) > 0 {
+			_ = paths[0]
 		} else {
 			return errors.NewErrorWithStatusCode(fmt.Errorf(`url wrong`), http.StatusNotFound)
 		}

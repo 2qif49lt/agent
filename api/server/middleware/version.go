@@ -3,7 +3,6 @@ package middleware
 import (
 	"fmt"
 	"net/http"
-	"runtime"
 
 	"github.com/2qif49lt/agent/api/types/versions"
 	"github.com/2qif49lt/logrus"
@@ -20,9 +19,9 @@ func (badRequestError) HTTPErrorStatusCode() int {
 
 // VersionMiddleware is a middleware that
 // validates the client and server versions.
-// defaultVersion: defautl version if client dont take
+// defaultVersion: defautl version if client dont take，默认对方提供服务的版本
 // minVersion: minimum api version server support
-// serverVersion: the server api's version
+// serverVersion: the server api's version,serverVersion可能大于defaultVersion,如测试新功能。
 type VersionMiddleware struct {
 	serverVersion  string
 	defaultVersion string
@@ -50,15 +49,14 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 			apiVersion = v.defaultVersion
 		}
 
-		if versions.GreaterThan(apiVersion, v.defaultVersion) {
-			return badRequestError{fmt.Errorf("client is newer than server (client API version: %s, server API version: %s)", apiVersion, v.defaultVersion)}
+		w.Header().Set("version", v.defaultVersion)
+
+		if versions.GreaterThan(apiVersion, v.serverVersion) {
+			return badRequestError{fmt.Errorf("client is newer than server (client API version: %s, server API version: %s)", apiVersion, v.serverVersion)}
 		}
 		if versions.LessThan(apiVersion, v.minVersion) {
 			return badRequestError{fmt.Errorf("client version %s is too old. Minimum supported API version is %s, please upgrade your client to a newer version", apiVersion, v.minVersion)}
 		}
-
-		header := fmt.Sprintf("Agent/%s (%s)", v.serverVersion, runtime.GOOS)
-		w.Header().Set("Server", header)
 		ctx = context.WithValue(ctx, "api-version", apiVersion)
 		return handler(ctx, w, r, vars)
 	}

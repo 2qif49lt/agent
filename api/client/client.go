@@ -4,13 +4,10 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 
 	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/client/transport"
-	"github.com/2qif49lt/agent/cfg"
-	"github.com/2qif49lt/agent/pkg/connections/tlsconfig"
 )
 
 // Client is the API client that performs all operations
@@ -48,7 +45,9 @@ func NewClient(host string, version string, client *http.Client, httpHeaders map
 	if err != nil {
 		return nil, err
 	}
-
+	if version == "" {
+		version = api.API_VERSION
+	}
 	return &Client{
 		proto:             proto,
 		addr:              addr,
@@ -63,12 +62,7 @@ func NewClient(host string, version string, client *http.Client, httpHeaders map
 // It appends the query parameters to the path if they are not empty.
 func (cli *Client) getAPIPath(p string, query url.Values) string {
 	var apiPath string
-	if cli.version != "" {
-		v := strings.TrimPrefix(cli.version, "v")
-		apiPath = fmt.Sprintf("%s/v%s%s", cli.basePath, v, p)
-	} else {
-		apiPath = fmt.Sprintf("%s%s", cli.basePath, p)
-	}
+	apiPath = fmt.Sprintf("%s%s", cli.basePath, p)
 
 	u := &url.URL{
 		Path: apiPath,
@@ -90,6 +84,7 @@ func (cli *Client) ClientVersion() string {
 // instance of the Client.
 func (cli *Client) UpdateClientVersion(v string) {
 	cli.version = v
+	cli.customHTTPHeaders["version"] = v
 }
 
 // ParseHost verifies that the given host strings is valid.

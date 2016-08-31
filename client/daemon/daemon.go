@@ -91,7 +91,7 @@ func (cli *DaemonCli) start() (err error) {
 	serverConfig := &apiserver.Config{
 		Logging:       true,
 		SocketGroup:   cli.Config.SocketGroup,
-		Version:       api.SRV_VERSION,
+		Version:       api.API_VERSION,
 		CorsHeaders:   cli.Config.CorsHeaders,
 		CertExtenAuth: cli.Config.CertExtenAuth,
 	}
@@ -169,7 +169,7 @@ func (cli *DaemonCli) start() (err error) {
 	logrus.Info("Daemon has completed initialization")
 
 	logrus.WithFields(logrus.Fields{
-		"version":   api.SRV_VERSION,
+		"version":   api.API_VERSION,
 		"buildtime": api.BUILDTIME,
 		"agentid":   cli.Config.AgentID,
 	}).Info("Daemon start")
@@ -228,9 +228,7 @@ func initRouter(s *apiserver.Server, d *clientdaemon.Daemon) {
 }
 
 func (cli *DaemonCli) initMiddlewares(s *apiserver.Server, cfg *apiserver.Config) {
-	v := cfg.Version
-
-	vm := middleware.NewVersionMiddleware(v, api.DefaultVersion, api.MinVersion)
+	vm := middleware.NewVersionMiddleware(api.API_VERSION, api.DEF_VERSION, api.MIN_VERSION)
 	s.UseMiddleware(vm)
 
 	if cfg.CorsHeaders != "" {
@@ -238,7 +236,7 @@ func (cli *DaemonCli) initMiddlewares(s *apiserver.Server, cfg *apiserver.Config
 		s.UseMiddleware(c)
 	}
 
-	u := middleware.NewUserAgentMiddleware(v)
+	u := middleware.NewUserAgentMiddleware()
 	s.UseMiddleware(u)
 }
 

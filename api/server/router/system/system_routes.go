@@ -46,7 +46,7 @@ func (s *systemRouter) getVersion(ctx context.Context, w http.ResponseWriter, r 
 	logrus.Debugln("getVersion handler")
 
 	info := s.backend.SystemVersion()
-	info.APIVersion = api.DefaultVersion
+	info.APIVersion = api.API_VERSION
 
 	return httputils.WriteJSON(w, http.StatusOK, info)
 }

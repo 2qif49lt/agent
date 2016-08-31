@@ -2,13 +2,12 @@ package api
 
 // Version 当前API 版本
 const (
-	SRV_VERSION = "0.2.0"
-	CLI_VERSION = "0.1.0"
+	API_VERSION = "0.1.0"
 
 	// Version of Current REST API，比如稳定版本
-	DefaultVersion string = "0.1.0"
-	// MinVersion represents Minimum REST API version supported
-	MinVersion = "0.1.0"
+	DEF_VERSION = "0.1.0"
+	// MIN_VERSION represents Minimum REST API version supported
+	MIN_VERSION = "0.1.0"
 )
 
 var (

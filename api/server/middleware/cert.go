@@ -55,9 +55,7 @@ func CertExtensionAuthMiddleware(handler func(ctx context.Context, w http.Respon
 
 				if len(paths) > 0 {
 					command := paths[0]
-					if len(paths) > 1 {
-						command = paths[1]
-					}
+
 					authexps := strings.Split(auth, " ")
 
 					for _, authexp := range authexps {

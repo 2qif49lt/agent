@@ -84,7 +84,7 @@ func runVersion(agentCli *client.AgentCli, opts *versionOptions) error {
 
 	vd := types.VersionResponse{
 		Client: &types.Version{
-			Version:       api.CLI_VERSION,
+			Version:       api.API_VERSION,
 			APIVersion:    agentCli.Client().ClientVersion(),
 			GoVersion:     runtime.Version(),
 			BuildTime:     api.BUILDTIME,

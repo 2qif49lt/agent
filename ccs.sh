@@ -4,7 +4,7 @@
 # rsapire 生成用于对参数进行签名
 help(){
 	echo "example: ccs server  IP:10.1.9.34,IP:1.2.3.4"
-	echo "example: ccs client  or: css client *, or: css client info,system,plugin" 
+	echo "example: ccs client  or: css client .+, or: css client info,system,plugin" 
 	echo "example: ccs ca"
 	echo "example: ccs rsapair"
 }

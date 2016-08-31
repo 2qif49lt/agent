@@ -1,7 +1,9 @@
 package random
 
 import (
+	"crypto/md5"
 	cryptorand "crypto/rand"
+	"fmt"
 	"io"
 	"math"
 	"math/big"
@@ -9,6 +11,15 @@ import (
 	"sync"
 	"time"
 )
+
+func GetGuid() (string, error) {
+	buf := [128]byte{}
+	n, err := rand.Read(buf[:])
+	if n < len(buf) {
+		return "", err
+	}
+	return fmt.Sprintf(`%x`, md5.Sum(buf[:])), nil
+}
 
 // Rand is a global *rand.Rand instance, which initialized with NewSource() source.
 var Rand = rand.New(NewSource())

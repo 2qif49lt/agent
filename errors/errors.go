@@ -45,3 +45,10 @@ func NewRequestNotFoundError(err error) error {
 func NewRequestConflictError(err error) error {
 	return NewErrorWithStatusCode(err, http.StatusConflict)
 }
+
+func Str(err error) string {
+	if err == nil {
+		return "nil"
+	}
+	return err.Error()
+}

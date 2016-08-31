@@ -13,7 +13,7 @@ import (
 )
 
 // APIVersionKey is the client's requested API version.
-const APIVersionKey = "api-version"
+const APIVersionKey = "version"
 
 // UAStringKey is used as key type for user-agent string in net/context struct
 const UAStringKey = "upstream-user-agent"

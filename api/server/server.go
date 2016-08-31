@@ -168,14 +168,14 @@ func (s *Server) createMux() *mux.Router {
 			f := s.makeHTTPHandler(r.Handler())
 
 			logrus.Debugf("Registering %s, %s", r.Method(), r.Path())
-			m.Path(versionMatcher + r.Path()).Methods(r.Method()).Handler(f)
+			//		m.Path(versionMatcher + r.Path()).Methods(r.Method()).Handler(f)
 			m.Path(r.Path()).Methods(r.Method()).Handler(f)
 		}
 	}
 
 	err := errors.NewRequestNotFoundError(fmt.Errorf("page not found"))
 	notFoundHandler := httputils.MakeErrorHandler(err)
-	m.HandleFunc(versionMatcher+"/{path:.*}", notFoundHandler)
+	//	m.HandleFunc(versionMatcher+"/{path:.*}", notFoundHandler)
 	m.NotFoundHandler = notFoundHandler
 
 	return m

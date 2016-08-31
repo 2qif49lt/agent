@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/agent/api/types/versions"
 	"github.com/2qif49lt/logrus"
 	"golang.org/x/net/context"
@@ -47,6 +48,7 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 		apiVersion := vars["version"]
 		if apiVersion == "" {
 			apiVersion = v.defaultVersion
+			vars["version"] = apiVersion
 		}
 
 		w.Header().Set("version", v.defaultVersion)
@@ -57,7 +59,7 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 		if versions.LessThan(apiVersion, v.minVersion) {
 			return badRequestError{fmt.Errorf("client version %s is too old. Minimum supported API version is %s, please upgrade your client to a newer version", apiVersion, v.minVersion)}
 		}
-		ctx = context.WithValue(ctx, "api-version", apiVersion)
+		ctx = context.WithValue(ctx, httputils.APIVersionKey, apiVersion)
 		return handler(ctx, w, r, vars)
 	}
 

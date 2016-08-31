@@ -1,6 +1,26 @@
 package eventdb
 
-import "database/sql"
+import (
+	"database/sql"
+	"path"
+)
+
+const (
+	dbfolder    = "db"
+	eventdbname = "enent.db"
+)
+
+var (
+	eventer *Database = nil
+)
+
+func init() {
+	db, err := NewSqliteConn(path.Join(dbfolder, eventdbname))
+	if err != nil {
+		panic(err)
+	}
+	eventer = db
+}
 
 // NewSqliteConn opens a connection to a sqlite
 // database.

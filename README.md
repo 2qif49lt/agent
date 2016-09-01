@@ -10,7 +10,7 @@ Agent is a service application which is part of new generation of DevOps framewo
 - 提供RESTful接口,方便内管系统开发.
 - 提供强大的命令行功能,网络瘫痪时运维人员也可控
 - 插件功能,
-- *基于证书扩展字段的功能授权,路由等,方便不同团队隔离*
+- 基于证书扩展字段的功能授权,路由等,方便不同团队隔离
 - 支持自动反向代理
 - *可支持动态配置文件的分发管理*
 - *可支持程序版本的细粒度分发管理*

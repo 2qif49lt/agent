@@ -17,3 +17,6 @@ Agent is a service application which is part of new generation of DevOps framewo
 - *可支持统计数据/日志的收发*
 
 
+## NOTICE
+
+I DO NOT IMPLEMENT FUNCTIONS LIKE HOLDING OLD WOMAN ACROSS STREET (ﾒ ﾟ皿ﾟ)ﾒ,I CREATE TRAFFIC LIGHT AND ZEBRA CROSSING!

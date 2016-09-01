@@ -13,13 +13,11 @@ import (
 )
 
 // APIVersionKey is the client's requested API version.
-const APIVersionKey = "version"
+const APIVersionKey = "apiversion"
 
 // UAStringKey is used as key type for user-agent string in net/context struct
 const UAStringKey = "upstream-user-agent"
 
-// APIFunc is an adapter to allow the use of ordinary functions as Docker API endpoints.
-// Any function that has the appropriate signature can be registered as an API endpoint (e.g. getVersion).
 type APIFunc func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error
 
 // HijackConnection interrupts the http response writer to get the
@@ -103,4 +101,23 @@ func VersionFromContext(ctx context.Context) (ver string) {
 		return
 	}
 	return val.(string)
+}
+func CommandFromRequest(r *http.Request) string {
+	if r == nil {
+		return ""
+	}
+	command := ""
+	paths := strings.Split(r.URL.Path, "/")
+	cleanpaths := []string{}
+	for _, v := range paths {
+		tmpv := strings.TrimSpace(v)
+		if len(tmpv) != 0 {
+			cleanpaths = append(cleanpaths, tmpv)
+		}
+	}
+	paths = cleanpaths
+	if len(paths) > 0 {
+		command = paths[0]
+	}
+	return command
 }

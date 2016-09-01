@@ -3,7 +3,6 @@ package types
 // Version contains response of Remote API:
 // GET "/version"
 type Version struct {
-	Version       string
 	APIVersion    string
 	GoVersion     string
 	Os            string

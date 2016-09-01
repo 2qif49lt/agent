@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"runtime"
 
 	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/agent/api/types/versions"
@@ -45,13 +46,16 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 		logrus.Debugln("VersionMiddleware enter")
 		defer logrus.Debugln("VersionMiddleware leave")
 
-		apiVersion := vars["version"]
+		apiVersion := r.Header.Get(httputils.APIVersionKey)
 		if apiVersion == "" {
+			logrus.WithField("remote", r.RemoteAddr).Warnln("api version is empty")
+
 			apiVersion = v.defaultVersion
 			vars["version"] = apiVersion
 		}
 
-		w.Header().Set("version", v.defaultVersion)
+		header := fmt.Sprintf("Agentd/%s (%s)", v.defaultVersion, runtime.GOOS)
+		w.Header().Set("Server", header)
 
 		if versions.GreaterThan(apiVersion, v.serverVersion) {
 			return badRequestError{fmt.Errorf("client is newer than server (client API version: %s, server API version: %s)", apiVersion, v.serverVersion)}

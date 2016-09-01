@@ -1,9 +1,7 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
-	"runtime"
 
 	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/logrus"
@@ -30,9 +28,6 @@ func (u *UserAgentMiddleware) WrapHandler(handler func(ctx context.Context, w ht
 		defer logrus.Debugln("UserAgentMiddleware leave")
 
 		ctx = context.WithValue(ctx, httputils.UAStringKey, r.Header.Get("User-Agent"))
-
-		header := fmt.Sprintf("Agentd/%s", runtime.GOOS)
-		w.Header().Set("Server", header)
 
 		return handler(ctx, w, r, vars)
 	}

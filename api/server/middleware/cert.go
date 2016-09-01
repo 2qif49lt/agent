@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/agent/errors"
 	"github.com/2qif49lt/logrus"
 	"golang.org/x/net/context"
@@ -43,19 +44,10 @@ func CertExtensionAuthMiddleware(handler func(ctx context.Context, w http.Respon
 				if auth == "" {
 					auth = defaultExtenAuth
 				}
-				paths := strings.Split(r.URL.Path, "/")
-				cleanpaths := []string{}
-				for _, v := range paths {
-					tmpv := strings.TrimSpace(v)
-					if len(tmpv) != 0 {
-						cleanpaths = append(cleanpaths, tmpv)
-					}
-				}
-				paths = cleanpaths
 
-				if len(paths) > 0 {
-					command := paths[0]
+				command := httputils.CommandFromRequest(r)
 
+				if len(command) > 0 {
 					authexps := strings.Split(auth, " ")
 
 					for _, authexp := range authexps {

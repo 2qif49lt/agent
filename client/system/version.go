@@ -19,7 +19,6 @@ import (
 )
 
 var versionTemplate = `Client:
- Version:      {{.Client.Version}}
  API version:  {{.Client.APIVersion}}
  Go version:   {{.Client.GoVersion}}
  Built:        {{.Client.BuildTime}}
@@ -28,7 +27,6 @@ var versionTemplate = `Client:
  Experimental: {{.Client.Experimental}}{{end}}{{if .ServerOK}}
 
 Server:
- Version:      {{.Server.Version}}
  API version:  {{.Server.APIVersion}}
  Go version:   {{.Server.GoVersion}}
  Built:        {{.Server.BuildTime}}
@@ -84,8 +82,7 @@ func runVersion(agentCli *client.AgentCli, opts *versionOptions) error {
 
 	vd := types.VersionResponse{
 		Client: &types.Version{
-			Version:       api.API_VERSION,
-			APIVersion:    agentCli.Client().ClientVersion(),
+			APIVersion:    api.API_VERSION,
 			GoVersion:     runtime.Version(),
 			BuildTime:     api.BUILDTIME,
 			Os:            runtime.GOOS,

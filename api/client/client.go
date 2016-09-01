@@ -48,6 +48,11 @@ func NewClient(host string, version string, client *http.Client, httpHeaders map
 	if version == "" {
 		version = api.API_VERSION
 	}
+	if httpHeaders == nil {
+		httpHeaders = make(map[string]string)
+	}
+	httpHeaders["apiversion"] = version
+
 	return &Client{
 		proto:             proto,
 		addr:              addr,
@@ -84,7 +89,9 @@ func (cli *Client) ClientVersion() string {
 // instance of the Client.
 func (cli *Client) UpdateClientVersion(v string) {
 	cli.version = v
-	cli.customHTTPHeaders["version"] = v
+	if cli.customHTTPHeaders != nil {
+		cli.customHTTPHeaders["apiversion"] = v
+	}
 }
 
 // ParseHost verifies that the given host strings is valid.

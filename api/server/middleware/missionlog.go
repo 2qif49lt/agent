@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/2qif49lt/agent/api/server/httputils"
@@ -28,33 +27,16 @@ func EventDBMiddleware(handler func(ctx context.Context, w http.ResponseWriter, 
 			mid = fmt.Sprintf("ffffffff%s%010d", time.Now().Format("20060102150405"), rand.Intn(1e10))
 		}
 		ctx = context.WithValue(ctx, "mid", mid)
-		command := "?"
+		command := httputils.CommandFromRequest(r)
 		paras := r.RequestURI + " " + fmt.Sprintf("%v", vars)
-
-		paths := strings.Split(r.URL.Path, "/")
-		cleanpaths := []string{}
-		for _, v := range paths {
-			tmpv := strings.TrimSpace(v)
-			if len(tmpv) != 0 {
-				cleanpaths = append(cleanpaths, tmpv)
-			}
-		}
-		paths = cleanpaths
-		if len(paths) > 0 {
-			command = paths[0]
-		}
 
 		begtime := time.Now()
 
 		err = handler(ctx, w, r, vars)
 
 		cost := time.Since(begtime) / time.Millisecond
-		version := "?"
-		if ifver := ctx.Value(httputils.APIVersionKey); ifver != nil {
-			if ver, ok := ifver.(string); ok {
-				version = ver
-			}
-		}
+		version := httputils.VersionFromContext(ctx)
+
 		if eventerr := eventdb.InsertMission(mid, version, command, paras, errors.Str(err), int(cost)); eventerr != nil {
 			logrus.WithFields(logrus.Fields{
 				"mid":     mid,

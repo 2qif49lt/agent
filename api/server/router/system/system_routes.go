@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/server/httputils"
 	//"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/api/types/events"
@@ -46,7 +45,6 @@ func (s *systemRouter) getVersion(ctx context.Context, w http.ResponseWriter, r 
 	logrus.Debugln("getVersion handler")
 
 	info := s.backend.SystemVersion()
-	info.APIVersion = api.API_VERSION
 
 	return httputils.WriteJSON(w, http.StatusOK, info)
 }

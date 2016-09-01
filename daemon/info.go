@@ -73,7 +73,7 @@ func (daemon *Daemon) SystemInfo() (*types.Info, error) {
 // SystemVersion returns version information about the daemon.
 func (daemon *Daemon) SystemVersion() types.Version {
 	v := types.Version{
-		Version:      api.API_VERSION,
+		APIVersion:   api.API_VERSION,
 		GoVersion:    runtime.Version(),
 		Os:           runtime.GOOS,
 		Arch:         runtime.GOARCH,

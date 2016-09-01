@@ -1,5 +1,5 @@
 # agent
-Agent is a service application which is part of new generation of DevOps framework.inspired by docker.
+Agent is a service application which is part of new generation of DevOps framework or specification focuses on building channels.inspired by docker.
 
 ## 框架特点
 - 支持绝大部分操作系统
@@ -15,6 +15,5 @@ Agent is a service application which is part of new generation of DevOps framewo
 - *可支持动态配置文件的分发管理*
 - *可支持程序版本的细粒度分发管理*
 - *可支持统计数据/日志的收发*
-
 
 

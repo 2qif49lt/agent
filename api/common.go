@@ -2,14 +2,12 @@ package api
 
 import (
 	"fmt"
-	"github.com/docker/libtrust"
-	"mime"
 	"path/filepath"
 	"strconv"
 	"strings"
 
 	"github.com/2qif49lt/agent/pkg/system"
-	"github.com/2qif49lt/logrus"
+	"github.com/docker/libtrust"
 )
 
 func formGroup(key string, start, last int) string {
@@ -28,15 +26,6 @@ func formGroup(key string, start, last int) string {
 		group = fmt.Sprintf("%s:%s->%s", ip, group, group)
 	}
 	return fmt.Sprintf("%s/%s", group, groupType)
-}
-
-// MatchesContentType validates the content type against the expected one
-func MatchesContentType(contentType, expectedType string) bool {
-	mimetype, _, err := mime.ParseMediaType(contentType)
-	if err != nil {
-		logrus.Errorf("Error parsing media type: %s error: %v", contentType, err)
-	}
-	return err == nil && mimetype == expectedType
 }
 
 // LoadOrCreateTrustKey attempts to load the libtrust key at the given path,

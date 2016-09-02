@@ -106,7 +106,7 @@ func (s *systemRouter) getEvents(ctx context.Context, w http.ResponseWriter, r *
 	if onlyPastEvents {
 		return nil
 	}
-
+	logrus.Infoln("begin get event")
 	for {
 		select {
 		case ev := <-l:

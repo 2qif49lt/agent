@@ -51,7 +51,6 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 			logrus.WithField("remote", r.RemoteAddr).Warnln("api version is empty")
 
 			apiVersion = v.defaultVersion
-			vars["version"] = apiVersion
 		}
 
 		header := fmt.Sprintf("Agentd/%s (%s)", v.defaultVersion, runtime.GOOS)
@@ -64,6 +63,7 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 			return badRequestError{fmt.Errorf("client version %s is too old. Minimum supported API version is %s, please upgrade your client to a newer version", apiVersion, v.minVersion)}
 		}
 		ctx = context.WithValue(ctx, httputils.APIVersionKey, apiVersion)
+
 		return handler(ctx, w, r, vars)
 	}
 

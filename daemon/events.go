@@ -8,16 +8,24 @@ import (
 	daemonevents "github.com/2qif49lt/agent/daemon/events"
 )
 
+var (
+	_hostName = ""
+)
+
 // LogDaemonEventWithAttributes generates an event related to the daemon itself with specific given attributes.
 func (daemon *Daemon) LogDaemonEventWithAttributes(action string, attributes map[string]string) {
 	if daemon.EventsService != nil {
-		if info, err := daemon.SystemInfo(); err == nil && info.Name != "" {
-			attributes["name"] = info.Name
+		if _hostName == "" {
+			if info, err := daemon.SystemInfo(); err == nil && info.Name != "" {
+				_hostName = info.Name
+			}
 		}
+		attributes["name"] = _hostName
 		actor := events.Actor{
 			ID:         daemon.configStore.AgentID,
 			Attributes: attributes,
 		}
+
 		daemon.EventsService.Log(action, events.DaemonEventType, actor)
 	}
 }

@@ -5,10 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime"
 	"net/http"
 	"strings"
 
-	"github.com/2qif49lt/agent/api"
+	"github.com/2qif49lt/logrus"
 )
 
 // APIVersionKey is the client's requested API version.
@@ -44,6 +45,36 @@ func CloseStreams(streams ...interface{}) {
 	}
 }
 
+// MatchesContentType validates the content type against the expected one
+func matchesContentType(contentType, expectedType string) bool {
+	mimetype, _, err := mime.ParseMediaType(contentType)
+	if err != nil {
+		logrus.Errorf("Error parsing media type: %s error: %v", contentType, err)
+	}
+	return err == nil && mimetype == expectedType
+}
+
+// CheckForText check the request's Content-Type is text type or human readable.
+func CheckForText(r *http.Request) error {
+	ct := r.Header.Get("Content-Type")
+
+	// No Content-Type header is ok as long as there's no Body
+	if ct == "" {
+		if r.Body == nil || r.ContentLength == 0 {
+			return nil
+		}
+	}
+	mimetype, _, err := mime.ParseMediaType(ct)
+	if err != nil {
+		logrus.Errorf("Error parsing media type: %s error: %v", ct, err)
+		return err
+	}
+	if mimetype != "application/json" && !strings.HasPrefix(mimetype, "text/") {
+		return fmt.Errorf(`Content-Type: %s do not support. `, ct)
+	}
+	return nil
+}
+
 // CheckForJSON makes sure that the request's Content-Type is application/json.
 func CheckForJSON(r *http.Request) error {
 	ct := r.Header.Get("Content-Type")
@@ -56,7 +87,7 @@ func CheckForJSON(r *http.Request) error {
 	}
 
 	// Otherwise it better be json
-	if api.MatchesContentType(ct, "application/json") {
+	if matchesContentType(ct, "application/json") {
 		return nil
 	}
 	return fmt.Errorf("Content-Type specified (%s) must be 'application/json'", ct)
@@ -100,6 +131,17 @@ func VersionFromContext(ctx context.Context) (ver string) {
 		return
 	}
 	return val.(string)
+}
+func ValueFromContext(ctx context.Context, key string) string {
+	if ctx == nil {
+		return ""
+	}
+	val := ctx.Value(key)
+	if val == nil {
+		return ""
+	}
+	return val.(string)
+
 }
 func CommandFromRequest(r *http.Request) string {
 	if r == nil {

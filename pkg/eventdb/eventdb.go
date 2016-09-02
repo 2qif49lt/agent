@@ -18,6 +18,7 @@ const (
         version text NOT NULL,
         command text NOT NULL,
         paras text NOT NULL,
+        body text,
         result text NOT NULL DEFAULT 'OK',
         cost integer NOT NULL,
         logtime DEFAULT (datetime('now','localtime')),
@@ -39,6 +40,7 @@ type EventRec struct {
 	Version string    `json:"version"`
 	Command string    `json:"command"`
 	Paras   string    `json:"paras"`
+	Body    string    `json:"body"`
 	Result  string    `json:"result"`
 	Cost    int       `json:"cost"`
 	Logtime time.Time `json:"logtime"`
@@ -74,15 +76,15 @@ func (db *Database) Close() error {
 	return db.conn.Close()
 }
 
-func InsertMission(mid, version, command, paras, result string, cost int) error {
-	return eventer.InsertMission(mid, version, command, paras, result, cost)
+func InsertMission(mid, version, command, paras, body, result string, cost int) error {
+	return eventer.InsertMission(mid, version, command, paras, body, result, cost)
 }
-func (db *Database) InsertMission(mid, version, command, paras, result string, cost int) error {
+func (db *Database) InsertMission(mid, version, command, paras, body, result string, cost int) error {
 	db.mux.Lock()
 	defer db.mux.Unlock()
 
-	_, err := db.conn.Exec(`INSERT INTO missions(mid,version,command,paras,result,cost) VALUES(?,?,?,?,?,?);`,
-		mid, version, command, paras, result, cost)
+	_, err := db.conn.Exec(`INSERT INTO missions(mid,version,command,paras,body,result,cost) VALUES(?,?,?,?,?,?,?);`,
+		mid, version, command, paras, body, result, cost)
 
 	return err
 }
@@ -96,8 +98,8 @@ func (db *Database) GetMission(mid string) (*EventRec, error) {
 	rec := &EventRec{}
 	rec.Mid = mid
 
-	if err := db.conn.QueryRow(`SELECT id,version,command,paras,result,cost,logtime FROM missions WHERE mid = ?;`, mid).Scan(&rec.Id,
-		rec.Version, rec.Command, rec.Paras, rec.Result, rec.Cost, rec.Logtime); err != nil && err != sql.ErrNoRows {
+	if err := db.conn.QueryRow(`SELECT id,version,command,paras,body,result,cost,logtime FROM missions WHERE mid = ?;`, mid).Scan(&rec.Id,
+		rec.Version, rec.Command, rec.Paras, rec.Body, rec.Result, rec.Cost, rec.Logtime); err != nil && err != sql.ErrNoRows {
 		return nil, err
 	}
 

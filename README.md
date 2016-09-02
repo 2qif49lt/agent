@@ -25,3 +25,8 @@ I DO NOT IMPLEMENT FUNCTIONS LIKE HOLDING OLD WOMAN ACROSS STREET (ﾒ ﾟ皿ﾟ
 
 ## REQUIREMENT
 Go Verion 1.7+
+
+## USAGE
+like:
+./agent daemon start -c -r=false -D --cert-exten-auth
+./agent version --tlscert=./cert/client-cert.pem --tlskey=./cert/client-key.pem

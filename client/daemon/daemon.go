@@ -47,6 +47,10 @@ func (cli *DaemonCli) InitFlags(cmd *flag.FlagSet) {
 	cli.Config.InstallFlags(cmd)
 }
 
+var (
+	testruntime = 0
+)
+
 func (cli *DaemonCli) run() {
 	stopc := make(chan bool)
 	defer close(stopc)
@@ -61,7 +65,24 @@ func (cli *DaemonCli) run() {
 	// daemon doesn't exit
 	serveAPIWait := make(chan error)
 	go cli.api.Wait(serveAPIWait) // 开始服务
+	/*
+		go func() {
+			for {
+				select {
+				case <-serveAPIWait:
+					return
+				case <-time.After(time.Second * 5):
+					testruntime += 5
+					m := map[string]string{
+						"time": fmt.Sprintf("%d", testruntime),
+					}
+					fmt.Println("run", m)
+					cli.d.LogDaemonEventWithAttributes("run", m)
+				}
 
+			}
+		}()
+	*/
 	// Daemon is fully initialized and handling API traffic
 	// Wait for serve API to complete
 	errAPI := <-serveAPIWait

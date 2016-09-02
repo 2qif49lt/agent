@@ -1,9 +1,8 @@
 package client
 
 import (
+	"context"
 	"net/url"
-
-	"golang.org/x/net/context"
 )
 
 // Ping returns the agentd server Pong response message.

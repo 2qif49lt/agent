@@ -2,6 +2,7 @@ package client
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,7 +14,6 @@ import (
 	"github.com/2qif49lt/agent/api/client/transport/cancellable"
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/api/types/versions"
-	"golang.org/x/net/context"
 )
 
 // serverResponse is a wrapper for http API responses.

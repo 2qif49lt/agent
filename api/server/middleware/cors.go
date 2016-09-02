@@ -1,10 +1,10 @@
 package middleware
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/2qif49lt/logrus"
-	"golang.org/x/net/context"
 )
 
 // CORSMiddleware injects CORS headers to each request

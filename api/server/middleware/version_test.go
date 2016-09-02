@@ -1,13 +1,13 @@
 package middleware
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
 	"github.com/2qif49lt/agent/api/server/httputils"
-	"golang.org/x/net/context"
 )
 
 func TestVersionMiddleware(t *testing.T) {

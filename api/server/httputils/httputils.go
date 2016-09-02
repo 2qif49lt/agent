@@ -1,13 +1,12 @@
 package httputils
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
-
-	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/api"
 )

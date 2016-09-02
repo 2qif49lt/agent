@@ -1,13 +1,12 @@
 package ioutils
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"strings"
 	"testing"
 	"time"
-
-	"golang.org/x/net/context"
 )
 
 // Implement io.Reader

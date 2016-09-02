@@ -1,10 +1,10 @@
 package client
 
 import (
+	"context"
 	"io"
 
 	"github.com/2qif49lt/agent/api/types"
-	"golang.org/x/net/context"
 )
 
 // CommonAPIClient is the common methods between stable and experimental versions of APIClient.

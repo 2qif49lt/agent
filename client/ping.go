@@ -1,9 +1,8 @@
 package client
 
 import (
+	"context"
 	"strings"
-
-	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/cobra"

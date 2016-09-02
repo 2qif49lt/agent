@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -11,7 +12,6 @@ import (
 	"github.com/2qif49lt/agent/pkg/eventdb"
 	"github.com/2qif49lt/agent/pkg/random"
 	"github.com/2qif49lt/logrus"
-	"golang.org/x/net/context"
 )
 
 // EventDBMiddleware record  the request mission.

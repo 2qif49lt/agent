@@ -1,10 +1,10 @@
 package router
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/2qif49lt/agent/api/server/httputils"
-	"golang.org/x/net/context"
 )
 
 // localRoute defines an individual API route to connect

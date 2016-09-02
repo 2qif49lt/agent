@@ -1,7 +1,7 @@
 package client
 
 import (
-	"golang.org/x/net/context"
+	"context"
 )
 
 // PluginEnable enables a plugin

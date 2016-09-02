@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"encoding/asn1"
 	"fmt"
 	"net/http"
@@ -10,7 +11,6 @@ import (
 	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/agent/errors"
 	"github.com/2qif49lt/logrus"
-	"golang.org/x/net/context"
 )
 
 const (

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net"
@@ -13,7 +14,6 @@ import (
 	"github.com/2qif49lt/agent/errors"
 	"github.com/2qif49lt/logrus"
 	"github.com/gorilla/mux"
-	"golang.org/x/net/context"
 )
 
 // versionMatcher defines a variable matcher to be parsed by the router

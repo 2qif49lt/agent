@@ -1,12 +1,12 @@
 package client
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
 
 	"github.com/2qif49lt/agent/api/types"
-	"golang.org/x/net/context"
 )
 
 // Info returns information about the agentd server.

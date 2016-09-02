@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/agent/pkg/ioutils"
 	"github.com/2qif49lt/logrus"
-	"golang.org/x/net/context"
 )
 
 // DebugRequestMiddleware dumps the request to logger

@@ -4,7 +4,7 @@ import (
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
 	"github.com/2qif49lt/cobra"
-	//	"golang.org/x/net/context"
+	//	"context"
 	//从软件中心下载
 	//	"github.com/docker/docker/reference"
 	//	"github.com/docker/docker/registry"

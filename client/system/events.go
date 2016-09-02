@@ -1,14 +1,13 @@
 package system
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
 	"sort"
 	"strings"
 	"time"
-
-	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/api/types"
 	eventtypes "github.com/2qif49lt/agent/api/types/events"

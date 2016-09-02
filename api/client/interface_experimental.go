@@ -3,7 +3,7 @@
 package client
 
 import (
-	"golang.org/x/net/context"
+	"context"
 )
 
 // APIClient is an interface that clients that talk with a docker server must implement.

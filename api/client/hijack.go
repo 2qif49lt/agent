@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"crypto/tls"
 	"errors"
 	"fmt"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/pkg/connections/sockets"
-	"golang.org/x/net/context"
 )
 
 // tlsClientCon holds tls information and a dialed connection.

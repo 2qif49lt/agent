@@ -1,11 +1,10 @@
 package system
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"runtime"
-
-	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/types"

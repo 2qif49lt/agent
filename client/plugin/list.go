@@ -1,6 +1,7 @@
 package plugin
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -8,7 +9,6 @@ import (
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
 	"github.com/2qif49lt/cobra"
-	"golang.org/x/net/context"
 )
 
 // agent plugin ls

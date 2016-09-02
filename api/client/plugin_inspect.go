@@ -1,10 +1,10 @@
 package client
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/2qif49lt/agent/api/types"
-	"golang.org/x/net/context"
 )
 
 // PluginInspect inspects an existing plugin

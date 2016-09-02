@@ -1,10 +1,11 @@
 package plugin
 
 import (
+	"context"
+
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
 	"github.com/2qif49lt/cobra"
-	"golang.org/x/net/context"
 )
 
 // agent plugin disable PLUGIN

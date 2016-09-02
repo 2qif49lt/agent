@@ -1,11 +1,10 @@
 package client
 
 import (
+	"context"
 	"io"
 	"net/url"
 	"time"
-
-	"golang.org/x/net/context"
 
 	"github.com/2qif49lt/agent/api/types"
 	"github.com/2qif49lt/agent/api/types/filters"

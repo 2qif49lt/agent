@@ -2,6 +2,7 @@ package client
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,7 +10,6 @@ import (
 	"strings"
 
 	"github.com/2qif49lt/agent/api/types"
-	"golang.org/x/net/context"
 )
 
 // PluginInstall installs a plugin

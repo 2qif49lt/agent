@@ -1,6 +1,7 @@
 package system
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,7 +15,6 @@ import (
 	"github.com/2qif49lt/agent/errors"
 	"github.com/2qif49lt/agent/pkg/ioutils"
 	"github.com/2qif49lt/logrus"
-	"golang.org/x/net/context"
 )
 
 func optionsHandler(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {

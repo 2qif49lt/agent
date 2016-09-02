@@ -1,13 +1,13 @@
 package plugin
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
 	"github.com/2qif49lt/cobra"
-	"golang.org/x/net/context"
 )
 
 func newInspectCommand(agentCli *client.AgentCli) *cobra.Command {

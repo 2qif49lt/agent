@@ -22,3 +22,6 @@ Agent is a service application which is part of new generation of DevOps framewo
 I DO NOT IMPLEMENT FUNCTIONS LIKE HOLDING OLD WOMAN ACROSS STREET (ﾒ ﾟ皿ﾟ)ﾒ,I CREATE TRAFFIC LIGHT AND ZEBRA CROSSING!
 
 目前仅在MacOS上检查通过。
+
+## REQUIREMENT
+Go Verion 1.7+

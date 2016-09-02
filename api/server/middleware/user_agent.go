@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/logrus"
-	"golang.org/x/net/context"
 )
 
 // UserAgentMiddleware is a middleware that

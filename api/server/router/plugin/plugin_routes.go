@@ -1,11 +1,11 @@
 package plugin
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/2qif49lt/agent/api/server/httputils"
 	//	"github.com/2qif49lt/agent/api/types"
-	"golang.org/x/net/context"
 )
 
 func (pr *pluginRouter) enablePlugin(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error {

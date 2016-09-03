@@ -56,7 +56,6 @@ func MissionMiddleware(handler func(ctx context.Context, w http.ResponseWriter, 
 		version := httputils.Get(vars, httputils.CLI_API_VERSION)
 		ua := httputils.Get(vars, httputils.CLI_USER_AGENT)
 
-		fmt.Println(version, "faaaa", ua)
 		if eventerr := eventdb.InsertMission(mid, version, command, paras, body, errors.Str(err), int(cost)); eventerr != nil {
 			logrus.WithFields(logrus.Fields{
 				"mid":     mid,

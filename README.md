@@ -32,27 +32,27 @@ Go Verion 1.7+
 ./agent daemon start -c -r=false -D --cert-exten-auth
 ```
 >INFO[0000:645] Daemon has completed initialization
-INFO[0000:645] Daemon start                                  agentid=56F0F0B9-10E6-450E-96B6-AA212C4909AD buildtime=20160903122212 version=0.1.0
-INFO[0000:645] API listen on 127.0.0.1:3567
+>INFO[0000:645] Daemon start                                  agentid=56F0F0B9-10E6-450E-96B6-AA212C4909AD buildtime=20160903122212 version=0.1.0
+>INFO[0000:645] API listen on 127.0.0.1:3567
 
 ```shell
 // launch a version request with specifying client certificate path
 ./agent version --tlscert=./cert/client-cert.pem --tlskey=./cert/client-key.pem
-
 ```
 >Client:
- API version:  0.1.0
- Go version:   go1.7
- Built:        20160903122212
- OS/Arch:      darwin/amd64
- Kernel:       15.6.0 
-Server:
- API version:  0.1.0
- Go version:   go1.7
- Built:        20160903122212
- OS/Arch:      darwin/amd64
- Kernel:       15.6.0
+> API version:  0.1.0
+> Go version:   go1.7
+> Built:        20160903122212
+> OS/Arch:      darwin/amd64
+> Kernel:       15.6.0 
+>
+>Server:
+> API version:  0.1.0
+> Go version:   go1.7
+> Built:        20160903122212
+> OS/Arch:      darwin/amd64
+> Kernel:       15.6.0
 
 
- ## DEVELOP STEP
+## DEVELOP
 New functionality should be implement by two steps at least: declare interface at route point and implement in daemon package.it will be better to implement client's cli command. 

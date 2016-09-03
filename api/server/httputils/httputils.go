@@ -12,12 +12,6 @@ import (
 	"github.com/2qif49lt/logrus"
 )
 
-// APIVersionKey is the client's requested API version.
-const APIVersionKey = "apiversion"
-
-// UAStringKey is used as key type for user-agent string in net/context struct
-const UAStringKey = "upstream-user-agent"
-
 type APIFunc func(ctx context.Context, w http.ResponseWriter, r *http.Request, vars map[string]string) error
 
 // HijackConnection interrupts the http response writer to get the
@@ -120,18 +114,6 @@ func WriteJSON(w http.ResponseWriter, code int, v interface{}) error {
 	return json.NewEncoder(w).Encode(v)
 }
 
-// VersionFromContext returns an API version from the context using APIVersionKey.
-// It panics if the context value does not have version.Version type.
-func VersionFromContext(ctx context.Context) (ver string) {
-	if ctx == nil {
-		return
-	}
-	val := ctx.Value(APIVersionKey)
-	if val == nil {
-		return
-	}
-	return val.(string)
-}
 func ValueFromContext(ctx context.Context, key string) string {
 	if ctx == nil {
 		return ""

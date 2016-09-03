@@ -2,10 +2,6 @@
 
 package client
 
-import (
-	"context"
-)
-
 // APIClient is an interface that clients that talk with a docker server must implement.
 type APIClient interface {
 	CommonAPIClient
@@ -16,6 +12,6 @@ type APIClient interface {
 var _ APIClient = &Client{}
 
 // Info returns information about the agentd server.
-func (cli *Client) Experimental(ctx context.Context) error {
+func (cli *Client) Experimental() error {
 	return nil
 }

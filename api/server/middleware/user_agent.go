@@ -27,7 +27,7 @@ func (u *UserAgentMiddleware) WrapHandler(handler func(ctx context.Context, w ht
 		logrus.Debugln("UserAgentMiddleware enter")
 		defer logrus.Debugln("UserAgentMiddleware leave")
 
-		ctx = context.WithValue(ctx, httputils.UAStringKey, r.Header.Get("User-Agent"))
+		httputils.Put(vars, httputils.CLI_USER_AGENT, r.Header.Get("User-Agent"))
 
 		return handler(ctx, w, r, vars)
 	}

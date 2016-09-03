@@ -1,8 +1,6 @@
 package plugin
 
 import (
-	"context"
-
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
 	"github.com/2qif49lt/cobra"
@@ -18,7 +16,7 @@ func newEnableCommand(agentCli *client.AgentCli) *cobra.Command {
 		},
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return agentCli.Client().PluginEnable(context.Background(), args[0])
+			return agentCli.Client().PluginEnable(args[0])
 		},
 	}
 

@@ -51,7 +51,7 @@ func NewClient(host string, version string, client *http.Client, httpHeaders map
 	if httpHeaders == nil {
 		httpHeaders = make(map[string]string)
 	}
-	httpHeaders["apiversion"] = version
+	httpHeaders[api.HEADER_VERISON] = version
 
 	return &Client{
 		proto:             proto,
@@ -90,7 +90,7 @@ func (cli *Client) ClientVersion() string {
 func (cli *Client) UpdateClientVersion(v string) {
 	cli.version = v
 	if cli.customHTTPHeaders != nil {
-		cli.customHTTPHeaders["apiversion"] = v
+		cli.customHTTPHeaders[api.HEADER_VERISON] = v
 	}
 }
 

@@ -1,16 +1,15 @@
 package client
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/2qif49lt/agent/api/types"
 )
 
 // PluginInspect inspects an existing plugin
-func (cli *Client) PluginInspect(ctx context.Context, name string) (*types.Plugin, error) {
+func (cli *Client) PluginInspect(name string) (*types.Plugin, error) {
 	var p types.Plugin
-	resp, err := cli.get(ctx, "/plugins/"+name, nil, nil)
+	resp, err := cli.get("/plugins/"+name, nil, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -1,7 +1,6 @@
 package system
 
 import (
-	"context"
 	"fmt"
 	"io"
 	"os"
@@ -67,7 +66,7 @@ func runEvents(agentCli *client.AgentCli, opts *eventsOptions) error {
 		Filters: eventFilterArgs,
 	}
 
-	responseBody, err := agentCli.Client().Events(context.Background(), options)
+	responseBody, err := agentCli.Client().Events(options)
 	if err != nil {
 		return err
 	}

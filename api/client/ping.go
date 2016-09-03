@@ -1,15 +1,14 @@
 package client
 
 import (
-	"context"
 	"net/url"
 )
 
 // Ping returns the agentd server Pong response message.
-func (cli *Client) Ping(ctx context.Context, ping string) (string, error) {
+func (cli *Client) Ping(ping string) (string, error) {
 	v := url.Values{}
 	v.Set("msg", ping)
-	rsp, err := cli.get(ctx, "/ping", v, nil)
+	rsp, err := cli.get("/ping", v, nil)
 	if err != nil {
 		return "", err
 	}

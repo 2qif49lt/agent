@@ -2,7 +2,6 @@ package client
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -24,41 +23,39 @@ type serverResponse struct {
 }
 
 // head sends an http request to the agent API using the method HEAD.
-func (cli *Client) head(ctx context.Context, path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
-	return cli.sendRequest(ctx, "HEAD", path, query, nil, headers)
+func (cli *Client) head(path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
+	return cli.sendRequest("HEAD", path, query, nil, headers)
 }
 
-// getWithContext sends an http request to the agent API using the method GET with a specific go context.
-func (cli *Client) get(ctx context.Context, path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
-	return cli.sendRequest(ctx, "GET", path, query, nil, headers)
+// get sends an http request to the agent API using the method GET
+func (cli *Client) get(path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
+	return cli.sendRequest("GET", path, query, nil, headers)
 }
 
-// postWithContext sends an http request to the agent API using the method POST with a specific go context.
-func (cli *Client) post(ctx context.Context, path string, query url.Values, obj interface{}, headers map[string][]string) (*serverResponse, error) {
-	return cli.sendRequest(ctx, "POST", path, query, obj, headers)
+// post sends an http request to the agent API using the method POST
+func (cli *Client) post(path string, query url.Values, obj interface{}, headers map[string][]string) (*serverResponse, error) {
+	return cli.sendRequest("POST", path, query, obj, headers)
 }
 
-func (cli *Client) postRaw(ctx context.Context, path string, query url.Values, body io.Reader, headers map[string][]string) (*serverResponse, error) {
-	return cli.sendClientRequest(ctx, "POST", path, query, body, headers)
-}
-
-// put sends an http request to the agent API using the method PUT.
-func (cli *Client) put(ctx context.Context, path string, query url.Values, obj interface{}, headers map[string][]string) (*serverResponse, error) {
-	return cli.sendRequest(ctx, "PUT", path, query, obj, headers)
+func (cli *Client) postRaw(path string, query url.Values, body io.Reader, headers map[string][]string) (*serverResponse, error) {
+	return cli.sendClientRequest("POST", path, query, body, headers)
 }
 
 // put sends an http request to the agent API using the method PUT.
-func (cli *Client) putRaw(ctx context.Context, path string, query url.Values, body io.Reader, headers map[string][]string) (*serverResponse, error) {
-	return cli.sendClientRequest(ctx, "PUT", path, query, body, headers)
+func (cli *Client) put(path string, query url.Values, obj interface{}, headers map[string][]string) (*serverResponse, error) {
+	return cli.sendRequest("PUT", path, query, obj, headers)
+}
+
+// put sends an http request to the agent API using the method PUT.
+func (cli *Client) putRaw(path string, query url.Values, body io.Reader, headers map[string][]string) (*serverResponse, error) {
+	return cli.sendClientRequest("PUT", path, query, body, headers)
 }
 
 // delete sends an http request to the agent API using the method DELETE.
-func (cli *Client) delete(ctx context.Context, path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
-	return cli.sendRequest(ctx, "DELETE", path, query, nil, headers)
+func (cli *Client) delete(path string, query url.Values, headers map[string][]string) (*serverResponse, error) {
+	return cli.sendRequest("DELETE", path, query, nil, headers)
 }
-
-func (cli *Client) sendRequest(ctx context.Context,
-	method, path string,
+func (cli *Client) sendRequest(method, path string,
 	query url.Values,
 	obj interface{},
 	headers map[string][]string) (*serverResponse, error) {
@@ -76,10 +73,9 @@ func (cli *Client) sendRequest(ctx context.Context,
 		headers["Content-Type"] = []string{"application/json"}
 	}
 
-	return cli.sendClientRequest(ctx, method, path, query, body, headers)
+	return cli.sendClientRequest(method, path, query, body, headers)
 }
-
-func (cli *Client) sendClientRequest(ctx context.Context, method, path string,
+func (cli *Client) sendClientRequest(method, path string,
 	query url.Values,
 	body io.Reader,
 	headers map[string][]string) (*serverResponse, error) {
@@ -115,7 +111,7 @@ func (cli *Client) sendClientRequest(ctx context.Context, method, path string,
 		req.Header.Set("Content-Type", "text/plain")
 	}
 
-	resp, err := cancellable.Do(ctx, cli.transport, req)
+	resp, err := cancellable.Do(cli.transport, req)
 	if err != nil {
 		if isTimeout(err) || strings.Contains(err.Error(), "connection refused") || strings.Contains(err.Error(), "dial unix") {
 			return serverResp, ErrConnectionFailed
@@ -168,6 +164,7 @@ func (cli *Client) sendClientRequest(ctx context.Context, method, path string,
 func (cli *Client) newRequest(method, path string, query url.Values, body io.Reader, headers map[string][]string) (*http.Request, error) {
 	apiPath := cli.getAPIPath(path, query)
 	req, err := http.NewRequest(method, apiPath, body)
+
 	if err != nil {
 		return nil, err
 	}

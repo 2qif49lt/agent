@@ -1,7 +1,6 @@
 package client
 
 import (
-	"context"
 	"strings"
 
 	"github.com/2qif49lt/agent/cli"
@@ -29,7 +28,7 @@ func NewPingCommand(agentCli *AgentCli) *cobra.Command {
 	return cmd
 }
 func runPing(agentCli *AgentCli, args []string) error {
-	pong, err := agentCli.client.Ping(context.Background(), strings.Join(args, " "))
+	pong, err := agentCli.client.Ping(strings.Join(args, " "))
 	if err != nil {
 		return err
 	}

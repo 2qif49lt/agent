@@ -1,8 +1,6 @@
 package client
 
 import (
-	"context"
-
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/cobra"
 	"github.com/2qif49lt/logrus"
@@ -28,7 +26,7 @@ func NewInfoCommand(agentCli *AgentCli) *cobra.Command {
 	return cmd
 }
 func runInfo(agentCli *AgentCli) error {
-	info, err := agentCli.client.Info(context.Background())
+	info, err := agentCli.client.Info()
 	if err != nil {
 		return err
 	}

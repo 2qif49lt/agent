@@ -1,12 +1,8 @@
 package client
 
-import (
-	"context"
-)
-
 // PluginRemove removes a plugin
-func (cli *Client) PluginRemove(ctx context.Context, name string) error {
-	resp, err := cli.delete(ctx, "/plugins/"+name, nil, nil)
+func (cli *Client) PluginRemove(name string) error {
+	resp, err := cli.delete("/plugins/"+name, nil, nil)
 	ensureReaderClosed(resp)
 	return err
 }

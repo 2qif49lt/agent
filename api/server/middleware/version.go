@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"runtime"
 
+	"github.com/2qif49lt/agent/api"
 	"github.com/2qif49lt/agent/api/server/httputils"
 	"github.com/2qif49lt/agent/api/types/versions"
 	"github.com/2qif49lt/logrus"
@@ -46,7 +47,7 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 		logrus.Debugln("VersionMiddleware enter")
 		defer logrus.Debugln("VersionMiddleware leave")
 
-		apiVersion := r.Header.Get(httputils.APIVersionKey)
+		apiVersion := r.Header.Get(api.HEADER_VERISON)
 		if apiVersion == "" {
 			logrus.WithField("remote", r.RemoteAddr).Warnln("api version is empty")
 
@@ -62,7 +63,8 @@ func (v VersionMiddleware) WrapHandler(handler func(ctx context.Context, w http.
 		if versions.LessThan(apiVersion, v.minVersion) {
 			return badRequestError{fmt.Errorf("client version %s is too old. Minimum supported API version is %s, please upgrade your client to a newer version", apiVersion, v.minVersion)}
 		}
-		ctx = context.WithValue(ctx, httputils.APIVersionKey, apiVersion)
+
+		httputils.Put(vars, httputils.CLI_API_VERSION, apiVersion)
 
 		return handler(ctx, w, r, vars)
 	}

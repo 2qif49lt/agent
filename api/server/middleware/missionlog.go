@@ -53,8 +53,8 @@ func MissionMiddleware(handler func(ctx context.Context, w http.ResponseWriter, 
 
 		cost := time.Since(begtime) / time.Millisecond
 
-		version := httputils.VersionFromContext(ctx)
-		ua := httputils.ValueFromContext(ctx, httputils.UAStringKey)
+		version := httputils.Get(vars, httputils.CLI_API_VERSION)
+		ua := httputils.Get(vars, httputils.CLI_USER_AGENT)
 
 		fmt.Println(version, "faaaa", ua)
 		if eventerr := eventdb.InsertMission(mid, version, command, paras, body, errors.Str(err), int(cost)); eventerr != nil {

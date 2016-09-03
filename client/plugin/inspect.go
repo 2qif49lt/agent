@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
@@ -28,7 +27,7 @@ func newInspectCommand(agentCli *client.AgentCli) *cobra.Command {
 }
 
 func runInspect(agentCli *client.AgentCli, name string) error {
-	p, err := agentCli.Client().PluginInspect(context.Background(), name)
+	p, err := agentCli.Client().PluginInspect(name)
 	if err != nil {
 		return err
 	}

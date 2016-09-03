@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -31,7 +30,7 @@ func newListCommand(agentCli *client.AgentCli) *cobra.Command {
 }
 
 func runList(agentCli *client.AgentCli) error {
-	plugins, err := agentCli.Client().PluginList(context.Background())
+	plugins, err := agentCli.Client().PluginList()
 	if err != nil {
 		return err
 	}

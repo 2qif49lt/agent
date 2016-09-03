@@ -24,19 +24,15 @@ var (
 // Do sends an HTTP request with the provided transport.Sender and returns an HTTP response.
 // If the client is nil, http.DefaultClient is used.
 // If the context is canceled or times out, ctx.Err() will be returned.
-//
-// FORK INFORMATION:
-//
-// This function deviates from the upstream version in golang.org/x/net/context/ctxhttp by
-// taking a Sender interface rather than a *http.Client directly. That allow us to use
-// this funcion with mocked clients and hijacked connections.
-func Do(ctx context.Context, client transport.Sender, req *http.Request) (*http.Response, error) {
+func Do(client transport.Sender, req *http.Request) (*http.Response, error) {
 	if client == nil {
 		client = http.DefaultClient
 	}
 
-	// Request cancelation changed in Go 1.5, see canceler.go and canceler_go14.go.
-	cancel := canceler(client, req)
+	var cancel context.CancelFunc
+	ctx := req.Context()
+	ctx, cancel = context.WithCancel(ctx)
+	req = req.WithContext(ctx)
 
 	type responseAndError struct {
 		resp *http.Response
@@ -46,7 +42,6 @@ func Do(ctx context.Context, client transport.Sender, req *http.Request) (*http.
 
 	go func() {
 		resp, err := client.Do(req)
-		testHookDoReturned()
 		result <- responseAndError{resp, err}
 	}()
 
@@ -54,12 +49,10 @@ func Do(ctx context.Context, client transport.Sender, req *http.Request) (*http.
 
 	select {
 	case <-ctx.Done():
-		testHookContextDoneBeforeHeaders()
 		cancel()
 		// Clean up after the goroutine calling client.Do:
 		go func() {
 			if r := <-result; r.resp != nil && r.resp.Body != nil {
-				testHookDidBodyClose()
 				r.resp.Body.Close()
 			}
 		}()
@@ -79,6 +72,7 @@ func Do(ctx context.Context, client transport.Sender, req *http.Request) (*http.
 			cancel()
 		case <-c:
 			// The response's Body is closed.
+			// 一些收听者模式下做些必要的清理
 		}
 	}()
 	resp.Body = &notifyingReader{resp.Body, c}

@@ -1,7 +1,6 @@
 package client
 
 import (
-	"context"
 	"io"
 	"net/url"
 	"time"
@@ -13,7 +12,7 @@ import (
 
 // Events returns a stream of events in the daemon in a ReadCloser.
 // It's up to the caller to close the stream.
-func (cli *Client) Events(ctx context.Context, options types.EventsOptions) (io.ReadCloser, error) {
+func (cli *Client) Events(options types.EventsOptions) (io.ReadCloser, error) {
 	query := url.Values{}
 	ref := time.Now()
 
@@ -39,7 +38,7 @@ func (cli *Client) Events(ctx context.Context, options types.EventsOptions) (io.
 		query.Set("filters", filterJSON)
 	}
 
-	serverResponse, err := cli.get(ctx, "/events", query, nil)
+	serverResponse, err := cli.get("/events", query, nil)
 	if err != nil {
 		return nil, err
 	}

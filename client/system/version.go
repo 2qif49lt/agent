@@ -1,7 +1,6 @@
 package system
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"runtime"
@@ -61,8 +60,6 @@ func NewVersionCommand(agentCli *client.AgentCli) *cobra.Command {
 }
 
 func runVersion(agentCli *client.AgentCli, opts *versionOptions) error {
-	ctx := context.Background()
-
 	templateFormat := versionTemplate
 	if opts.format != "" {
 		templateFormat = opts.format
@@ -91,7 +88,7 @@ func runVersion(agentCli *client.AgentCli, opts *versionOptions) error {
 		},
 	}
 
-	serverVersion, err := agentCli.Client().ServerVersion(ctx)
+	serverVersion, err := agentCli.Client().ServerVersion()
 	if err == nil {
 		vd.Server = &serverVersion
 	}

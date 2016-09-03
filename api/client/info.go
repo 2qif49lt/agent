@@ -1,7 +1,6 @@
 package client
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
@@ -10,9 +9,9 @@ import (
 )
 
 // Info returns information about the agentd server.
-func (cli *Client) Info(ctx context.Context) (types.Info, error) {
+func (cli *Client) Info() (types.Info, error) {
 	var info types.Info
-	serverResp, err := cli.get(ctx, "/info", url.Values{}, nil)
+	serverResp, err := cli.get("/info", url.Values{}, nil)
 	if err != nil {
 		return info, err
 	}

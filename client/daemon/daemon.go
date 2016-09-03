@@ -66,6 +66,8 @@ func (cli *DaemonCli) run() {
 	serveAPIWait := make(chan error)
 	go cli.api.Wait(serveAPIWait) // 开始服务
 	/*
+
+		// test events
 		go func() {
 			for {
 				select {

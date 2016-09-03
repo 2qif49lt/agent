@@ -1,8 +1,6 @@
 package plugin
 
 import (
-	"context"
-
 	"github.com/2qif49lt/agent/cli"
 	"github.com/2qif49lt/agent/client"
 	"github.com/2qif49lt/cobra"
@@ -20,7 +18,7 @@ func newDisableCommand(agentCli *client.AgentCli) *cobra.Command {
 		},
 
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return agentCli.Client().PluginDisable(context.Background(), args[0])
+			return agentCli.Client().PluginDisable(args[0])
 		},
 	}
 

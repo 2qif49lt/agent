@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/2qif49lt/agent/cli"
@@ -32,7 +31,7 @@ func runRemove(agentCli *client.AgentCli, names []string) error {
 		fmt.Printf("%s:", name)
 
 		// TODO: pass names to api instead of making multiple api calls
-		err := agentCli.Client().PluginRemove(context.Background(), name)
+		err := agentCli.Client().PluginRemove(name)
 		if err == nil {
 			fmt.Printf("OK")
 		} else {

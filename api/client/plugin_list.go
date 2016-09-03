@@ -1,16 +1,15 @@
 package client
 
 import (
-	"context"
 	"encoding/json"
 
 	"github.com/2qif49lt/agent/api/types"
 )
 
 // PluginList returns the installed plugins
-func (cli *Client) PluginList(ctx context.Context) (types.PluginsListResponse, error) {
+func (cli *Client) PluginList() (types.PluginsListResponse, error) {
 	var plugins types.PluginsListResponse
-	resp, err := cli.get(ctx, "/plugins", nil, nil)
+	resp, err := cli.get("/plugins", nil, nil)
 	if err != nil {
 		return plugins, err
 	}

@@ -2,7 +2,6 @@ package client
 
 import (
 	"bufio"
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,9 +12,9 @@ import (
 )
 
 // PluginInstall installs a plugin
-func (cli *Client) PluginInstall(ctx context.Context, name, registryAuth string, acceptAllPermissions, noEnable bool, in io.ReadCloser, out io.Writer) error {
+func (cli *Client) PluginInstall(name, registryAuth string, acceptAllPermissions, noEnable bool, in io.ReadCloser, out io.Writer) error {
 	headers := map[string][]string{"X-Registry-Auth": {registryAuth}}
-	resp, err := cli.post(ctx, "/plugins/pull", url.Values{"name": []string{name}}, nil, headers)
+	resp, err := cli.post("/plugins/pull", url.Values{"name": []string{name}}, nil, headers)
 	if err != nil {
 		ensureReaderClosed(resp)
 		return err
@@ -40,7 +39,7 @@ func (cli *Client) PluginInstall(ctx context.Context, name, registryAuth string,
 			return err
 		}
 		if strings.ToLower(string(line)) != "y" {
-			resp, _ := cli.delete(ctx, "/plugins/"+name, nil, nil)
+			resp, _ := cli.delete("/plugins/"+name, nil, nil)
 			ensureReaderClosed(resp)
 			return pluginPermissionDenied{name}
 		}
@@ -48,5 +47,5 @@ func (cli *Client) PluginInstall(ctx context.Context, name, registryAuth string,
 	if noEnable {
 		return nil
 	}
-	return cli.PluginEnable(ctx, name)
+	return cli.PluginEnable(name)
 }
